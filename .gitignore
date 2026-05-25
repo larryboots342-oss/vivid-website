@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js build output
+.next/
+out/
+
+# Production build
+dist/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Environment secrets
+.env
+.env.local
+.env.*.local
+
+# Clerk local dev cache
+.clerk/
+
+# Vercel
+.vercel/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local scripts (dev only)
+start-website.bat

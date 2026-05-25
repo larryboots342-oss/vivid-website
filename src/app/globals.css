@@ -1,0 +1,434 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --vivid-bg: #0a0a0f;
+    --vivid-primary: #00f5ff;
+    --vivid-primary-dim: #00c8cc;
+    --background: 0 0% 4%;
+
+    /* Animation tokens */
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-expo: cubic-bezier(0.7, 0, 0.84, 0);
+    --ease-elastic: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+    --duration-instant: 100ms;
+    --duration-fast: 150ms;
+    --duration-normal: 300ms;
+    --duration-slow: 500ms;
+    --duration-cinematic: 800ms;
+    --foreground: 0 0% 88%;
+    --card: 0 0% 7%;
+    --card-foreground: 0 0% 88%;
+    --popover: 0 0% 7%;
+    --popover-foreground: 0 0% 88%;
+    --primary: 180 100% 50%;
+    --primary-foreground: 0 0% 4%;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 88%;
+    --muted: 0 0% 10%;
+    --muted-foreground: 0 0% 53%;
+    --accent: 0 0% 10%;
+    --accent-foreground: 0 0% 88%;
+    --destructive: 348 100% 61%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 14%;
+    --input: 0 0% 14%;
+    --ring: 180 100% 50%;
+    --radius: 0.75rem;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    touch-action: manipulation;
+  }
+
+  body {
+    background-color: var(--vivid-bg);
+    color: #e0e0e0;
+    font-family: var(--font-inter), "Inter", "Segoe UI", system-ui, sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    /* Prevent callout menu on iOS long-press */
+    -webkit-touch-callout: none;
+  }
+
+  /* GPU-accelerated scroll container */
+  .gpu-layer {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    will-change: transform;
+  }
+
+  /* GPU compositor-only animations */
+  .gpu-animate {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    contain: layout style;
+  }
+
+  /* Prevent layout shift from images */
+  img, video, canvas {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Prevent text selection on UI elements */
+  button, a, [role="button"] {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Allow text selection on content */
+  p, h1, h2, h3, h4, h5, h6, li, span {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+
+    canvas {
+      display: none !important;
+    }
+
+    .gpu-animate,
+    .gpu-layer {
+      will-change: auto;
+      transform: none;
+    }
+  }
+
+  /* Mobile-specific base styles */
+  @media (max-width: 767px) {
+    body {
+      font-size: 15px;
+    }
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0f;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #252525;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #333333;
+}
+
+/* Hide scrollbar on mobile but keep functionality */
+@media (max-width: 767px) {
+  ::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+}
+
+/* Selection color */
+::selection {
+  background: rgba(0, 245, 255, 0.2);
+  color: #ffffff;
+}
+
+/* Focus visible - scoped to avoid conflicting with component-level focus rings */
+:focus-visible:not([class*="focus-visible"]):not([class*="focus:ring"]) {
+  outline: 2px solid rgba(0, 245, 255, 0.5);
+  outline-offset: 2px;
+}
+
+/* Remove tap highlight on mobile */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+@layer components {
+  /* Gradient text utility */
+  .gradient-text {
+    background: linear-gradient(135deg, #00f5ff 0%, #00e5ff 50%, #ffffff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Glow effects */
+  .glow-primary {
+    box-shadow: 0 0 20px rgba(0, 245, 255, 0.15), 0 0 40px rgba(0, 245, 255, 0.05);
+  }
+
+  .glow-primary-strong {
+    box-shadow: 0 0 30px rgba(0, 245, 255, 0.3), 0 0 60px rgba(0, 245, 255, 0.1);
+  }
+
+  /* Glass effect */
+  .glass {
+    background: rgba(17, 17, 17, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .glass-strong {
+    background: rgba(17, 17, 17, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  /* Shimmer loading effect */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.05) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite;
+  }
+
+  /* Perspective for 3D transforms */
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Content visibility for below-fold sections */
+  .content-visibility-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 500px;
+  }
+
+  /* Touch action optimization */
+  .touch-pan-y {
+    touch-action: pan-y;
+  }
+
+  /* Mobile section padding utility */
+  .section-padding {
+    @apply py-16 px-4 sm:py-20 sm:px-6 md:py-24 md:px-6 lg:py-32;
+  }
+
+  /* Mobile-safe container */
+  .container-mobile {
+    @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Touch target minimum size */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  /* Responsive card padding */
+  .card-padding {
+    @apply p-4 sm:p-5 md:p-6 lg:p-8;
+  }
+}
+
+@layer utilities {
+  /* Marquee animations for testimonials */
+  @keyframes marquee-left {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-33.333%);
+    }
+  }
+
+  @keyframes marquee-right {
+    0% {
+      transform: translateX(-33.333%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+  .animate-marquee-left {
+    animation: marquee-left linear infinite;
+  }
+
+  .animate-marquee-right {
+    animation: marquee-right linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-marquee-left,
+    .animate-marquee-right {
+      animation: none;
+    }
+  }
+
+  /* GPU-accelerated keyframes */
+  @keyframes pulseGlow {
+    0%, 100% {
+      opacity: 0.15;
+      transform: scale(1) translateZ(0);
+    }
+    50% {
+      opacity: 0.25;
+      transform: scale(1.05) translateZ(0);
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  /* Mobile text balance for headings */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Safe area inset utilities */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  /* SVG stroke draw animation */
+  @keyframes draw {
+    0% {
+      stroke-dashoffset: 300;
+    }
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  .animate-draw {
+    animation: draw 1.2s var(--ease-out-expo) forwards;
+  }
+
+  /* Orbit spinner animation */
+  @keyframes orbit {
+    0% {
+      transform: rotate(0deg) translateX(8px) rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg) translateX(8px) rotate(-360deg);
+    }
+  }
+
+  .animate-orbit {
+    animation: orbit 1.5s linear infinite;
+  }
+
+  /* Dots bounce animation */
+  @keyframes dots-bounce {
+    0%, 80%, 100% {
+      transform: scale(0);
+      opacity: 0.5;
+    }
+    40% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .animate-dots-bounce {
+    animation: dots-bounce 1.4s ease-in-out infinite both;
+  }
+
+  /* Progress shimmer for loader bar */
+  @keyframes progress-shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  .animate-progress-shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(0, 245, 255, 0) 0%,
+      rgba(0, 245, 255, 0.4) 50%,
+      rgba(0, 245, 255, 0) 100%
+    );
+    background-size: 200% 100%;
+    animation: progress-shimmer 1.5s ease-in-out infinite;
+  }
+
+  /* Fade blur entrance for route transitions */
+  @keyframes fade-blur-in {
+    0% {
+      opacity: 0;
+      filter: blur(8px);
+      transform: translateY(12px) translateZ(0);
+    }
+    100% {
+      opacity: 1;
+      filter: blur(0px);
+      transform: translateY(0) translateZ(0);
+    }
+  }
+
+  @keyframes fade-blur-out {
+    0% {
+      opacity: 1;
+      filter: blur(0px);
+      transform: translateY(0) translateZ(0);
+    }
+    100% {
+      opacity: 0;
+      filter: blur(8px);
+      transform: translateY(-8px) translateZ(0);
+    }
+  }
+
+  /* Stagger children utility */
+  .stagger-children > * {
+    opacity: 0;
+    animation: fade-blur-in 0.5s var(--ease-out-expo) forwards;
+  }
+
+  .stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+  .stagger-children > *:nth-child(2) { animation-delay: 50ms; }
+  .stagger-children > *:nth-child(3) { animation-delay: 100ms; }
+  .stagger-children > *:nth-child(4) { animation-delay: 150ms; }
+  .stagger-children > *:nth-child(5) { animation-delay: 200ms; }
+  .stagger-children > *:nth-child(6) { animation-delay: 250ms; }
+  .stagger-children > *:nth-child(7) { animation-delay: 300ms; }
+  .stagger-children > *:nth-child(8) { animation-delay: 350ms; }
+}

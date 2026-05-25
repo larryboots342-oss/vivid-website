@@ -1,0 +1,27 @@
+/**
+ * Simple IP geolocation using ipapi.co (free tier, no key needed)
+ * Falls back gracefully on any error.
+ */
+export async function getCountryFromIp(ip: string): Promise<string | null> {
+  if (!ip || ip === "127.0.0.1" || ip === "::1" || ip.startsWith("192.168.") || ip.startsWith("10.")) {
+    return "Local Network";
+  }
+
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 2000);
+
+    const res = await fetch(`https://ipapi.co/${ip}/country_name/`, {
+      signal: controller.signal,
+      headers: { "User-Agent": "VIVID-Admin/1.0" },
+    });
+
+    clearTimeout(timeout);
+
+    if (!res.ok) return null;
+    const text = (await res.text()).trim();
+    return text || null;
+  } catch {
+    return null;
+  }
+}
