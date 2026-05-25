@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/admin-auth";
 
 export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
 /* Feature flags stored as a special Activity record with type="feature_flag" */
 

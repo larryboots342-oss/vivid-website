@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/admin-auth";
 
 export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
 /* Mock ticket system using Activity model with type="support" */
 
