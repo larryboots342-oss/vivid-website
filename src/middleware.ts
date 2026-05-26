@@ -67,16 +67,6 @@ export default clerkMiddleware(async (auth, req) => {
       return NextResponse.redirect(signInUrl);
     }
 
-    // ── Admin route protection ────────────────────────────────────
-    if (isAdminRoute(req)) {
-      const role = (sessionClaims as any)?.metadata?.role;
-      const email = (sessionClaims as any)?.email || "";
-      const isAdminUser = role === "admin" || email === OWNER_EMAIL;
-      if (!isAdminUser) {
-        return NextResponse.redirect(new URL("/dashboard", req.url));
-      }
-    }
-
     return NextResponse.next();
   } catch (error) {
     console.error("Middleware error:", error);

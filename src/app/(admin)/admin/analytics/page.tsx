@@ -7,8 +7,6 @@ import {
   Users,
   Key,
   PoundSterling,
-  ArrowUpRight,
-  ArrowDownRight,
   Activity,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -25,19 +23,16 @@ interface AnalyticsData {
 function MetricCard({
   title,
   value,
-  change,
   icon: Icon,
   color,
   delay,
 }: {
   title: string;
   value: string;
-  change: string;
   icon: React.ComponentType<{ className?: string }>;
   color: string;
   delay: number;
 }) {
-  const isPositive = change.startsWith("+");
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -49,13 +44,6 @@ function MetricCard({
         <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center", color.replace("text-", "bg-").replace("400", "500/10"))}>
           <Icon className={cn("w-5 h-5", color)} />
         </div>
-        <span className={cn(
-          "inline-flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-lg",
-          isPositive ? "bg-green-500/10 text-green-400" : "bg-vivid-accent/10 text-vivid-accent"
-        )}>
-          {isPositive ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
-          {change}
-        </span>
       </div>
       <p className="text-2xl font-bold text-white mb-1">{value}</p>
       <p className="text-sm text-vivid-textMuted">{title}</p>
@@ -89,7 +77,6 @@ export default function AdminAnalyticsPage() {
         <MetricCard
           title="Total Users"
           value={loading ? "..." : data?.users.total.toLocaleString() || "0"}
-          change="+12%"
           icon={Users}
           color="text-blue-400"
           delay={0}
@@ -97,7 +84,6 @@ export default function AdminAnalyticsPage() {
         <MetricCard
           title="Active Licenses"
           value={loading ? "..." : data?.licenses.active.toLocaleString() || "0"}
-          change="+8%"
           icon={Key}
           color="text-purple-400"
           delay={0.08}
@@ -105,15 +91,13 @@ export default function AdminAnalyticsPage() {
         <MetricCard
           title="Total Revenue"
           value={loading ? "..." : `${CURRENCY_SYMBOL}${data?.revenue.total.toLocaleString() || "0"}`}
-          change="+24%"
           icon={PoundSterling}
           color="text-green-400"
           delay={0.16}
         />
         <MetricCard
           title="Conversion Rate"
-          value={loading ? "..." : "4.2%"}
-          change="+1.1%"
+          value={loading ? "..." : (data && data.users.total > 0 ? `${((data.licenses.active / data.users.total) * 100).toFixed(1)}%` : "0%")}
           icon={TrendingUp}
           color="text-pink-400"
           delay={0.24}
