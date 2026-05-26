@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Clock, Infinity, AlertTriangle, Key } from "lucide-react";
+import { Clock, Infinity as InfinityIcon, AlertTriangle, Key } from "lucide-react";
 
 interface LicenseCountdownProps {
   licenses: Array<{
@@ -125,7 +125,7 @@ export default function LicenseCountdown({ licenses }: LicenseCountdownProps) {
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-2 text-green-400">
-            <Infinity className="w-5 h-5" />
+            <InfinityIcon className="w-5 h-5" />
             <span className="font-semibold">Never Expires</span>
           </div>
           <code className="text-xs font-mono text-vivid-textMuted mt-2 block">{l.key}</code>
