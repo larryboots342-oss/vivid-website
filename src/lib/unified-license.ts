@@ -51,7 +51,32 @@ export async function createUnifiedLicense(input: CreateLicenseInput) {
     },
   });
 
-  // 2. Create in Supabase (for desktop app)
+  // 2. Create payment record in Prisma (real revenue tracking)
+  const amount =
+    typeof input.paymentAmount === "string"
+      ? parseFloat(input.paymentAmount)
+      : typeof input.paymentAmount === "number"
+        ? input.paymentAmount
+        : 0;
+
+  if (amount > 0) {
+    await prisma.payment.create({
+      data: {
+        userId: input.userId || null,
+        licenseId: prismaLicense.id,
+        provider: input.paymentProvider,
+        orderId: input.paymentOrderId || null,
+        amount,
+        currency: input.paymentCurrency || "GBP",
+        status: "completed",
+        payerEmail: input.email,
+        ipAddress: input.ipAddress || null,
+        country: input.country || null,
+      },
+    });
+  }
+
+  // 3. Create in Supabase (for desktop app)
   if (supabase) {
     try {
       await supabase.from("license_keys").insert({
@@ -70,7 +95,6 @@ export async function createUnifiedLicense(input: CreateLicenseInput) {
       });
     } catch (err) {
       console.error("Supabase license insert failed (non-critical):", err);
-      // Don't throw — Prisma is the primary source, Supabase is sync target
     }
   }
 

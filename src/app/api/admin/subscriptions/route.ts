@@ -29,6 +29,11 @@ export async function GET(req: NextRequest) {
         take: limit,
         include: {
           user: { select: { id: true, email: true, name: true, clerkId: true } },
+          payments: {
+            select: { amount: true, currency: true, provider: true, status: true },
+            orderBy: { createdAt: "desc" },
+            take: 1,
+          },
         },
       }),
       prisma.license.count({ where }),

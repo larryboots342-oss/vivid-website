@@ -14,6 +14,7 @@ import {
   Zap,
   Gamepad2,
   Video,
+  PoundSterling,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CURRENCY_SYMBOL } from "@/lib/constants";
@@ -21,7 +22,20 @@ import { CURRENCY_SYMBOL } from "@/lib/constants";
 interface AdminStats {
   users: { total: number; recent: any[] };
   licenses: { total: number; active: number; expired: number; lifetime: number; byTier: Array<{ tier: string; count: number }> };
-  revenue: { total: number; byTier: Array<{ tier: string; count: number; revenue: number }> };
+  revenue: {
+    total: number;
+    byTier: Array<{ tier: string; count: number; revenue: number }>;
+    recent: Array<{
+      id: string;
+      amount: number;
+      currency: string;
+      provider: string;
+      tier: string;
+      email: string;
+      name: string | null;
+      createdAt: string;
+    }>;
+  };
   content: { totalVideos: number };
   activities: Array<any>;
 }
@@ -151,6 +165,7 @@ export default function AdminOverviewPage() {
               {stats.licenses.byTier.map((tier) => {
                 const total = stats.licenses.active;
                 const pct = total > 0 ? Math.round((tier.count / total) * 100) : 0;
+                const rev = stats.revenue.byTier.find((r) => r.tier === tier.tier)?.revenue || 0;
                 const tierColors: Record<string, string> = {
                   pro: "bg-vivid-primary",
                   elite: "bg-purple-400",
@@ -161,7 +176,7 @@ export default function AdminOverviewPage() {
                     <div className="flex items-center justify-between text-sm mb-2">
                       <span className="text-white capitalize">{tier.tier}</span>
                       <span className="text-vivid-textMuted">
-                        {tier.count} ({pct}%)
+                        {tier.count} ({pct}%) · <span className="text-green-400">£{rev.toFixed(2)}</span>
                       </span>
                     </div>
                     <div className="h-2 rounded-full bg-white/5 overflow-hidden">
@@ -200,32 +215,50 @@ export default function AdminOverviewPage() {
           )}
         </motion.div>
 
-        {/* Quick Actions */}
+        {/* Recent Transactions */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
           className="rounded-2xl border border-vivid-border/50 bg-vivid-surface/40 backdrop-blur-xl p-6"
         >
-          <h2 className="text-lg font-bold text-white mb-6">Quick Actions</h2>
-          <div className="space-y-3">
-            {[
-              { icon: Users, label: "Manage Users", href: "/admin/users", color: "text-blue-400" },
-              { icon: Key, label: "View Licenses", href: "/admin/subscriptions", color: "text-purple-400" },
-              { icon: Shield, label: "Security Audit", href: "/admin/analytics", color: "text-vivid-primary" },
-              { icon: Gamepad2, label: "Game Support", href: "/admin/support", color: "text-green-400" },
-            ].map((action) => (
-              <a
-                key={action.label}
-                href={action.href}
-                className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.06] hover:border-white/10 transition-all group"
-              >
-                <action.icon className={cn("w-5 h-5", action.color)} />
-                <span className="text-sm text-vivid-text flex-1">{action.label}</span>
-                <ArrowUpRight className="w-4 h-4 text-vivid-textDim group-hover:text-white transition-colors" />
-              </a>
-            ))}
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-lg font-bold text-white">Recent Sales</h2>
+            <PoundSterling className="w-4 h-4 text-green-400" />
           </div>
+
+          {stats?.revenue.recent && stats.revenue.recent.length > 0 ? (
+            <div className="space-y-3">
+              {stats.revenue.recent.map((payment) => (
+                <div
+                  key={payment.id}
+                  className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] hover:bg-white/[0.04] transition-colors"
+                >
+                  <div className="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+                    <PoundSterling className="w-3.5 h-3.5 text-green-400" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-white truncate">
+                      {payment.name || payment.email}
+                    </p>
+                    <p className="text-xs text-vivid-textMuted capitalize">
+                      {payment.tier} · {payment.provider}
+                    </p>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <p className="text-sm font-semibold text-green-400">
+                      £{payment.amount.toFixed(2)}
+                    </p>
+                    <p className="text-[10px] text-vivid-textDim">
+                      {new Date(payment.createdAt).toLocaleDateString("en-GB")}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-vivid-textDim">No transactions yet</p>
+          )}
         </motion.div>
       </div>
 

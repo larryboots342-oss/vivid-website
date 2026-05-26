@@ -70,6 +70,7 @@ model User {
   activities    Activity[]
   reviews       Review[]
   visitors      Visitor[]
+  payments      Payment[]
 }
 
 model Subscription {
@@ -107,6 +108,7 @@ model License {
   country     String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  payments    Payment[]
 }
 
 model Activity {
@@ -145,6 +147,29 @@ model Review {
   updatedAt DateTime @updatedAt
 
   @@index([userId])
+}
+
+model Payment {
+  id          String   @id @default(cuid())
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  licenseId   String?
+  license     License? @relation(fields: [licenseId], references: [id], onDelete: SetNull)
+  provider    String   // stripe, paypal, manual
+  orderId     String?
+  amount      Float
+  currency    String   @default("GBP")
+  status      String   @default("completed")
+  payerEmail  String
+  ipAddress   String?
+  country     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([licenseId])
+  @@index([createdAt])
+  @@index([provider])
 }
 
 model Visitor {

@@ -30,6 +30,7 @@ interface License {
   ipAddress: string | null;
   country: string | null;
   user: { id: string; email: string; name: string | null; clerkId: string } | null;
+  payments: Array<{ amount: number; currency: string; provider: string; status: string }>;
 }
 
 const statusColors: Record<string, string> = {
@@ -126,6 +127,7 @@ export default function AdminLicensesPage() {
                 <th className="px-4 py-4 text-xs font-semibold text-vivid-textDim uppercase tracking-wider">License</th>
                 <th className="px-4 py-4 text-xs font-semibold text-vivid-textDim uppercase tracking-wider">Tier</th>
                 <th className="px-4 py-4 text-xs font-semibold text-vivid-textDim uppercase tracking-wider">Status</th>
+                <th className="px-4 py-4 text-xs font-semibold text-vivid-textDim uppercase tracking-wider">Paid</th>
                 <th className="px-4 py-4 text-xs font-semibold text-vivid-textDim uppercase tracking-wider">Purchased</th>
                 <th className="px-4 py-4 text-xs font-semibold text-vivid-textDim uppercase tracking-wider">IP / Country</th>
               </tr>
@@ -195,6 +197,22 @@ export default function AdminLicensesPage() {
                           {status === "expired" && <Clock className="w-3 h-3" />}
                           {status}
                         </span>
+                      </td>
+
+                      {/* Paid */}
+                      <td className="px-4 py-4">
+                        {license.payments && license.payments.length > 0 ? (
+                          <div className="flex flex-col gap-0.5">
+                            <span className="text-sm font-medium text-green-400">
+                              £{license.payments[0].amount.toFixed(2)}
+                            </span>
+                            <span className="text-[10px] text-vivid-textDim uppercase">
+                              {license.payments[0].provider}
+                            </span>
+                          </div>
+                        ) : (
+                          <span className="text-xs text-vivid-textDim">—</span>
+                        )}
                       </td>
 
                       {/* Purchased */}

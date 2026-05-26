@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { PLANS } from "@/lib/constants";
 import { requireAdmin } from "@/lib/admin-auth";
 
 export const dynamic = "force-dynamic";
@@ -21,6 +20,9 @@ export async function GET(req: NextRequest) {
       licenseByTier,
       recentActivities,
       totalVideos,
+      totalRevenue,
+      revenueByTier,
+      recentPayments,
     ] = await Promise.all([
       prisma.user.count(),
       prisma.license.count(),
@@ -58,19 +60,36 @@ export async function GET(req: NextRequest) {
         },
       }),
       prisma.video.count(),
+      // REAL revenue: sum of all completed payment amounts
+      prisma.payment
+        .aggregate({
+          where: { status: "completed" },
+          _sum: { amount: true },
+        })
+        .then((r) => r._sum.amount || 0),
+      // Revenue by tier from actual payments
+      prisma.$queryRaw<
+        Array<{ tier: string; count: bigint; revenue: number }>
+      >`
+        SELECT l.tier,
+               COUNT(p.id) as count,
+               COALESCE(SUM(p.amount), 0) as revenue
+        FROM "Payment" p
+        JOIN "License" l ON p."licenseId" = l.id
+        WHERE p.status = 'completed'
+        GROUP BY l.tier
+        ORDER BY revenue DESC
+      `,
+      // Recent payments for activity feed
+      prisma.payment.findMany({
+        orderBy: { createdAt: "desc" },
+        take: 5,
+        include: {
+          user: { select: { name: true, email: true } },
+          license: { select: { tier: true, key: true } },
+        },
+      }),
     ]);
-
-    // Calculate total revenue from active licenses
-    const tierPriceMap: Record<string, number> = {
-      pro: PLANS.find((p) => p.id === "pro")?.price || 7,
-      elite: PLANS.find((p) => p.id === "elite")?.price || 20,
-      enterprise: PLANS.find((p) => p.id === "enterprise")?.price || 100,
-    };
-
-    const totalRevenue = licenseByTier.reduce((sum, tier) => {
-      const price = tierPriceMap[tier.tier] || 0;
-      return sum + tier._count.tier * price;
-    }, 0);
 
     return NextResponse.json({
       users: {
@@ -89,10 +108,20 @@ export async function GET(req: NextRequest) {
       },
       revenue: {
         total: Math.round(totalRevenue * 100) / 100,
-        byTier: licenseByTier.map((t) => ({
+        byTier: revenueByTier.map((t) => ({
           tier: t.tier,
-          count: t._count.tier,
-          revenue: Math.round((t._count.tier * (tierPriceMap[t.tier] || 0)) * 100) / 100,
+          count: Number(t.count),
+          revenue: Math.round(Number(t.revenue) * 100) / 100,
+        })),
+        recent: recentPayments.map((p) => ({
+          id: p.id,
+          amount: p.amount,
+          currency: p.currency,
+          provider: p.provider,
+          tier: p.license?.tier,
+          email: p.user?.email || p.payerEmail,
+          name: p.user?.name,
+          createdAt: p.createdAt,
         })),
       },
       content: {
@@ -102,7 +131,12 @@ export async function GET(req: NextRequest) {
     });
   } catch (error: any) {
     console.error("Admin stats error:", error);
-    const status = error.message === "Unauthorized" ? 401 : error.message === "Forbidden" ? 403 : 500;
+    const status =
+      error.message === "Unauthorized"
+        ? 401
+        : error.message === "Forbidden"
+          ? 403
+          : 500;
     return NextResponse.json(
       { error: error.message || "Internal server error" },
       { status }
