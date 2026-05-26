@@ -30,12 +30,18 @@ export default function PageLoader() {
     return () => clearInterval(interval);
   }, [isLoading]);
 
+  // Track current progress in a ref to avoid stale closures
+  const progressRef = useRef(progress);
+  useEffect(() => {
+    progressRef.current = progress;
+  }, [progress]);
+
   // Minimum display time + window load
   useEffect(() => {
     const minTimer = setTimeout(() => {
       canDismissRef.current = true;
       // If already at 100%, dismiss now
-      if (progress >= 100) {
+      if (progressRef.current >= 100) {
         setIsLoading(false);
       }
     }, 1200);
