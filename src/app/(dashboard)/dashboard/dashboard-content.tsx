@@ -20,6 +20,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import ReviewPrompt from "@/components/dashboard/review-prompt";
+import { Suspense } from "react";
 
 interface LicenseData {
   id: string;
@@ -208,7 +210,7 @@ function getDaysUntilExpiry(expiresAt: string | null): string {
   return days === 0 ? "Expires today" : `${days} day${days !== 1 ? "s" : ""} left`;
 }
 
-export default function DashboardContent({ data }: { data: DashboardData }) {
+export default function DashboardContent({ data, justPurchased }: { data: DashboardData; justPurchased?: boolean }) {
   const { firstName, memberSince, hasLicense, tier, licenses, activities } = data;
 
   const planName = tier.charAt(0).toUpperCase() + tier.slice(1);
@@ -412,6 +414,13 @@ export default function DashboardContent({ data }: { data: DashboardData }) {
             </CardContent>
           </Card>
         </motion.div>
+      )}
+
+      {/* Post-purchase review prompt */}
+      {justPurchased && (
+        <Suspense fallback={null}>
+          <ReviewPrompt />
+        </Suspense>
       )}
 
       {/* Usage Section — only shows when real data exists */}

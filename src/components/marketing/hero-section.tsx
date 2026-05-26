@@ -24,10 +24,10 @@ const ThreeScene =
     : lazy(() => import("./three-scene"));
 
 const trustIndicators = [
-  { icon: Users, label: "10,000+ Users" },
-  { icon: Star, label: "4.9 Rating" },
-  { icon: Shield, label: "100% Private" },
+  { icon: Shield, label: "Private & Secure" },
   { icon: Cpu, label: "GPU Accelerated" },
+  { icon: Zap, label: "Low Latency" },
+  { icon: Users, label: "Active Community" },
 ];
 
 export default function HeroSection() {

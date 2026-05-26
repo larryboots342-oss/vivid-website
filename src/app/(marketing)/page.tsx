@@ -24,29 +24,6 @@ const FeaturesShowcase = dynamic(
   }
 );
 
-const TestimonialsSection = dynamic(
-  () => import("@/components/marketing/testimonials-section"),
-  {
-    loading: () => (
-      <section className="py-32 overflow-hidden">
-        <div className="h-12 w-1/3 bg-white/5 rounded-lg animate-pulse mb-16 mx-auto" />
-        <div className="space-y-5">
-          {Array.from({ length: 2 }).map((_, r) => (
-            <div key={r} className="flex gap-5 px-6">
-              {Array.from({ length: 4 }).map((_, c) => (
-                <div
-                  key={c}
-                  className="w-[360px] h-[180px] rounded-2xl bg-white/5 border border-white/5 animate-pulse shrink-0"
-                />
-              ))}
-            </div>
-          ))}
-        </div>
-      </section>
-    ),
-  }
-);
-
 const GameCardsSection = dynamic(
   () => import("@/components/marketing/game-cards-section"),
   {
@@ -154,6 +131,24 @@ const VideoPreviews = dynamic(
   }
 );
 
+const RealReviewsSection = dynamic(
+  () => import("@/components/marketing/real-reviews"),
+  {
+    loading: () => (
+      <section className="py-32 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="h-12 w-1/3 bg-white/5 rounded-lg animate-pulse mb-16 mx-auto" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="h-48 rounded-2xl bg-white/5 border border-white/5 animate-pulse" />
+            ))}
+          </div>
+        </div>
+      </section>
+    ),
+  }
+);
+
 export default function Home() {
   return (
     <main className="relative">
@@ -172,13 +167,13 @@ export default function Home() {
           <VideoPreviews />
         </Suspense>
         <Suspense fallback={null}>
-          <TestimonialsSection />
-        </Suspense>
-        <Suspense fallback={null}>
           <GameCardsSection />
         </Suspense>
         <Suspense fallback={null}>
           <PricingSection />
+        </Suspense>
+        <Suspense fallback={null}>
+          <RealReviewsSection />
         </Suspense>
         <Suspense fallback={null}>
           <FAQSection />

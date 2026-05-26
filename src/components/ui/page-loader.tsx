@@ -36,7 +36,7 @@ export default function PageLoader() {
     progressRef.current = progress;
   }, [progress]);
 
-  // Minimum display time + window load
+  // Minimum display time + window load + safety timeout
   useEffect(() => {
     const minTimer = setTimeout(() => {
       canDismissRef.current = true;
@@ -44,7 +44,13 @@ export default function PageLoader() {
       if (progressRef.current >= 100) {
         setIsLoading(false);
       }
-    }, 1200);
+    }, 800);
+
+    // Safety timeout — never block the UI for more than 3 seconds
+    const safetyTimer = setTimeout(() => {
+      setProgress(100);
+      setIsLoading(false);
+    }, 3000);
 
     const handleLoad = () => {
       setProgress(100);
@@ -53,7 +59,7 @@ export default function PageLoader() {
         if (canDismissRef.current) {
           setIsLoading(false);
         }
-      }, 400);
+      }, 300);
     };
 
     if (document.readyState === "complete") {
@@ -64,6 +70,7 @@ export default function PageLoader() {
 
     return () => {
       clearTimeout(minTimer);
+      clearTimeout(safetyTimer);
       window.removeEventListener("load", handleLoad);
     };
   }, []);

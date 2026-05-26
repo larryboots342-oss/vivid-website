@@ -68,6 +68,7 @@ model User {
   subscription  Subscription?
   licenses      License[]
   activities    Activity[]
+  reviews       Review[]
 }
 
 model Subscription {
@@ -129,4 +130,18 @@ model Video {
   isPublic     Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating    Int      @default(5)
+  content   String
+  tier      String   @default("pro")
+  game      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }

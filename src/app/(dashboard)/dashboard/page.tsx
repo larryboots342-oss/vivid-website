@@ -60,13 +60,19 @@ async function getDashboardData(clerkId: string) {
   };
 }
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   const user = await currentUser();
   if (!user) {
     redirect("/sign-in");
   }
 
   const owner = await isOwner();
+  const params = await searchParams;
+  const justPurchased = params.success === "true";
 
   // Gracefully handle missing database — fall back to Clerk data
   let data = null;
@@ -88,8 +94,8 @@ export default async function DashboardPage() {
 
   // Owner sees the full admin dashboard, regular users see the cool user dashboard
   if (owner) {
-    return <DashboardContent data={dashboardData} />;
+    return <DashboardContent data={dashboardData} justPurchased={justPurchased} />;
   }
 
-  return <UserDashboardContent data={dashboardData} />;
+  return <UserDashboardContent data={dashboardData} justPurchased={justPurchased} />;
 }

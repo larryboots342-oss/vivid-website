@@ -12,5 +12,5 @@ export default function AdminLayoutClient({
 }: {
   children: React.ReactNode;
 }) {
-  return <PageTransition variant="subtle">{children}</PageTransition>;
+  return <PageTransition>{children}</PageTransition>;
 }

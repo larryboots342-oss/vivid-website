@@ -97,32 +97,33 @@ export default function SettingsPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className="text-3xl font-bold text-white mb-1">Settings</h1>
-        <p className="text-vivid-textMuted">Manage your account preferences</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1">Settings</h1>
+        <p className="text-vivid-textMuted text-sm sm:text-base">Manage your account preferences</p>
       </motion.div>
 
       <div className="flex flex-col lg:flex-row gap-6">
-        {/* Settings Navigation */}
+        {/* Settings Navigation — horizontal scroll on mobile, sticky sidebar on desktop */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
           className="lg:w-64 shrink-0"
         >
-          <Card className="sticky top-24">
+          <Card className="lg:sticky lg:top-24 overflow-hidden">
             <CardContent className="p-2">
-              <nav className="space-y-1">
+              {/* Mobile: horizontal scrollable tabs */}
+              <nav className="flex lg:flex-col gap-1 overflow-x-auto pb-1 lg:pb-0 -mx-2 px-2 lg:mx-0 lg:px-0 scrollbar-hide">
                 {tabs.map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
+                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 whitespace-nowrap shrink-0 ${
                       activeTab === tab.id
                         ? "bg-vivid-primary/10 text-vivid-primary border border-vivid-primary/20"
-                        : "text-vivid-textMuted hover:text-white hover:bg-white/5"
+                        : "text-vivid-textMuted hover:text-white hover:bg-white/5 border border-transparent"
                     }`}
                   >
-                    <tab.icon className="w-5 h-5" />
+                    <tab.icon className="w-4 h-4 lg:w-5 lg:h-5" />
                     {tab.label}
                   </button>
                 ))}
@@ -188,7 +189,7 @@ export default function SettingsPage() {
                     Choose what notifications you want to receive
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-4">
                   {[
                     {
                       title: "Payment Notifications",
@@ -217,19 +218,19 @@ export default function SettingsPage() {
                     },
                   ].map((item, i) => (
                     <div key={item.title}>
-                      {i > 0 && <Separator className="bg-vivid-border/40 mb-6" />}
-                      <div className="flex items-start justify-between gap-4">
-                        <div>
+                      {i > 0 && <Separator className="bg-vivid-border/40 mb-4" />}
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0 flex-1">
                           <p className="text-sm font-medium text-white">{item.title}</p>
-                          <p className="text-xs text-vivid-textMuted mt-1">{item.description}</p>
+                          <p className="text-xs text-vivid-textMuted mt-0.5 leading-relaxed">{item.description}</p>
                         </div>
-                        <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                        <label className="relative inline-flex items-center cursor-pointer shrink-0 mt-0.5">
                           <input
                             type="checkbox"
                             defaultChecked={item.defaultChecked}
                             className="sr-only peer"
                           />
-                          <div className="w-11 h-6 bg-vivid-surfaceHover rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-vivid-primary" />
+                          <div className="w-10 h-5 sm:w-11 sm:h-6 bg-vivid-surfaceHover rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 sm:after:h-5 sm:after:w-5 after:transition-all peer-checked:bg-vivid-primary" />
                         </label>
                       </div>
                     </div>
@@ -264,33 +265,33 @@ export default function SettingsPage() {
                     Manage your password and 2FA settings
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-4">
                   <div className="flex items-center justify-between p-4 rounded-xl bg-vivid-bg border border-vivid-border">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0">
                         <Shield className="w-5 h-5 text-green-400" />
                       </div>
-                      <div>
+                      <div className="min-w-0">
                         <p className="text-sm font-medium text-white">Two-Factor Authentication</p>
                         <p className="text-xs text-vivid-textMuted">Protect your account with an additional layer</p>
                       </div>
                     </div>
-                    <Badge variant="outline" className="border-green-500/30 text-green-400">
+                    <Badge variant="outline" className="border-green-500/30 text-green-400 shrink-0 ml-2">
                       Enabled
                     </Badge>
                   </div>
 
                   <div className="flex items-center justify-between p-4 rounded-xl bg-vivid-bg border border-vivid-border">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-lg bg-vivid-primary/10 flex items-center justify-center">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-10 h-10 rounded-lg bg-vivid-primary/10 flex items-center justify-center shrink-0">
                         <Globe className="w-5 h-5 text-vivid-primary" />
                       </div>
-                      <div>
+                      <div className="min-w-0">
                         <p className="text-sm font-medium text-white">Active Sessions</p>
                         <p className="text-xs text-vivid-textMuted">2 active sessions on 2 devices</p>
                       </div>
                     </div>
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" className="shrink-0 ml-2">
                       Manage
                     </Button>
                   </div>
@@ -310,18 +311,18 @@ export default function SettingsPage() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-lg bg-vivid-primary/10 flex items-center justify-center">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-10 h-10 rounded-lg bg-vivid-primary/10 flex items-center justify-center shrink-0">
                         <Moon className="w-5 h-5 text-vivid-primary" />
                       </div>
-                      <div>
+                      <div className="min-w-0">
                         <p className="text-sm font-medium text-white">Dark Mode</p>
                         <p className="text-xs text-vivid-textMuted">Always use dark theme</p>
                       </div>
                     </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
+                    <label className="relative inline-flex items-center cursor-pointer shrink-0">
                       <input type="checkbox" defaultChecked className="sr-only peer" />
-                      <div className="w-11 h-6 bg-vivid-surfaceHover rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-vivid-primary" />
+                      <div className="w-10 h-5 sm:w-11 sm:h-6 bg-vivid-surfaceHover rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 sm:after:h-5 sm:after:w-5 after:transition-all peer-checked:bg-vivid-primary" />
                     </label>
                   </div>
 
@@ -329,11 +330,11 @@ export default function SettingsPage() {
 
                   <div>
                     <p className="text-sm font-medium text-white mb-3">Dashboard Layout</p>
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-3 gap-2 sm:gap-3">
                       {["Compact", "Comfortable", "Detailed"].map((layout) => (
                         <button
                           key={layout}
-                          className={`p-4 rounded-xl border text-sm font-medium transition-all ${
+                          className={`p-3 sm:p-4 rounded-xl border text-sm font-medium transition-all ${
                             layout === "Comfortable"
                               ? "border-vivid-primary bg-vivid-primary/10 text-vivid-primary"
                               : "border-vivid-border text-vivid-textMuted hover:border-vivid-primary/30"

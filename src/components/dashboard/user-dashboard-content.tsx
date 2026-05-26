@@ -27,6 +27,8 @@ import {
   Crown,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import ReviewPrompt from "./review-prompt";
+import { Suspense } from "react";
 
 interface LicenseData {
   id: string;
@@ -163,7 +165,7 @@ function LicenseKeyCard({ license }: { license: LicenseData }) {
   );
 }
 
-export default function UserDashboardContent({ data }: { data: UserDashboardData }) {
+export default function UserDashboardContent({ data, justPurchased }: { data: UserDashboardData; justPurchased?: boolean }) {
   const { firstName, hasLicense, tier, licenses, activities } = data;
 
   const tierStyle = tierConfig[tier] || tierConfig.free;
@@ -172,6 +174,12 @@ export default function UserDashboardContent({ data }: { data: UserDashboardData
 
   return (
     <div className="space-y-8 max-w-5xl mx-auto">
+      {/* Post-purchase review prompt */}
+      {justPurchased && (
+        <Suspense fallback={null}>
+          <ReviewPrompt />
+        </Suspense>
+      )}
       {/* Welcome Hero */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}

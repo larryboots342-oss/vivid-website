@@ -122,7 +122,7 @@ const features: FeatureCard[] = [
     gradient: "from-cyan-500/20 via-cyan-500/5 to-transparent",
     accentColor: "text-cyan-400",
     glowColor: "rgba(34, 211, 238, 0.15)",
-    stats: { label: "Uptime", value: "99.9%" },
+    stats: { label: "Reliability", value: "High" },
   },
   {
     id: "intelligent",
@@ -134,7 +134,7 @@ const features: FeatureCard[] = [
     gradient: "from-indigo-500/20 via-indigo-500/5 to-transparent",
     accentColor: "text-indigo-400",
     glowColor: "rgba(129, 140, 248, 0.15)",
-    stats: { label: "Accuracy", value: "99.2%" },
+    stats: { label: "Precision", value: "High" },
   },
   {
     id: "fingerprint",
