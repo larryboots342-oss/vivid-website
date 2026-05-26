@@ -132,7 +132,7 @@ export default function Navbar() {
                 <Link
                   key={item.label}
                   href={isHome ? item.href : `/${item.href}`}
-                  onClick={(e) => handleAnchorClick(e, item.href)}
+                  onClick={isHome ? (e) => handleAnchorClick(e, item.href) : undefined}
                   className="relative px-4 py-2 text-sm font-medium text-vivid-textMuted hover:text-white transition-colors duration-300 rounded-lg hover:bg-white/5 min-h-[44px] flex items-center"
                   aria-current={isActive ? "page" : undefined}
                 >
@@ -265,7 +265,7 @@ export default function Navbar() {
                       >
                         <Link
                           href={isHome ? item.href : `/${item.href}`}
-                          onClick={(e) => handleAnchorClick(e, item.href)}
+                          onClick={isHome ? (e) => handleAnchorClick(e, item.href) : () => setMobileOpen(false)}
                           className={cn(
                             "flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-medium transition-colors touch-target",
                             isActive

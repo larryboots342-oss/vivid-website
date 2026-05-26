@@ -3,6 +3,7 @@
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import Navbar from "@/components/marketing/navbar";
+import ScrollToHash from "@/components/marketing/scroll-to-hash";
 
 const Footer = dynamic(() => import("@/components/marketing/footer"), {
   loading: () => (
@@ -30,6 +31,7 @@ export default function MarketingLayout({
       <Suspense fallback={null}>
         <ParticleBackground />
       </Suspense>
+      <ScrollToHash />
       <Navbar />
       <div id="main-content" className="pt-16" tabIndex={-1}>
         <PageTransition>{children}</PageTransition>
