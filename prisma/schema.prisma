@@ -56,38 +56,39 @@ model subscriptions {
 // ── Website tables ──
 
 model User {
-  id            String         @id @default(cuid())
-  clerkId       String         @unique
-  email         String         @unique
+  id            String        @id @default(cuid())
+  clerkId       String        @unique
+  email         String        @unique
   name          String?
   image         String?
-  role          String         @default("user")
+  role          String        @default("user")
   emailVerified DateTime?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
   subscription  Subscription?
   licenses      License[]
   activities    Activity[]
   reviews       Review[]
+  visitors      Visitor[]
 }
 
 model Subscription {
-  id                   String   @id @default(cuid())
-  userId               String   @unique
-  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  stripeCustomerId     String   @unique
-  stripeSubscriptionId String   @unique
+  id                   String    @id @default(cuid())
+  userId               String    @unique
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stripeCustomerId     String    @unique
+  stripeSubscriptionId String    @unique
   stripePriceId        String
   status               String
   tier                 String
-  interval             String   @default("month")
+  interval             String    @default("month")
   currentPeriodStart   DateTime
   currentPeriodEnd     DateTime
-  cancelAtPeriodEnd    Boolean  @default(false)
+  cancelAtPeriodEnd    Boolean   @default(false)
   trialStart           DateTime?
   trialEnd             DateTime?
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
 }
 
 model License {
@@ -144,4 +145,48 @@ model Review {
   updatedAt DateTime @updatedAt
 
   @@index([userId])
+}
+
+model Visitor {
+  id          String     @id @default(cuid())
+  visitorId   String     @unique
+  userId      String?
+  user        User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+  firstSeen   DateTime   @default(now())
+  lastSeen    DateTime   @updatedAt
+  visitCount  Int        @default(0)
+  country     String?
+  city        String?
+  region      String?
+  ip          String?
+  userAgent   String?
+  device      String?
+  browser     String?
+  os          String?
+  referrer    String?
+  source      String?
+  pageViews   PageView[]
+
+  @@index([visitorId])
+  @@index([userId])
+  @@index([firstSeen])
+}
+
+model PageView {
+  id          String   @id @default(cuid())
+  visitorId   String
+  visitor     Visitor  @relation(fields: [visitorId], references: [id], onDelete: Cascade)
+  path        String
+  referrer    String?
+  country     String?
+  ip          String?
+  userAgent   String?
+  device      String?
+  browser     String?
+  os          String?
+  createdAt   DateTime @default(now())
+
+  @@index([visitorId])
+  @@index([createdAt])
+  @@index([path])
 }

@@ -4,6 +4,8 @@ import { Providers } from "@/components/providers";
 import SkipLink from "@/components/ui/skip-link";
 import StructuredData from "@/components/marketing/structured-data";
 import PageLoader from "@/components/ui/page-loader";
+import VisitorTracker from "@/components/analytics/visitor-tracker";
+import { Suspense } from "react";
 import "./globals.css";
 
 const inter = Inter({
@@ -148,6 +150,9 @@ export default function RootLayout({
         <SkipLink />
         <Providers>
           <PageLoader />
+          <Suspense fallback={null}>
+            <VisitorTracker />
+          </Suspense>
           {children}
         </Providers>
       </body>

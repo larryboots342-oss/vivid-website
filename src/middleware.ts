@@ -3,6 +3,14 @@ import { NextResponse } from "next/server";
 
 const OWNER_EMAIL = "coryholes1234@gmail.com";
 
+function generateVisitorId() {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 const isPublicRoute = createRouteMatcher([
   "/",
   "/features",
@@ -32,14 +40,31 @@ const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
 export default clerkMiddleware(async (auth, req) => {
   const { pathname } = req.nextUrl;
 
+  // ── Visitor cookie (all page routes) ──────────────────────────
+  const isPageRoute = !pathname.startsWith("/api/") && !pathname.startsWith("/_next/");
+  let response: NextResponse;
+
   try {
     // ── Public routes ─────────────────────────────────────────────
     if (isPublicRoute(req)) {
       const authData = await auth().catch(() => ({ userId: null }));
       if (authData.userId && isAuthRoute(req)) {
-        return NextResponse.redirect(new URL("/dashboard", req.url));
+        response = NextResponse.redirect(new URL("/dashboard", req.url));
+      } else {
+        response = NextResponse.next();
       }
-      return NextResponse.next();
+      if (isPageRoute) {
+        const existing = req.cookies.get("vivid_vid")?.value;
+        if (!existing) {
+          response.cookies.set("vivid_vid", generateVisitorId(), {
+            httpOnly: false,
+            sameSite: "lax",
+            maxAge: 60 * 60 * 24 * 365, // 1 year
+            path: "/",
+          });
+        }
+      }
+      return response;
     }
 
     // ── API routes ────────────────────────────────────────────────
@@ -59,15 +84,28 @@ export default clerkMiddleware(async (auth, req) => {
     // ── Everything else (checkout, dashboard, etc.) requires auth ─
     const authData = await auth().catch(() => ({ userId: null, sessionClaims: null }));
     const userId = authData.userId;
-    const sessionClaims = authData.sessionClaims;
 
     if (!userId) {
       const signInUrl = new URL("/sign-in", req.url);
       signInUrl.searchParams.set("redirect_url", req.url);
-      return NextResponse.redirect(signInUrl);
+      response = NextResponse.redirect(signInUrl);
+    } else {
+      response = NextResponse.next();
     }
 
-    return NextResponse.next();
+    if (isPageRoute) {
+      const existing = req.cookies.get("vivid_vid")?.value;
+      if (!existing) {
+        response.cookies.set("vivid_vid", generateVisitorId(), {
+          httpOnly: false,
+          sameSite: "lax",
+          maxAge: 60 * 60 * 24 * 365,
+          path: "/",
+        });
+      }
+    }
+
+    return response;
   } catch (error) {
     console.error("Middleware error:", error);
     return new Response("Internal Server Error", { status: 500 });
