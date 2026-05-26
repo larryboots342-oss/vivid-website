@@ -17,6 +17,7 @@ import {
   ShoppingCart,
 } from "lucide-react";
 import Link from "next/link";
+import LicenseValidator from "@/components/dashboard/license-validator";
 
 async function getBillingData(userId: string) {
   const user = await prisma.user.findUnique({
@@ -63,6 +64,9 @@ export default async function BillingPage() {
         <h1 className="text-3xl font-bold text-white mb-2">Licenses & Billing</h1>
         <p className="text-vivid-textMuted">Manage your VIVID license keys and purchases</p>
       </div>
+
+      {/* Validate License Key */}
+      <LicenseValidator />
 
       {/* Active Licenses */}
       {activeLicenses.length > 0 ? (

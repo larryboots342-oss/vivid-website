@@ -1,60 +1,161 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isLicenseValid, getDaysRemaining } from "@/lib/license";
-import { findUnifiedLicense } from "@/lib/unified-license";
+import { auth } from "@clerk/nextjs/server";
+import { prisma } from "@/lib/prisma";
+import { supabase } from "@/lib/supabase";
+import { isLicenseValid } from "@/lib/license";
 
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+function normalizeKey(key: string): string {
+  return key.trim().toUpperCase().replace(/\s+/g, "-");
+}
 
 export async function POST(req: NextRequest) {
   try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const body = await req.json();
-    const { key, hwid } = body;
-
-    if (!key) {
-      return NextResponse.json({ valid: false, error: "License key required" }, { status: 400 });
+    const rawKey = body.key;
+    if (!rawKey || typeof rawKey !== "string") {
+      return NextResponse.json({ error: "License key required" }, { status: 400 });
     }
 
-    // Check both Prisma and Supabase
-    const result = await findUnifiedLicense(key);
-
-    if (!result) {
-      return NextResponse.json({ valid: false, error: "Invalid license key" }, { status: 404 });
+    const key = normalizeKey(rawKey);
+    if (!key.startsWith("VIVID-")) {
+      return NextResponse.json({ error: "Invalid key format" }, { status: 400 });
     }
 
-    const license = result.license;
-
-    if (!license.isActive) {
-      return NextResponse.json({ valid: false, error: "License has been deactivated" }, { status: 403 });
-    }
-
-    if (!isLicenseValid(license.expiresAt)) {
-      return NextResponse.json({ valid: false, error: "License has expired" }, { status: 403 });
-    }
-
-    // HWID binding check (if HWID is set, it must match)
-    if (license.hwid && hwid && license.hwid !== hwid) {
-      return NextResponse.json(
-        { valid: false, error: "License is bound to a different device" },
-        { status: 403 }
-      );
-    }
-
-    // Note: We don't auto-bind HWID here for Supabase fallback results
-    // because we don't have a Prisma record to update.
-    // The desktop app handles HWID binding via its own Supabase logic.
-
-    const daysRemaining = getDaysRemaining(license.expiresAt);
-
-    return NextResponse.json({
-      valid: true,
-      tier: license.tier,
-      isLifetime: license.isLifetime,
-      daysRemaining,
-      expiresAt: license.expiresAt?.toISOString() || null,
+    // Get current user from Prisma
+    const dbUser = await prisma.user.findUnique({
+      where: { clerkId: userId },
     });
+    if (!dbUser) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    // 1. Check if already owned by this user in Prisma
+    const existingPrisma = await prisma.license.findUnique({
+      where: { key },
+    });
+
+    if (existingPrisma) {
+      if (existingPrisma.userId && existingPrisma.userId !== dbUser.id) {
+        return NextResponse.json(
+          { error: "License key is already bound to another account" },
+          { status: 403 }
+        );
+      }
+
+      const valid = isLicenseValid(existingPrisma.expiresAt);
+      if (!valid) {
+        return NextResponse.json(
+          { error: "License has expired" },
+          { status: 400 }
+        );
+      }
+
+      // Bind to current user if not already bound
+      if (!existingPrisma.userId) {
+        await prisma.license.update({
+          where: { key },
+          data: { userId: dbUser.id, activatedAt: new Date() },
+        });
+      }
+
+      return NextResponse.json({
+        success: true,
+        license: {
+          key: existingPrisma.key,
+          tier: existingPrisma.tier,
+          isLifetime: existingPrisma.isLifetime,
+          expiresAt: existingPrisma.expiresAt?.toISOString() || null,
+          activatedAt: existingPrisma.activatedAt?.toISOString() || null,
+          daysRemaining: existingPrisma.isLifetime
+            ? null
+            : existingPrisma.expiresAt
+            ? Math.max(0, Math.ceil((existingPrisma.expiresAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
+            : null,
+        },
+      });
+    }
+
+    // 2. Fallback: check Supabase (desktop-created licenses)
+    if (supabase) {
+      const { data: sbLicense, error } = await supabase
+        .from("license_keys")
+        .select("*")
+        .eq("license_key", key)
+        .single();
+
+      if (error || !sbLicense) {
+        return NextResponse.json(
+          { error: "License key not found" },
+          { status: 404 }
+        );
+      }
+
+      if (sbLicense.status !== "active") {
+        return NextResponse.json(
+          { error: "License is not active" },
+          { status: 400 }
+        );
+      }
+
+      const expiresAt = sbLicense.expires_at ? new Date(sbLicense.expires_at) : null;
+      const valid = isLicenseValid(expiresAt);
+      if (!valid) {
+        return NextResponse.json(
+          { error: "License has expired" },
+          { status: 400 }
+        );
+      }
+
+      // Create Prisma record for this license (sync into website DB)
+      const prismaLicense = await prisma.license.create({
+        data: {
+          userId: dbUser.id,
+          key: sbLicense.license_key,
+          tier: sbLicense.tier || "pro",
+          email: dbUser.email,
+          isActive: true,
+          isLifetime: !sbLicense.expires_at,
+          expiresAt: expiresAt,
+          activatedAt: new Date(),
+          hwid: sbLicense.hwid || null,
+          ipAddress: null,
+          country: null,
+        },
+      });
+
+      return NextResponse.json({
+        success: true,
+        license: {
+          key: prismaLicense.key,
+          tier: prismaLicense.tier,
+          isLifetime: prismaLicense.isLifetime,
+          expiresAt: prismaLicense.expiresAt?.toISOString() || null,
+          activatedAt: prismaLicense.activatedAt?.toISOString() || null,
+          daysRemaining: prismaLicense.isLifetime
+            ? null
+            : prismaLicense.expiresAt
+            ? Math.max(0, Math.ceil((prismaLicense.expiresAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
+            : null,
+        },
+      });
+    }
+
+    return NextResponse.json(
+      { error: "License key not found" },
+      { status: 404 }
+    );
   } catch (error: any) {
     console.error("License validation error:", error);
     return NextResponse.json(
-      { valid: false, error: error.message || "Internal server error" },
+      { error: error.message || "Internal server error" },
       { status: 500 }
     );
   }

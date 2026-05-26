@@ -16,10 +16,13 @@ import {
   Globe,
   Save,
   Check,
+  Key,
 } from "lucide-react";
+import LicenseCountdown from "@/components/dashboard/license-countdown";
 
 const tabs = [
   { id: "profile", label: "Profile", icon: User },
+  { id: "license", label: "License", icon: Key },
   { id: "notifications", label: "Notifications", icon: Bell },
   { id: "security", label: "Security", icon: Shield },
   { id: "preferences", label: "Preferences", icon: Monitor },
@@ -33,6 +36,59 @@ export default function SettingsPage() {
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
+
+  function LicenseTabContent() {
+    const [licenses, setLicenses] = useState<Array<{
+      id: string;
+      key: string;
+      tier: string;
+      isActive: boolean;
+      isLifetime: boolean;
+      expiresAt: string | null;
+    }>>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+      fetch("/api/user/licenses")
+        .then((r) => r.json())
+        .then((data) => {
+          setLicenses(data.licenses || []);
+          setLoading(false);
+        })
+        .catch(() => setLoading(false));
+    }, []);
+
+    if (loading) {
+      return (
+        <Card>
+          <CardContent className="py-12 text-center">
+            <div className="animate-pulse space-y-3">
+              <div className="h-4 w-32 bg-vivid-border/50 rounded mx-auto" />
+              <div className="h-20 w-full bg-vivid-border/30 rounded" />
+            </div>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-white">License Status</CardTitle>
+          <CardDescription className="text-vivid-textMuted">
+            View your active license and time remaining
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <LicenseCountdown licenses={licenses} />
+          <p className="text-xs text-vivid-textDim">
+            License keys are shared between the website and the VIVID desktop app.
+            Validate your key in either place — both sync through the same system.
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -114,6 +170,12 @@ export default function SettingsPage() {
                   </div>
                 </CardContent>
               </Card>
+            </div>
+          )}
+
+          {activeTab === "license" && (
+            <div className="space-y-6">
+              <LicenseTabContent />
             </div>
           )}
 
