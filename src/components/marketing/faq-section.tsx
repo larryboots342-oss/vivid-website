@@ -90,7 +90,7 @@ const faqs: FAQItem[] = [
     category: "Billing",
     question: "What payment methods do you accept?",
     answer:
-      "We accept all major credit cards (Visa, MasterCard, American Express), PayPal, and Apple Pay. All transactions are processed securely through Stripe with PCI DSS Level 1 compliance.",
+      "We accept all major credit cards (Visa, MasterCard, American Express) and Apple Pay. All transactions are processed securely through Stripe with PCI DSS Level 1 compliance.",
   },
   {
     id: "10",

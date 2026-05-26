@@ -33,7 +33,7 @@ export default function PrivacyPage() {
             <ul className="list-disc list-inside mt-2 space-y-1 text-vivid-textMuted">
               <li><strong>Account information:</strong> Name, email address, and profile data via Clerk authentication</li>
               <li><strong>License information:</strong> License keys, tier, activation status, and hardware fingerprint</li>
-              <li><strong>Payment information:</strong> Processed securely by Stripe and PayPal — we do not store card details</li>
+              <li><strong>Payment information:</strong> Processed securely by Stripe — we do not store card details</li>
               <li><strong>Usage data:</strong> Purchase history and dashboard activity</li>
               <li><strong>Technical data:</strong> IP address and country (for fraud prevention and analytics)</li>
             </ul>
@@ -67,7 +67,6 @@ export default function PrivacyPage() {
             <ul className="list-disc list-inside mt-2 space-y-1 text-vivid-textMuted">
               <li><strong>Clerk</strong> — Authentication and user management</li>
               <li><strong>Stripe</strong> — Payment processing</li>
-              <li><strong>PayPal</strong> — Alternative payment processing</li>
               <li><strong>Resend</strong> — License key email delivery</li>
               <li><strong>Supabase</strong> — License database synchronisation</li>
               <li><strong>Vercel</strong> — Website hosting and analytics</li>

@@ -1,7 +1,7 @@
 /**
  * Unified License Data Layer
  * 
- * All purchase flows (Stripe, PayPal, manual) write to BOTH:
+ * All purchase flows (Stripe, manual) write to BOTH:
  * - Prisma `License` model (website ORM)
  * - Supabase `license_keys` table (desktop app)
  * 
@@ -16,7 +16,7 @@ interface CreateLicenseInput {
   userId?: string;
   email: string;
   tier: string;
-  paymentProvider: "stripe" | "paypal" | "manual";
+  paymentProvider: "stripe" | "manual";
   paymentOrderId?: string;
   paymentAmount?: number | string;
   paymentCurrency?: string;

@@ -61,7 +61,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-semibold text-white mb-3">5. Payments</h2>
             <p>
-              All purchases are one-time payments processed through Stripe or PayPal. Prices are 
+              All purchases are one-time payments processed through Stripe. Prices are 
               displayed in GBP. You are responsible for any applicable taxes or fees imposed by 
               your jurisdiction.
             </p>
