@@ -29,7 +29,8 @@ export async function POST(req: NextRequest) {
 
     // Auto-create user from Clerk if not in database (webhook may have missed them)
     if (!user) {
-      const clerkUser = await clerkClient.users.getUser(userId);
+      const clerk = await clerkClient();
+      const clerkUser = await clerk.users.getUser(userId);
       const primaryEmail = clerkUser.emailAddresses.find(
         (e) => e.id === clerkUser.primaryEmailAddressId
       );
