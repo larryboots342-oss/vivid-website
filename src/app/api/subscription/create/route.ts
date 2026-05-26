@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { stripe, getPriceId } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 
@@ -23,12 +23,29 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid tier" }, { status: 400 });
     }
 
-    const user = await prisma.user.findUnique({
+    let user = await prisma.user.findUnique({
       where: { clerkId: userId },
     });
 
+    // Auto-create user from Clerk if not in database (webhook may have missed them)
     if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      const clerkUser = await clerkClient.users.getUser(userId);
+      const primaryEmail = clerkUser.emailAddresses.find(
+        (e) => e.id === clerkUser.primaryEmailAddressId
+      );
+      const email = primaryEmail?.emailAddress;
+      if (!email) {
+        return NextResponse.json({ error: "User email not found" }, { status: 400 });
+      }
+      user = await prisma.user.create({
+        data: {
+          clerkId: userId,
+          email,
+          name: [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(" ") || null,
+          image: clerkUser.imageUrl,
+          role: (clerkUser.publicMetadata?.role as string) || "user",
+        },
+      });
     }
 
     const priceId = getPriceId(tier);
