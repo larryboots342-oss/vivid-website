@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
-
-export const dynamic = "force-dynamic";
+import { requireAuth, errorResponse } from "@/lib/api-utils";
 
 /**
  * For one-time license purchases, there is no Stripe Billing Portal.
@@ -9,20 +7,13 @@ export const dynamic = "force-dynamic";
  */
 export async function POST(req: NextRequest) {
   try {
-    const { userId } = await auth();
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    await requireAuth();
 
     return NextResponse.json({
       url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/billing`,
       message: "One-time licenses are managed from your billing dashboard.",
     });
-  } catch (error: any) {
-    console.error("Portal error:", error);
-    return NextResponse.json(
-      { error: error.message || "Internal server error" },
-      { status: 500 }
-    );
+  } catch (error) {
+    return errorResponse(error);
   }
 }

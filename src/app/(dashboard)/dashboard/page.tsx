@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { isLicenseValid } from "@/lib/license";
 import { isOwner } from "@/lib/owner";
+import { TIER_RANK } from "@/lib/tiers";
 import DashboardContent from "./dashboard-content";
 import UserDashboardContent from "@/components/dashboard/user-dashboard-content";
 
@@ -30,8 +31,7 @@ async function getDashboardData(clerkId: string) {
 
   const highestTier = activeLicenses.length > 0
     ? activeLicenses.reduce((highest, current) => {
-        const tierRank: Record<string, number> = { pro: 1, elite: 2, enterprise: 3 };
-        return (tierRank[current.tier] || 0) > (tierRank[highest.tier] || 0)
+        return (TIER_RANK[current.tier] || 0) > (TIER_RANK[highest.tier] || 0)
           ? current
           : highest;
       })

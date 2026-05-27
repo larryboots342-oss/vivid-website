@@ -49,9 +49,10 @@ export function isLicenseValid(expiresAt: Date | null): boolean {
 /**
  * Get days remaining for a license
  */
-export function getDaysRemaining(expiresAt: Date | null): number | null {
+export function getDaysRemaining(expiresAt: Date | string | null): number | null {
   if (expiresAt === null) return null; // Lifetime
-  const diff = expiresAt.getTime() - Date.now();
+  const date = typeof expiresAt === "string" ? new Date(expiresAt) : expiresAt;
+  const diff = date.getTime() - Date.now();
   return Math.max(0, Math.ceil(diff / (24 * 60 * 60 * 1000)));
 }
 

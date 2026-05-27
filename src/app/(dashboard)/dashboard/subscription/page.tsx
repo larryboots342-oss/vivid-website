@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import PageWrapper from "@/components/ui/page-wrapper";
 import { PLANS, CURRENCY_SYMBOL } from "@/lib/constants";
 import { isLicenseValid, getDaysRemaining } from "@/lib/license";
+import { TIER_RANK } from "@/lib/tiers";
 import Link from "next/link";
 import {
   Check,
@@ -53,8 +54,7 @@ export default async function SubscriptionPage() {
   const activeLicenses = licenses.filter((l) => l.isActive && isLicenseValid(l.expiresAt));
   const highestTier = activeLicenses.length > 0
     ? activeLicenses.reduce((highest, current) => {
-        const tierRank: Record<string, number> = { pro: 1, elite: 2, enterprise: 3 };
-        return (tierRank[current.tier] || 0) > (tierRank[highest.tier] || 0)
+        return (TIER_RANK[current.tier] || 0) > (TIER_RANK[highest.tier] || 0)
           ? current
           : highest;
       })

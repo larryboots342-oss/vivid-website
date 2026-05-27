@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { isLicenseValid, getDaysRemaining } from "@/lib/license";
-
-export const dynamic = "force-dynamic";
+import { TIER_RANK } from "@/lib/tiers";
+import { requireAuth, errorResponse } from "@/lib/api-utils";
 
 /**
  * Returns the user's license status (not subscription status).
@@ -11,10 +10,7 @@ export const dynamic = "force-dynamic";
  */
 export async function GET(req: NextRequest) {
   try {
-    const { userId } = await auth();
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const userId = await requireAuth();
 
     const user = await prisma.user.findUnique({
       where: { clerkId: userId },
@@ -39,8 +35,7 @@ export async function GET(req: NextRequest) {
 
     const highestTier = activeLicenses.length > 0
       ? activeLicenses.reduce((highest, current) => {
-          const tierRank: Record<string, number> = { pro: 1, elite: 2, enterprise: 3 };
-          return (tierRank[current.tier] || 0) > (tierRank[highest.tier] || 0)
+          return (TIER_RANK[current.tier] || 0) > (TIER_RANK[highest.tier] || 0)
             ? current
             : highest;
         })
@@ -60,11 +55,7 @@ export async function GET(req: NextRequest) {
         createdAt: l.createdAt.toISOString(),
       })),
     });
-  } catch (error: any) {
-    console.error("Status error:", error);
-    return NextResponse.json(
-      { error: error.message || "Internal server error" },
-      { status: 500 }
-    );
+  } catch (error) {
+    return errorResponse(error);
   }
 }
