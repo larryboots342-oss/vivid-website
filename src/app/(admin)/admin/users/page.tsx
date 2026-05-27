@@ -15,10 +15,13 @@ import {
   CheckCircle2,
   Key,
   Infinity,
+  Trash2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { isLicenseValid } from "@/lib/license";
 import { TIER_RANK } from "@/lib/tiers";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { toast } from "sonner";
 
 interface AdminUser {
   id: string;
@@ -44,6 +47,35 @@ export default function AdminUsersPage() {
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
   const [page, setPage] = useState(1);
+  const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; userId: string; userName: string }>({
+    open: false,
+    userId: "",
+    userName: "",
+  });
+  const [deleting, setDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    if (!deleteDialog.userId) return;
+    setDeleting(true);
+    try {
+      const res = await fetch("/api/admin/users", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ clerkId: deleteDialog.userId }),
+      });
+      if (res.ok) {
+        toast.success("User deleted");
+        mutate();
+      } else {
+        toast.error("Failed to delete user");
+      }
+    } catch {
+      toast.error("Network error");
+    } finally {
+      setDeleting(false);
+      setDeleteDialog({ open: false, userId: "", userName: "" });
+    }
+  };
 
   const queryKey = `/api/admin/users?${new URLSearchParams({
     ...(search && { search }),
@@ -207,14 +239,23 @@ export default function AdminUsersPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <select
-                          value={u.role}
-                          onChange={(e) => updateRole(u.clerkId, e.target.value)}
-                          className="h-8 px-2 rounded-lg bg-white/[0.04] border border-white/10 text-white text-xs outline-none focus:border-vivid-primary/50"
-                        >
-                          <option value="user">User</option>
-                          <option value="admin">Admin</option>
-                        </select>
+                        <div className="flex items-center gap-2">
+                          <select
+                            value={u.role}
+                            onChange={(e) => updateRole(u.clerkId, e.target.value)}
+                            className="h-8 px-2 rounded-lg bg-white/[0.04] border border-white/10 text-white text-xs outline-none focus:border-vivid-primary/50"
+                          >
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                          </select>
+                          <button
+                            onClick={() => setDeleteDialog({ open: true, userId: u.clerkId, userName: u.name || u.email })}
+                            className="h-8 w-8 rounded-lg bg-white/[0.04] border border-white/10 text-vivid-accent hover:bg-vivid-accent/10 flex items-center justify-center transition-colors"
+                            title="Delete user"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </td>
                     </motion.tr>
                   );
@@ -246,6 +287,15 @@ export default function AdminUsersPage() {
             </button>
           </div>
         </div>
+      <ConfirmDialog
+        open={deleteDialog.open}
+        onClose={() => setDeleteDialog({ open: false, userId: "", userName: "" })}
+        onConfirm={handleDelete}
+        title="Delete User?"
+        description={`Are you sure you want to delete ${deleteDialog.userName}? This action cannot be undone.`}
+        confirmText="Delete"
+        isLoading={deleting}
+      />
       </div>
     </div>
   );

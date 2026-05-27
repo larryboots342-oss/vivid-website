@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
 import { useAuth } from "@clerk/nextjs";
 import { SignInButton, UserButton } from "@clerk/nextjs";
@@ -25,6 +25,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("");
   const pathname = usePathname();
+  const router = useRouter();
   const { isSignedIn } = useAuth();
   const { scrollY } = useScroll();
   const hamburgerRef = useRef<HTMLButtonElement>(null);
@@ -151,6 +152,7 @@ export default function Navbar() {
               <>
                 <Link
                   href="/dashboard"
+                  onMouseEnter={() => router.prefetch("/dashboard")}
                   className="px-4 py-2 text-sm font-medium text-vivid-textMuted hover:text-white transition-colors duration-300 rounded-lg hover:bg-white/5"
                 >
                   Dashboard
@@ -283,6 +285,7 @@ export default function Navbar() {
                     <>
                       <Link
                         href="/dashboard"
+                        onMouseEnter={() => router.prefetch("/dashboard")}
                         onClick={() => setMobileOpen(false)}
                         className="flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-medium text-vivid-textMuted hover:text-white hover:bg-white/5 transition-colors touch-target"
                       >

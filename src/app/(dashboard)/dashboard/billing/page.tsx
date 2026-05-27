@@ -1,11 +1,6 @@
-import { Metadata } from "next";
-import { currentUser } from "@clerk/nextjs/server";
-import { prisma } from "@/lib/prisma";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Licenses & Billing",
-  description: "Manage your VIVID license keys and purchases",
-};
+import useSWR from "swr";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -24,17 +19,17 @@ import {
 import Link from "next/link";
 import LicenseValidator from "@/components/dashboard/license-validator";
 import { CopyButton } from "@/components/dashboard/copy-button";
+import RevokeLicenseButton from "@/components/dashboard/revoke-license-button";
 
-async function getBillingData(userId: string) {
-  const user = await prisma.user.findUnique({
-    where: { clerkId: userId },
-    include: {
-      licenses: {
-        orderBy: { createdAt: "desc" },
-      },
-    },
-  });
-  return user;
+interface License {
+  id: string;
+  key: string;
+  tier: string;
+  isActive: boolean;
+  isLifetime: boolean;
+  expiresAt: string | null;
+  activatedAt: string | null;
+  createdAt: string;
 }
 
 function getTierColor(tier: string): string {
@@ -50,19 +45,21 @@ function getTierColor(tier: string): string {
   }
 }
 
-export default async function BillingPage() {
-  const user = await currentUser();
-  if (!user) return null;
+export default function BillingPage() {
+  const { data, isLoading } = useSWR<{ licenses: License[] }>("/api/user/licenses");
 
-  let licenses: any[] = [];
-  try {
-    const dbUser = await getBillingData(user.id);
-    licenses = dbUser?.licenses || [];
-  } catch (e) {
-    console.warn("Billing DB query failed:", e);
-  }
-
+  const licenses = data?.licenses || [];
   const activeLicenses = licenses.filter((l) => l.isActive && isLicenseValid(l.expiresAt));
+
+  if (isLoading) {
+    return (
+      <PageWrapper className="space-y-8">
+        <div className="h-8 w-48 bg-white/5 animate-pulse rounded" />
+        <div className="h-32 bg-white/5 animate-pulse rounded-2xl" />
+        <div className="h-64 bg-white/5 animate-pulse rounded-2xl" />
+      </PageWrapper>
+    );
+  }
 
   return (
     <PageWrapper className="space-y-8">
@@ -170,6 +167,9 @@ export default async function BillingPage() {
                       </p>
                     </div>
                   </div>
+                  <div className="flex justify-end pt-2">
+                    <RevokeLicenseButton licenseId={license.id} licenseKey={license.key} />
+                  </div>
                 </CardContent>
               </Card>
             );
@@ -194,9 +194,9 @@ export default async function BillingPage() {
       )}
 
       {/* License History */}
-      <div className="space-y-4">
-        <h2 className="text-lg font-semibold text-white">License History</h2>
-        {licenses.length > 0 ? (
+      {licenses.length > 0 && (
+        <div className="space-y-4">
+          <h2 className="text-lg font-semibold text-white">License History</h2>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -244,24 +244,8 @@ export default async function BillingPage() {
               </tbody>
             </table>
           </div>
-        ) : (
-          <Card className="border-vivid-border">
-            <CardContent className="py-12 text-center">
-              <Key className="w-12 h-12 text-vivid-textDim mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-white mb-2">No License History</h3>
-              <p className="text-vivid-textMuted text-sm max-w-md mx-auto mb-6">
-                You haven&apos;t purchased any licenses yet. Upgrade to get started.
-              </p>
-              <Button asChild>
-                <Link href="/pricing" className="inline-flex items-center gap-2">
-                  <ShoppingCart className="w-4 h-4" />
-                  Purchase License
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Download CTA */}
       <Card className="border-vivid-primary/20">
@@ -290,5 +274,3 @@ export default async function BillingPage() {
     </PageWrapper>
   );
 }
-
-

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import useSWR from "swr";
 import { motion } from "framer-motion";
 import { UserProfile } from "@clerk/nextjs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -15,10 +16,9 @@ import {
   Moon,
   Globe,
   Key,
-  Loader2,
 } from "lucide-react";
-import { toast } from "sonner";
 import LicenseCountdown from "@/components/dashboard/license-countdown";
+import { useSettings } from "@/lib/settings";
 
 const tabs = [
   { id: "profile", label: "Profile", icon: User },
@@ -28,84 +28,20 @@ const tabs = [
   { id: "preferences", label: "Preferences", icon: Monitor },
 ];
 
-function NotificationToggle({
-  title,
-  description,
-  defaultChecked,
-}: {
-  title: string;
-  description: string;
-  defaultChecked: boolean;
-}) {
-  const [checked, setChecked] = useState(defaultChecked);
-  return (
-    <div className="flex items-start justify-between gap-3">
-      <div className="min-w-0 flex-1">
-        <p className="text-sm font-medium text-white">{title}</p>
-        <p className="text-xs text-vivid-textMuted mt-0.5 leading-relaxed">{description}</p>
-      </div>
-      <label className="relative inline-flex items-center cursor-pointer shrink-0 mt-0.5">
-        <input
-          type="checkbox"
-          role="switch"
-          aria-checked={checked}
-          checked={checked}
-          onChange={(e) => setChecked(e.target.checked)}
-          className="sr-only peer"
-        />
-        <div className="w-10 h-5 sm:w-11 sm:h-6 bg-vivid-surfaceHover rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 sm:after:h-5 sm:after:w-5 after:transition-all peer-checked:bg-vivid-primary" />
-      </label>
-    </div>
-  );
-}
-
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("profile");
-  const [savingNotifications, setSavingNotifications] = useState(false);
-  const [savingPreferences, setSavingPreferences] = useState(false);
-
-  const handleSaveNotifications = () => {
-    setSavingNotifications(true);
-    setTimeout(() => {
-      setSavingNotifications(false);
-      toast.success("Notification preferences saved");
-    }, 600);
-  };
-
-  const handleSavePreferences = () => {
-    setSavingPreferences(true);
-    setTimeout(() => {
-      setSavingPreferences(false);
-      toast.success("Preferences saved");
-    }, 600);
-  };
 
   function LicenseTabContent() {
-    const [licenses, setLicenses] = useState<Array<{
+    const { data, isLoading, error } = useSWR<{ licenses: Array<{
       id: string;
       key: string;
       tier: string;
       isActive: boolean;
       isLifetime: boolean;
       expiresAt: string | null;
-    }>>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    }> }>("/api/user/licenses");
 
-    useEffect(() => {
-      fetch("/api/user/licenses")
-        .then((r) => r.json())
-        .then((data) => {
-          setLicenses(data.licenses || []);
-          setLoading(false);
-        })
-        .catch(() => {
-          setError("Failed to load license data.");
-          setLoading(false);
-        });
-    }, []);
-
-    if (loading) {
+    if (isLoading) {
       return (
         <Card>
           <CardContent className="py-12 text-center">
@@ -122,7 +58,7 @@ export default function SettingsPage() {
       return (
         <Card>
           <CardContent className="py-12 text-center">
-            <p className="text-sm text-red-400">{error}</p>
+            <p className="text-sm text-red-400">Failed to load license data.</p>
           </CardContent>
         </Card>
       );
@@ -137,11 +73,137 @@ export default function SettingsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <LicenseCountdown licenses={licenses} />
+          <LicenseCountdown licenses={data?.licenses || []} />
           <p className="text-xs text-vivid-textDim">
             License keys are shared between the website and the VIVID desktop app.
             Validate your key in either place — both sync through the same system.
           </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  function NotificationSettings() {
+    const { settings, updateSetting } = useSettings();
+
+    const items = [
+      {
+        key: "paymentNotifications" as const,
+        title: "Payment Notifications",
+        description: "Get notified about successful payments, failed charges, and invoice availability",
+      },
+      {
+        key: "productUpdates" as const,
+        title: "Product Updates",
+        description: "Receive emails about new features, game support, and version updates",
+      },
+      {
+        key: "securityAlerts" as const,
+        title: "Security Alerts",
+        description: "Get notified about new logins, password changes, and security events",
+      },
+      {
+        key: "marketingPromotions" as const,
+        title: "Marketing & Promotions",
+        description: "Receive special offers, discounts, and promotional content",
+      },
+      {
+        key: "licenseExpiry" as const,
+        title: "License Expiry",
+        description: "Get notified before your license expires",
+      },
+    ];
+
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-white">Notification Preferences</CardTitle>
+          <CardDescription className="text-vivid-textMuted">
+            Choose what notifications you want to receive
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {items.map((item, i) => (
+            <div key={item.key}>
+              {i > 0 && <Separator className="bg-vivid-border/40 mb-4" />}
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium text-white">{item.title}</p>
+                  <p className="text-xs text-vivid-textMuted mt-0.5 leading-relaxed">{item.description}</p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer shrink-0 mt-0.5">
+                  <input
+                    type="checkbox"
+                    checked={settings[item.key]}
+                    onChange={(e) => updateSetting(item.key, e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-10 h-5 sm:w-11 sm:h-6 bg-vivid-surfaceHover rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 sm:after:h-5 sm:after:w-5 after:transition-all peer-checked:bg-vivid-primary" />
+                </label>
+              </div>
+            </div>
+          ))}
+
+          <p className="text-xs text-vivid-textDim pt-2">
+            Settings auto-save when toggled.
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  function PreferenceSettings() {
+    const { settings, updateSetting } = useSettings();
+
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-white">App Preferences</CardTitle>
+          <CardDescription className="text-vivid-textMuted">
+            Customize your dashboard experience
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-10 h-10 rounded-lg bg-vivid-primary/10 flex items-center justify-center shrink-0">
+                <Moon className="w-5 h-5 text-vivid-primary" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-white">Dark Mode</p>
+                <p className="text-xs text-vivid-textMuted">Always use dark theme</p>
+              </div>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer shrink-0">
+              <input
+                type="checkbox"
+                checked={settings.darkMode}
+                onChange={(e) => updateSetting("darkMode", e.target.checked)}
+                className="sr-only peer"
+              />
+              <div className="w-10 h-5 sm:w-11 sm:h-6 bg-vivid-surfaceHover rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 sm:after:h-5 sm:after:w-5 after:transition-all peer-checked:bg-vivid-primary" />
+            </label>
+          </div>
+
+          <Separator className="bg-vivid-border/40" />
+
+          <div>
+            <p className="text-sm font-medium text-white mb-3">Dashboard Layout</p>
+            <div className="grid grid-cols-3 gap-2 sm:gap-3">
+              {["Compact", "Comfortable", "Detailed"].map((layout) => (
+                <button
+                  key={layout}
+                  className={`p-3 sm:p-4 rounded-xl border text-sm font-medium transition-all ${
+                    layout === "Comfortable"
+                      ? "border-vivid-primary bg-vivid-primary/10 text-vivid-primary"
+                      : "border-vivid-border text-vivid-textMuted hover:border-vivid-primary/30"
+                  }`}
+                >
+                  {layout}
+                </button>
+              ))}
+            </div>
+          </div>
         </CardContent>
       </Card>
     );
@@ -239,63 +301,7 @@ export default function SettingsPage() {
 
           {activeTab === "notifications" && (
             <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-white">Notification Preferences</CardTitle>
-                  <CardDescription className="text-vivid-textMuted">
-                    Choose what notifications you want to receive
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {[
-                    {
-                      title: "Payment Notifications",
-                      description: "Get notified about successful payments, failed charges, and invoice availability",
-                      defaultChecked: true,
-                    },
-                    {
-                      title: "Product Updates",
-                      description: "Receive emails about new features, game support, and version updates",
-                      defaultChecked: true,
-                    },
-                    {
-                      title: "Security Alerts",
-                      description: "Get notified about new logins, password changes, and security events",
-                      defaultChecked: true,
-                    },
-                    {
-                      title: "Marketing & Promotions",
-                      description: "Receive special offers, discounts, and promotional content",
-                      defaultChecked: false,
-                    },
-                    {
-                      title: "License Expiry",
-                      description: "Get notified before your license expires",
-                      defaultChecked: true,
-                    },
-                  ].map((item, i) => (
-                    <div key={item.title}>
-                      {i > 0 && <Separator className="bg-vivid-border/40 mb-4" />}
-                      <NotificationToggle
-                        title={item.title}
-                        description={item.description}
-                        defaultChecked={item.defaultChecked}
-                      />
-                    </div>
-                  ))}
-
-                  <div className="pt-2 flex justify-end">
-                    <Button
-                      size="sm"
-                      onClick={handleSaveNotifications}
-                      disabled={savingNotifications}
-                    >
-                      {savingNotifications && <Loader2 className="w-4 h-4 animate-spin mr-1.5" />}
-                      Save Preferences
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+              <NotificationSettings />
             </div>
           )}
 
@@ -345,71 +351,7 @@ export default function SettingsPage() {
 
           {activeTab === "preferences" && (
             <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-white">App Preferences</CardTitle>
-                  <CardDescription className="text-vivid-textMuted">
-                    Customize your dashboard experience
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-10 h-10 rounded-lg bg-vivid-primary/10 flex items-center justify-center shrink-0">
-                        <Moon className="w-5 h-5 text-vivid-primary" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-sm font-medium text-white">Dark Mode</p>
-                        <p className="text-xs text-vivid-textMuted">Always use dark theme</p>
-                      </div>
-                    </div>
-                    <label className="relative inline-flex items-center cursor-pointer shrink-0">
-                      <input
-                        type="checkbox"
-                        role="switch"
-                        aria-checked={true}
-                        defaultChecked
-                        className="sr-only peer"
-                      />
-                      <div className="w-10 h-5 sm:w-11 sm:h-6 bg-vivid-surfaceHover rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 sm:after:h-5 sm:after:w-5 after:transition-all peer-checked:bg-vivid-primary" />
-                    </label>
-                  </div>
-
-                  <Separator className="bg-vivid-border/40" />
-
-                  <div>
-                    <p className="text-sm font-medium text-white mb-3">Dashboard Layout</p>
-                    <div className="grid grid-cols-3 gap-2 sm:gap-3">
-                      {["Compact", "Comfortable", "Detailed"].map((layout) => {
-                        const isActive = layout === "Comfortable";
-                        return (
-                          <button
-                            key={layout}
-                            aria-pressed={isActive}
-                            className={`p-3 sm:p-4 rounded-xl border text-sm font-medium transition-all ${
-                              isActive
-                                ? "border-vivid-primary bg-vivid-primary/10 text-vivid-primary"
-                                : "border-vivid-border text-vivid-textMuted hover:border-vivid-primary/30"
-                            }`}
-                          >
-                            {layout}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                  <div className="pt-2 flex justify-end">
-                    <Button
-                      size="sm"
-                      onClick={handleSavePreferences}
-                      disabled={savingPreferences}
-                    >
-                      {savingPreferences && <Loader2 className="w-4 h-4 animate-spin mr-1.5" />}
-                      Save Preferences
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+              <PreferenceSettings />
             </div>
           )}
         </motion.div>

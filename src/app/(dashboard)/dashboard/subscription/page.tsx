@@ -1,11 +1,6 @@
-import { Metadata } from "next";
-import { currentUser } from "@clerk/nextjs/server";
-import { prisma } from "@/lib/prisma";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Licenses",
-  description: "Manage your VIVID license keys and plans",
-};
+import useSWR from "swr";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,18 +21,17 @@ import {
   Clock,
   Infinity,
 } from "lucide-react";
+import CancelSubscriptionButton from "@/components/dashboard/cancel-subscription-button";
 import { cn } from "@/lib/utils";
 
-async function getLicenses(userId: string) {
-  const user = await prisma.user.findUnique({
-    where: { clerkId: userId },
-    include: {
-      licenses: {
-        orderBy: { createdAt: "desc" },
-      },
-    },
-  });
-  return user?.licenses || [];
+interface License {
+  id: string;
+  key: string;
+  tier: string;
+  isActive: boolean;
+  isLifetime: boolean;
+  expiresAt: string | null;
+  activatedAt: string | null;
 }
 
 function PlanIcon({ planId }: { planId: string }) {
@@ -46,17 +40,10 @@ function PlanIcon({ planId }: { planId: string }) {
   return <Zap className="w-5 h-5" />;
 }
 
-export default async function SubscriptionPage() {
-  const user = await currentUser();
-  if (!user) return null;
+export default function SubscriptionPage() {
+  const { data, isLoading } = useSWR<{ licenses: License[] }>("/api/user/licenses");
 
-  let licenses: any[] = [];
-  try {
-    licenses = await getLicenses(user.id);
-  } catch (e) {
-    console.warn("Subscription DB query failed:", e);
-  }
-
+  const licenses = data?.licenses || [];
   const activeLicenses = licenses.filter((l) => l.isActive && isLicenseValid(l.expiresAt));
   const highestTier = activeLicenses.length > 0
     ? activeLicenses.reduce((highest, current) => {
@@ -66,6 +53,20 @@ export default async function SubscriptionPage() {
       })
     : null;
   const currentTier = highestTier?.tier || "free";
+
+  if (isLoading) {
+    return (
+      <PageWrapper className="space-y-8">
+        <div className="h-8 w-48 bg-white/5 animate-pulse rounded" />
+        <div className="h-40 bg-white/5 animate-pulse rounded-2xl" />
+        <div className="grid md:grid-cols-3 gap-6">
+          <div className="h-96 bg-white/5 animate-pulse rounded-2xl" />
+          <div className="h-96 bg-white/5 animate-pulse rounded-2xl" />
+          <div className="h-96 bg-white/5 animate-pulse rounded-2xl" />
+        </div>
+      </PageWrapper>
+    );
+  }
 
   return (
     <PageWrapper className="space-y-8">
@@ -120,7 +121,10 @@ export default async function SubscriptionPage() {
                   </CardDescription>
                 </div>
               </div>
-              <Badge variant="success">Active</Badge>
+              <div className="flex items-center gap-3">
+                <Badge variant="success">Active</Badge>
+                <CancelSubscriptionButton />
+              </div>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
