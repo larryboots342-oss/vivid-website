@@ -3,8 +3,7 @@ import { auth, clerkClient } from "@clerk/nextjs/server";
 import { Role } from "@prisma/client";
 import { stripe, getPriceId } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
-
-export const dynamic = "force-dynamic";
+import { requireAuth, getClientIp, errorResponse } from "@/lib/api-utils";
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,10 +11,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Stripe not configured" }, { status: 500 });
     }
 
-    const { userId } = await auth();
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const userId = await requireAuth();
 
     const body = await req.json();
     const { tier } = body;
@@ -55,7 +51,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Price not configured" }, { status: 500 });
     }
 
-    // Create or reuse Stripe customer
     let customerId: string;
     const existingCustomer = await stripe.customers.list({
       email: user.email,
@@ -73,9 +68,7 @@ export async function POST(req: NextRequest) {
       customerId = customer.id;
     }
 
-    // Capture buyer IP for admin tracking
-    const forwarded = req.headers.get("x-forwarded-for");
-    const buyerIp = forwarded ? forwarded.split(",")[0].trim() : "";
+    const buyerIp = getClientIp(req);
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
@@ -99,11 +92,7 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ url: session.url });
-  } catch (error: any) {
-    console.error("Stripe checkout error:", error);
-    return NextResponse.json(
-      { error: error.message || "Internal server error" },
-      { status: 500 }
-    );
+  } catch (error) {
+    return errorResponse(error);
   }
 }

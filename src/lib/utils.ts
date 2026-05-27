@@ -20,10 +20,4 @@ export function formatCurrency(amount: number, currency = "USD"): string {
   }).format(amount);
 }
 
-export function generateLicenseKey(): string {
-  const segments = [];
-  for (let i = 0; i < 4; i++) {
-    segments.push(Math.random().toString(36).substring(2, 6).toUpperCase());
-  }
-  return `VIVID-${segments.join("-")}`;
-}
+export { generateLicenseKey } from "./license";

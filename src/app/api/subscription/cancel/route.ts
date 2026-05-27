@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
-
-export const dynamic = "force-dynamic";
+import { requireAuth, errorResponse } from "@/lib/api-utils";
 
 /**
  * For one-time license purchases, there is no recurring subscription to cancel.
@@ -10,10 +8,7 @@ export const dynamic = "force-dynamic";
  */
 export async function POST(req: NextRequest) {
   try {
-    const { userId } = await auth();
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const userId = await requireAuth();
 
     const user = await prisma.user.findUnique({
       where: { clerkId: userId },
@@ -33,7 +28,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Deactivate the license
     await prisma.license.update({
       where: { id: latestLicense.id },
       data: { isActive: false },
@@ -53,11 +47,7 @@ export async function POST(req: NextRequest) {
       message: "License deactivated. Your access has been revoked.",
       deactivatedLicense: latestLicense.key,
     });
-  } catch (error: any) {
-    console.error("Cancel error:", error);
-    return NextResponse.json(
-      { error: error.message || "Internal server error" },
-      { status: 500 }
-    );
+  } catch (error) {
+    return errorResponse(error);
   }
 }
