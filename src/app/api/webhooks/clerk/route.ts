@@ -28,6 +28,11 @@ export async function POST(req: NextRequest) {
       "svix-signature": svixSignature,
     }) as any;
 
+    const eventId = evt.data.id + "-" + evt.type;
+    const existing = await prisma.webhookEvent.findUnique({ where: { eventId } });
+    if (existing) return NextResponse.json({ received: true });
+    await prisma.webhookEvent.create({ data: { eventId, source: "clerk", createdAt: new Date() } });
+
     const eventType = evt.type;
 
     if (eventType === "user.created") {

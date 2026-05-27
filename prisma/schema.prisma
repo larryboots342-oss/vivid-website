@@ -236,3 +236,12 @@ model PageView {
   @@index([createdAt])
   @@index([path])
 }
+
+model WebhookEvent {
+  id        String   @id @default(cuid())
+  eventId   String   @unique
+  source    String
+  createdAt DateTime @default(now())
+
+  @@index([eventId])
+}

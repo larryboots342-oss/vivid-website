@@ -28,6 +28,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
     }
 
+    const eventId = event.id;
+    const existing = await prisma.webhookEvent.findUnique({ where: { eventId } });
+    if (existing) return NextResponse.json({ received: true });
+    await prisma.webhookEvent.create({ data: { eventId, source: "stripe", createdAt: new Date() } });
+
     switch (event.type) {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
