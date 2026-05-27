@@ -5,6 +5,7 @@ import { Check, Copy, Download, Mail, Star, Send, X, CheckCircle2 } from "lucide
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export default function SuccessContent() {
   const searchParams = useSearchParams();
@@ -37,7 +38,7 @@ export default function SuccessContent() {
         setReviewSubmitted(true);
       }
     } catch {
-      // Silently fail on review — not critical
+      toast.error("Failed to submit review. Please try again later.");
     } finally {
       setReviewLoading(false);
     }
