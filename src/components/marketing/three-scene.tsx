@@ -205,34 +205,39 @@ function ProductShowcase({
       </HolographicCard>
 
       {/* Floating data points — memoized */}
-      {useMemo(
-        () =>
-          Array.from({ length: 8 }).map((_, i) => {
-            const angle = (i / 8) * Math.PI * 2;
-            const radius = 3.2;
-            return (
-              <Float key={i} speed={1 + Math.random()} floatIntensity={0.5}>
-                <mesh
-                  position={[
-                    Math.cos(angle) * radius,
-                    Math.sin(angle) * radius * 0.6,
-                    0,
-                  ]}
-                >
-                  <octahedronGeometry args={[0.08, 0]} />
-                  <meshStandardMaterial
-                    color="#00f5ff"
-                    emissive="#00f5ff"
-                    emissiveIntensity={1}
-                  />
-                </mesh>
-              </Float>
-            );
-          }),
-        []
-      )}
+      <FloatingDataPoints />
     </group>
   );
+}
+
+function FloatingDataPoints() {
+  const floatingPoints = useMemo(
+    () =>
+      Array.from({ length: 8 }).map((_, i) => {
+        const angle = (i / 8) * Math.PI * 2;
+        const radius = 3.2;
+        return (
+          <Float key={i} speed={1 + Math.random()} floatIntensity={0.5}>
+            <mesh
+              position={[
+                Math.cos(angle) * radius,
+                Math.sin(angle) * radius * 0.6,
+                0,
+              ]}
+            >
+              <octahedronGeometry args={[0.08, 0]} />
+              <meshStandardMaterial
+                color="#00f5ff"
+                emissive="#00f5ff"
+                emissiveIntensity={1}
+              />
+            </mesh>
+          </Float>
+        );
+      }),
+    []
+  );
+  return <>{floatingPoints}</>;
 }
 
 /* ------------------------------------------------------------------ */
