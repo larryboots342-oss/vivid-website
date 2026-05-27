@@ -15,7 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import packageJson from "../../../package.json";
+import packageJson from "../../../../package.json";
 
 const requirements = [
   { icon: Monitor, label: "OS", value: "Windows 10/11 64-bit" },

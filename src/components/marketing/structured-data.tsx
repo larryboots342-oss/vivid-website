@@ -1,4 +1,5 @@
-import { version } from "@/../package.json";
+import packageJson from "@/../package.json";
+const version = packageJson.version;
 
 export default function StructuredData() {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://vivid.gg";
