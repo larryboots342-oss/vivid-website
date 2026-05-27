@@ -28,7 +28,7 @@ export function Sidebar({ links, bottomAction, userSection, logoHref = "/" }: Si
       {/* Mobile toggle */}
       <button
         onClick={() => setMobileOpen(true)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2.5 rounded-xl bg-vivid-surface/90 border border-vivid-border/50 text-white touch-target min-w-[44px] min-h-[44px] flex items-center justify-center"
+        className="lg:hidden fixed top-4 left-4 z-40 p-2.5 rounded-xl bg-vivid-surface/90 border border-vivid-border/50 text-white touch-target min-w-[44px] min-h-[44px] flex items-center justify-center"
         aria-label="Open sidebar"
       >
         <Menu className="w-5 h-5" />
@@ -40,13 +40,13 @@ export function Sidebar({ links, bottomAction, userSection, logoHref = "/" }: Si
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="lg:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+            className="lg:hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
             onClick={() => setMobileOpen(false)}
           />
         )}
       </AnimatePresence>
 
-      <aside className={`fixed top-0 left-0 z-40 h-[100dvh] w-72 bg-vivid-surface/95 backdrop-blur-2xl border-r border-vivid-border/50 transition-transform duration-300 lg:translate-x-0 ${mobileOpen ? "translate-x-0" : "-translate-x-full"}`}>
+      <aside className={`fixed top-0 left-0 z-50 h-[100dvh] w-72 bg-vivid-surface/95 backdrop-blur-2xl border-r border-vivid-border/50 transition-transform duration-300 lg:translate-x-0 ${mobileOpen ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="flex flex-col h-full p-6 safe-top safe-bottom">
           {/* Logo */}
           <div className="flex items-center justify-between mb-8">

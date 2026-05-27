@@ -355,7 +355,7 @@ export default function Navbar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="fixed inset-0 z-40 bg-black/80 backdrop-blur-md md:hidden"
+              className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md md:hidden"
               onClick={() => setMobileOpen(false)}
               aria-hidden="true"
             />
@@ -371,7 +371,7 @@ export default function Navbar() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: "100%" }}
               transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-              className="fixed inset-0 z-40 md:hidden gpu-animate flex flex-col"
+              className="fixed inset-0 z-50 md:hidden gpu-animate flex flex-col"
             >
               {/* Header */}
               <div className="flex items-center justify-between px-4 pt-safe h-16 shrink-0">

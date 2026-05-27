@@ -1,8 +1,7 @@
 "use client";
 
-import { useRef, useEffect, Suspense, lazy } from "react";
+import { useRef, useEffect, useState, Suspense, lazy } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import Link from "next/link";
 import { MagneticButton } from "@/components/ui/magnetic-button";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -11,7 +10,6 @@ import {
   Zap,
   Shield,
   Users,
-  Star,
   Cpu,
   Sparkles,
 } from "lucide-react";
@@ -35,6 +33,15 @@ export default function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollProgressRef = useRef(0);
   const textRef = useRef<HTMLDivElement>(null);
+  const [shouldRender3D, setShouldRender3D] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -47,6 +54,18 @@ export default function HeroSection() {
   const orbY1 = useTransform(scrollYProgress, [0, 1], [0, -80]);
   const orbY2 = useTransform(scrollYProgress, [0, 1], [0, -120]);
   const orbY3 = useTransform(scrollYProgress, [0, 1], [0, -60]);
+
+  // Disable 3D scene on low-power devices or reduced motion preference
+  useEffect(() => {
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    const isLowPower =
+      (navigator as any).deviceMemory && (navigator as any).deviceMemory < 4;
+    if (prefersReduced || isLowPower) {
+      setShouldRender3D(false);
+    }
+  }, []);
 
   // Update scroll progress ref for 3D scene
   useEffect(() => {
@@ -162,17 +181,19 @@ export default function HeroSection() {
 
       {/* 3D Scene */}
       <div className="sticky top-0 h-[100dvh]">
-        <Suspense
-          fallback={
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-vivid-primary to-vivid-primaryDim flex items-center justify-center animate-pulse">
-                <span className="text-4xl font-bold text-vivid-bg">V</span>
+        {!isMobile && shouldRender3D && (
+          <Suspense
+            fallback={
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-vivid-primary to-vivid-primaryDim flex items-center justify-center animate-pulse">
+                  <span className="text-4xl font-bold text-vivid-bg">V</span>
+                </div>
               </div>
-            </div>
-          }
-        >
-          <ThreeScene scrollProgress={scrollProgressRef} />
-        </Suspense>
+            }
+          >
+            <ThreeScene scrollProgress={scrollProgressRef} />
+          </Suspense>
+        )}
 
         {/* Text overlay */}
         <motion.div
@@ -193,7 +214,7 @@ export default function HeroSection() {
             </motion.div>
 
             {/* Title */}
-            <h1 className="text-fluid-5xl font-bold leading-[0.95] tracking-tight mb-6 md:mb-8 perspective-1000 text-balance">
+            <h1 className="text-fluid-5xl font-bold leading-[0.95] tracking-tight mb-6 md:mb-8 perspective-1000 text-balance break-words">
               <span className="hero-title-line block gradient-text">
                 VIVID
               </span>
@@ -236,7 +257,7 @@ export default function HeroSection() {
                   className="flex items-center gap-2 text-vivid-textMuted text-sm gpu-animate"
                 >
                   <item.icon className="w-4 h-4 text-vivid-primary" />
-                  <span>{item.label}</span>
+                  <span className="text-base">{item.label}</span>
                 </div>
               ))}
             </div>

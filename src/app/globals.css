@@ -246,12 +246,6 @@
     display: none;
   }
 
-  /* Content visibility for below-fold sections */
-  .content-visibility-auto {
-    content-visibility: auto;
-    contain-intrinsic-size: 0 500px;
-  }
-
   /* Touch action optimization */
   .touch-pan-y {
     touch-action: pan-y;
@@ -262,38 +256,9 @@
     @apply py-16 px-4 sm:py-20 sm:px-6 md:py-24 md:px-6 lg:py-32;
   }
 
-  /* Mobile-safe container */
-  .container-mobile {
-    @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
-  }
-
   /* Touch target minimum size */
   .touch-target {
     @apply min-h-[44px] min-w-[44px];
-  }
-
-  /* Responsive card padding */
-  .card-padding {
-    @apply p-4 sm:p-5 md:p-6 lg:p-8;
-  }
-
-  /* Full-screen mobile modal */
-  .modal-mobile {
-    @apply fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4;
-  }
-
-  @media (max-width: 639px) {
-    .modal-mobile {
-      @apply items-end p-0;
-    }
-    .modal-mobile > * {
-      @apply rounded-t-2xl rounded-b-none w-full max-w-none;
-    }
-  }
-
-  /* Bottom sheet for mobile */
-  .bottom-sheet {
-    @apply fixed inset-x-0 bottom-0 z-50 rounded-t-2xl border-t border-vivid-border/60 bg-vivid-surface/95 backdrop-blur-xl;
   }
 
   /* Safe area utilities */
@@ -302,12 +267,6 @@
   }
   .safe-bottom {
     padding-bottom: env(safe-area-inset-bottom, 0px);
-  }
-  .safe-left {
-    padding-left: env(safe-area-inset-left, 0px);
-  }
-  .safe-right {
-    padding-right: env(safe-area-inset-right, 0px);
   }
 }
 
@@ -390,10 +349,6 @@
     }
   }
 
-  .animate-draw {
-    animation: draw 1.2s var(--ease-out-expo) forwards;
-  }
-
   /* Orbit spinner animation */
   @keyframes orbit {
     0% {
@@ -402,10 +357,6 @@
     100% {
       transform: rotate(360deg) translateX(8px) rotate(-360deg);
     }
-  }
-
-  .animate-orbit {
-    animation: orbit 1.5s linear infinite;
   }
 
   /* Dots bounce animation */
@@ -418,10 +369,6 @@
       transform: scale(1);
       opacity: 1;
     }
-  }
-
-  .animate-dots-bounce {
-    animation: dots-bounce 1.4s ease-in-out infinite both;
   }
 
   /* Progress shimmer for loader bar */
@@ -471,21 +418,6 @@
       transform: translateY(-8px) translateZ(0);
     }
   }
-
-  /* Stagger children utility */
-  .stagger-children > * {
-    opacity: 0;
-    animation: fade-blur-in 0.5s var(--ease-out-expo) forwards;
-  }
-
-  .stagger-children > *:nth-child(1) { animation-delay: 0ms; }
-  .stagger-children > *:nth-child(2) { animation-delay: 50ms; }
-  .stagger-children > *:nth-child(3) { animation-delay: 100ms; }
-  .stagger-children > *:nth-child(4) { animation-delay: 150ms; }
-  .stagger-children > *:nth-child(5) { animation-delay: 200ms; }
-  .stagger-children > *:nth-child(6) { animation-delay: 250ms; }
-  .stagger-children > *:nth-child(7) { animation-delay: 300ms; }
-  .stagger-children > *:nth-child(8) { animation-delay: 350ms; }
 
   /* Button glow pulse */
   @keyframes glow-pulse {
@@ -574,25 +506,4 @@
     animation: shimmer 1.5s ease-in-out infinite;
   }
 
-  /* Stagger container utility */
-  .stagger-container > * {
-    opacity: 0;
-  }
-
-  .stagger-container.is-visible > * {
-    animation: fade-blur-in 0.6s var(--ease-out-expo) forwards;
-  }
-
-  .stagger-container.is-visible > *:nth-child(1) { animation-delay: 0ms; }
-  .stagger-container.is-visible > *:nth-child(2) { animation-delay: 80ms; }
-  .stagger-container.is-visible > *:nth-child(3) { animation-delay: 160ms; }
-  .stagger-container.is-visible > *:nth-child(4) { animation-delay: 240ms; }
-  .stagger-container.is-visible > *:nth-child(5) { animation-delay: 320ms; }
-  .stagger-container.is-visible > *:nth-child(6) { animation-delay: 400ms; }
-  .stagger-container.is-visible > *:nth-child(7) { animation-delay: 480ms; }
-  .stagger-container.is-visible > *:nth-child(8) { animation-delay: 560ms; }
-  .stagger-container.is-visible > *:nth-child(9) { animation-delay: 640ms; }
-  .stagger-container.is-visible > *:nth-child(10) { animation-delay: 720ms; }
-  .stagger-container.is-visible > *:nth-child(11) { animation-delay: 800ms; }
-  .stagger-container.is-visible > *:nth-child(12) { animation-delay: 880ms; }
 }

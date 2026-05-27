@@ -129,7 +129,7 @@ export default function SettingsPage() {
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium text-white">{item.title}</p>
-                  <p className="text-xs text-vivid-textMuted mt-0.5 leading-relaxed">{item.description}</p>
+                  <p className="text-base text-vivid-textMuted mt-0.5 leading-relaxed">{item.description}</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer shrink-0 mt-0.5">
                   <input
@@ -171,7 +171,7 @@ export default function SettingsPage() {
               </div>
               <div className="min-w-0">
                 <p className="text-sm font-medium text-white">Dark Mode</p>
-                <p className="text-xs text-vivid-textMuted">Always use dark theme</p>
+                <p className="text-base text-vivid-textMuted">Always use dark theme</p>
               </div>
             </div>
             <label className="relative inline-flex items-center cursor-pointer shrink-0">
@@ -328,7 +328,7 @@ export default function SettingsPage() {
                       </div>
                       <div className="min-w-0">
                         <p className="text-sm font-medium text-white">Two-Factor Authentication</p>
-                        <p className="text-xs text-vivid-textMuted">Protect your account with an additional layer</p>
+                        <p className="text-base text-vivid-textMuted">Protect your account with an additional layer</p>
                       </div>
                     </div>
                     <Badge variant="outline" className="border-vivid-border text-vivid-textMuted shrink-0 ml-2">
@@ -343,7 +343,7 @@ export default function SettingsPage() {
                       </div>
                       <div className="min-w-0">
                         <p className="text-sm font-medium text-white">Active Sessions</p>
-                        <p className="text-xs text-vivid-textMuted">View and manage your active sessions</p>
+                        <p className="text-base text-vivid-textMuted">View and manage your active sessions</p>
                       </div>
                     </div>
                     <Badge variant="outline" className="border-vivid-border text-vivid-textMuted shrink-0 ml-2">

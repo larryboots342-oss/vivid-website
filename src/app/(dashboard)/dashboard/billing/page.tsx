@@ -123,7 +123,7 @@ export default function BillingPage() {
                   <div className="rounded-lg bg-vivid-bg border border-vivid-border p-4">
                     <p className="text-vivid-textDim text-xs mb-1.5">License Key</p>
                     <div className="flex items-center gap-3">
-                      <code className="flex-1 text-sm font-mono text-vivid-primary bg-black/30 rounded-lg px-4 py-2.5">
+                      <code className="flex-1 text-base font-mono text-vivid-primary bg-black/30 rounded-lg px-4 py-2.5">
                         {license.key}
                       </code>
                       <CopyButton text={license.key} />
@@ -132,17 +132,17 @@ export default function BillingPage() {
 
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                     <div>
-                      <p className="text-vivid-textDim text-xs uppercase tracking-wider">Tier</p>
+                      <p className="text-vivid-textDim text-sm sm:text-base uppercase tracking-wider">Tier</p>
                       <p className="text-white font-semibold capitalize">{license.tier}</p>
                     </div>
                     <div>
-                      <p className="text-vivid-textDim text-xs uppercase tracking-wider">Type</p>
+                      <p className="text-vivid-textDim text-sm sm:text-base uppercase tracking-wider">Type</p>
                       <p className="text-white font-semibold">
                         {license.isLifetime ? "Lifetime" : "Time-Limited"}
                       </p>
                     </div>
                     <div>
-                      <p className="text-vivid-textDim text-xs uppercase tracking-wider">Activated</p>
+                      <p className="text-vivid-textDim text-sm sm:text-base uppercase tracking-wider">Activated</p>
                       <p className="text-white font-semibold">
                         {license.activatedAt
                           ? new Date(license.activatedAt).toLocaleDateString("en-GB")
@@ -150,7 +150,7 @@ export default function BillingPage() {
                       </p>
                     </div>
                     <div>
-                      <p className="text-vivid-textDim text-xs uppercase tracking-wider">Expires</p>
+                      <p className="text-vivid-textDim text-sm sm:text-base uppercase tracking-wider">Expires</p>
                       <p className="text-white font-semibold">
                         {license.isLifetime ? (
                           <span className="flex items-center gap-1 text-green-400">
@@ -180,7 +180,7 @@ export default function BillingPage() {
           <CardContent className="py-12 text-center">
             <Key className="w-12 h-12 text-vivid-textDim mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-white mb-2">No Active Licenses</h3>
-            <p className="text-vivid-textMuted text-sm max-w-md mx-auto mb-6">
+            <p className="text-vivid-textMuted text-base max-w-md mx-auto mb-6">
               You don&apos;t have any active VIVID licenses. Purchase one to unlock full access.
             </p>
             <Button asChild>
@@ -198,7 +198,7 @@ export default function BillingPage() {
         <div className="space-y-4">
           <h2 className="text-lg font-semibold text-white">License History</h2>
           <div className="overflow-x-auto -mx-6 px-6">
-            <table className="w-full text-sm min-w-[500px]">
+            <table className="w-full text-base min-w-[500px]">
               <thead>
                 <tr className="border-b border-vivid-border/40">
                   <th className="text-left py-3 px-4 text-vivid-textDim font-medium">License Key</th>
@@ -257,7 +257,7 @@ export default function BillingPage() {
               </div>
               <div>
                 <p className="text-white font-semibold">Ready to use VIVID?</p>
-                <p className="text-vivid-textMuted text-sm">
+                <p className="text-vivid-textMuted text-base">
                   Download the software and activate with your license key
                 </p>
               </div>

@@ -121,7 +121,7 @@ export default function GameCardsSection() {
                       )}
                     </div>
 
-                    <p className="text-vivid-textMuted mb-6">{game.description}</p>
+                    <p className="text-vivid-textMuted text-base mb-6">{game.description}</p>
 
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full bg-current opacity-60" />

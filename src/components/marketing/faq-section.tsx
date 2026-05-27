@@ -223,7 +223,7 @@ function AccordionItem({
             >
               <div className="px-6 pb-6 pt-0">
                 <div className="pl-0 sm:pl-12">
-                  <p className="text-sm md:text-[15px] text-vivid-textMuted leading-[1.8] max-w-2xl">
+                  <p className="text-base md:text-[15px] text-vivid-textMuted leading-[1.8] max-w-2xl">
                     {item.answer}
                   </p>
                 </div>
@@ -429,7 +429,7 @@ export default function FAQSection() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="text-center text-sm text-vivid-textMuted mb-6"
+              className="text-center text-base text-vivid-textMuted mb-6"
             >
               {filteredFaqs.length} result
               {filteredFaqs.length !== 1 ? "s" : ""} for &ldquo;{searchQuery}
@@ -468,7 +468,7 @@ export default function FAQSection() {
               <h3 className="text-lg font-semibold text-white mb-2">
                 No results found
               </h3>
-              <p className="text-sm text-vivid-textMuted max-w-sm mx-auto">
+              <p className="text-base text-vivid-textMuted max-w-sm mx-auto">
                 Try adjusting your search terms or browse a different category.
               </p>
               <button
@@ -476,7 +476,7 @@ export default function FAQSection() {
                   setSearchQuery("");
                   setActiveCategory("All");
                 }}
-                className="mt-4 px-5 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-vivid-border/50 hover:border-vivid-border text-sm text-vivid-text transition-all duration-300 touch-target"
+                className="mt-4 px-5 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-vivid-border/50 hover:border-vivid-border text-base text-vivid-text transition-all duration-300 touch-target"
               >
                 Clear filters
               </button>
@@ -504,7 +504,7 @@ export default function FAQSection() {
                   <h3 className="text-lg font-bold text-white mb-1">
                     Still have questions?
                   </h3>
-                  <p className="text-sm text-vivid-textMuted">
+                  <p className="text-base text-vivid-textMuted">
                     Our support team typically responds within 2 hours.
                   </p>
                 </div>

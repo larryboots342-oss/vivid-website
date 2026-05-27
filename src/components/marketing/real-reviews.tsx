@@ -103,8 +103,8 @@ export default function RealReviewsSection() {
               <Star className="w-8 h-8 text-vivid-primary" />
             </div>
             <h3 className="text-white font-semibold mb-2">No reviews yet</h3>
-            <p className="text-vivid-textMuted text-sm mb-6">Be the first to share your experience with VIVID.</p>
-            <Link href="/dashboard" className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-vivid-primary text-vivid-bg font-semibold text-sm hover:bg-vivid-primaryDim transition-colors touch-target">
+            <p className="text-vivid-textMuted text-base mb-6">Be the first to share your experience with VIVID.</p>
+            <Link href="/dashboard" className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-vivid-primary text-vivid-bg font-semibold text-base hover:bg-vivid-primaryDim transition-colors touch-target">
               <MessageSquare className="w-4 h-4" />
               Leave a Review
             </Link>
@@ -151,7 +151,7 @@ export default function RealReviewsSection() {
               <GlowCard delay={i * 0.1}>
                 <div className="h-full rounded-2xl border border-vivid-border/40 bg-vivid-surface/40 backdrop-blur-xl p-6 flex flex-col gap-4 hover:border-vivid-border/70 transition-colors duration-300">
                   <Quote className="w-8 h-8 text-vivid-primary/20" />
-                  <p className="text-[15px] text-vivid-text leading-relaxed flex-1">
+                  <p className="text-base text-vivid-text leading-relaxed flex-1">
                     &ldquo;{review.content}&rdquo;
                   </p>
                   {review.game && (

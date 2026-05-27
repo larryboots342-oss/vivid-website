@@ -92,7 +92,7 @@ function StatCard({
           <div className="flex items-baseline gap-2">
             <span className="text-3xl font-bold text-white">{value}</span>
           </div>
-          <p className="text-vivid-textMuted text-xs mt-1">{description}</p>
+          <p className="text-vivid-textMuted text-base mt-1">{description}</p>
         </CardContent>
       </Card>
     </motion.div>
@@ -148,7 +148,7 @@ function ActivityItem({
           {title}
         </p>
         {description && (
-          <p className="text-xs text-vivid-textMuted mt-0.5">{description}</p>
+          <p className="text-base text-vivid-textMuted mt-0.5">{description}</p>
         )}
       </div>
       <span className="text-xs text-vivid-textDim shrink-0">{time}</span>
@@ -180,7 +180,7 @@ function QuickAction({
         <div className="w-10 h-10 rounded-lg bg-vivid-primary/10 flex items-center justify-center group-hover:bg-vivid-primary/20 transition-colors">
           <Icon className="w-5 h-5 text-vivid-primary" />
         </div>
-        <span className="text-sm font-medium text-white group-hover:text-vivid-primary transition-colors">
+        <span className="text-base font-medium text-white group-hover:text-vivid-primary transition-colors">
           {label}
         </span>
         <ArrowUpRight className="w-4 h-4 ml-auto text-vivid-textDim group-hover:text-vivid-primary transition-colors" />
@@ -363,7 +363,7 @@ export default function DashboardContent({ data, justPurchased }: { data: Dashbo
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto -mx-6 px-6">
-                <table className="w-full text-sm min-w-[500px]">
+                <table className="w-full text-base min-w-[500px]">
                   <thead>
                     <tr className="border-b border-vivid-border/40">
                       <th className="text-left py-3 px-4 text-vivid-textDim font-medium">Key</th>

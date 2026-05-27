@@ -27,7 +27,8 @@ function PlanCard({ plan, index }: { plan: PlanConfig; index: number }) {
   return (
     <GlowCard
       delay={index * 0.12}
-      glowColor={
+      className="overflow-visible"
+      glowColor=
         isPopular
           ? "rgba(0, 245, 255, 0.1)"
           : "rgba(0, 229, 255, 0.06)"
@@ -93,7 +94,7 @@ function PlanCard({ plan, index }: { plan: PlanConfig; index: number }) {
           </span>
           <span className="text-vivid-textMuted text-sm">one-time</span>
         </div>
-        <p className="text-sm text-vivid-textMuted leading-relaxed">
+        <p className="text-base text-vivid-textMuted leading-relaxed">
           {plan.description}
         </p>
       </div>
@@ -108,7 +109,7 @@ function PlanCard({ plan, index }: { plan: PlanConfig; index: number }) {
             <div className="w-5 h-5 rounded-full bg-vivid-primary/10 flex items-center justify-center shrink-0 mt-0.5">
               <Check className="w-3 h-3 text-vivid-primary" />
             </div>
-            <span className="text-sm text-vivid-text">{feature}</span>
+            <span className="text-base text-vivid-text">{feature}</span>
           </li>
         ))}
         {plan.notIncluded?.map((feature) => (
@@ -116,7 +117,7 @@ function PlanCard({ plan, index }: { plan: PlanConfig; index: number }) {
             <div className="w-5 h-5 rounded-full bg-vivid-border flex items-center justify-center shrink-0 mt-0.5">
               <X className="w-3 h-3 text-vivid-textDim" />
             </div>
-            <span className="text-sm text-vivid-textMuted">{feature}</span>
+            <span className="text-base text-vivid-textMuted">{feature}</span>
           </li>
         ))}
       </ul>
