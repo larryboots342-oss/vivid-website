@@ -476,19 +476,15 @@
   .link-reveal {
     position: relative;
     overflow: hidden;
-    display: inline-block;
+    display: inline-flex;
+    flex-direction: column;
   }
 
   .link-reveal span {
-    display: block;
     transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  .link-reveal:hover span:first-child {
-    transform: translateY(-100%);
-  }
-
-  .link-reveal:hover span:last-child {
+  .link-reveal:hover span {
     transform: translateY(-100%);
   }
 

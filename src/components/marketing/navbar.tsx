@@ -8,7 +8,7 @@ import { useAuth } from "@clerk/nextjs";
 import { SignInButton, UserButton } from "@clerk/nextjs";
 import SignOutButton from "@/components/auth/sign-out-button";
 import { cn } from "@/lib/utils";
-import { LinkReveal } from "@/components/ui/link-reveal";
+
 
 const navItems = [
   { label: "Features", href: "#features" },
@@ -244,7 +244,7 @@ export default function Navbar() {
                   className="relative px-4 py-2 text-sm font-medium text-vivid-textMuted hover:text-white transition-colors duration-300 rounded-lg hover:bg-white/5 min-h-[44px] flex items-center link-underline"
                   aria-current={isActive ? "page" : undefined}
                 >
-                  <LinkReveal>{item.label}</LinkReveal>
+                  {item.label}
                   {isActive && (
                     <motion.div
                       layoutId="activeNav"

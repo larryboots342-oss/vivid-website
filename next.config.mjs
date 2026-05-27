@@ -62,14 +62,14 @@ const nextConfig = {
             key: "Content-Security-Policy",
             value:
               "default-src 'self'; " +
-              "script-src 'self' https://js.stripe.com https://www.paypal.com; " +
+              "script-src 'self' 'unsafe-inline' https://js.stripe.com https://www.paypal.com https://*.clerk.accounts.dev https://clerk.accounts.dev https://*.clerk.com; " +
               "style-src 'self' 'unsafe-inline'; " +
               "img-src 'self' https://img.clerk.com https://images.clerk.dev data: blob:; " +
-              "connect-src 'self' https://api.stripe.com https://www.paypal.com; " +
-              "frame-src https://js.stripe.com https://hooks.stripe.com; " +
+              "connect-src 'self' https://api.stripe.com https://www.paypal.com https://*.clerk.accounts.dev https://clerk.accounts.dev https://*.clerk.com https://*.supabase.co; " +
+              "frame-src https://js.stripe.com https://hooks.stripe.com https://*.clerk.accounts.dev; " +
               "font-src 'self'; " +
               "object-src 'none'; " +
-              "base-uri 'self';",
+              "base-uri 'self'; ",
           },
         ],
       },

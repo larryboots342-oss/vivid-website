@@ -5,7 +5,7 @@ import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 import Link from "next/link";
 import { ArrowRight, Heart, Shield, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { LinkReveal } from "@/components/ui/link-reveal";
+
 import ParticleBackground from "@/components/marketing/particle-background";
 
 /* ------------------------------------------------------------------ */
@@ -72,7 +72,7 @@ function LinkColumn({
                 "hover:text-white transition-colors duration-300"
               )}
             >
-              <LinkReveal>{link.label}</LinkReveal>
+              {link.label}
             </Link>
           </li>
         ))}
