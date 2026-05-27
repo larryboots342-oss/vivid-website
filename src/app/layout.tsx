@@ -60,13 +60,13 @@ export const metadata: Metadata = {
   ),
   alternates: {},
   openGraph: {
-    title: "VIVID — AI-Powered Gaming Assistant",
+    title: "VIVID - AI Gaming Assistant",
     description:
       "GPU-accelerated local AI inference for gaming. Hardware-optimized performance with complete privacy.",
     type: "website",
     siteName: "VIVID",
     locale: "en_US",
-    url: "/",
+    url: "https://vividaimbot.store",
     images: [
       {
         url: "/og-image.png",
@@ -78,7 +78,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "VIVID — AI-Powered Gaming Assistant",
+    title: "VIVID - AI Gaming Assistant",
     description:
       "GPU-accelerated local AI inference for gaming. Hardware-optimized performance with complete privacy.",
     images: ["/og-image.png"],
@@ -151,7 +151,7 @@ export default function RootLayout({
           <Suspense fallback={null}>
             <VisitorTracker />
           </Suspense>
-          {children}
+          <div id="main-content">{children}</div>
         </Providers>
       </body>
     </html>
