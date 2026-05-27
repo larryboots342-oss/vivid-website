@@ -8,7 +8,6 @@ import { PLANS, CURRENCY_SYMBOL } from "@/lib/constants";
 import { isLicenseValid, getDaysRemaining } from "@/lib/license";
 import {
   Key,
-  Copy,
   Clock,
   Infinity,
   AlertTriangle,
@@ -18,6 +17,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import LicenseValidator from "@/components/dashboard/license-validator";
+import { CopyButton } from "@/components/dashboard/copy-button";
 
 async function getBillingData(userId: string) {
   const user = await prisma.user.findUnique({
@@ -269,19 +269,4 @@ export default async function BillingPage() {
   );
 }
 
-function CopyButton({ text }: { text: string }) {
-  "use client";
-  return (
-    <Button
-      variant="outline"
-      size="sm"
-      onClick={() => {
-        navigator.clipboard.writeText(text);
-      }}
-      className="shrink-0"
-    >
-      <Copy className="w-4 h-4 mr-1" />
-      Copy
-    </Button>
-  );
-}
+
