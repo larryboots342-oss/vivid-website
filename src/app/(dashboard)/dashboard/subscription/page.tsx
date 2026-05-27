@@ -1,5 +1,11 @@
+import { Metadata } from "next";
 import { currentUser } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
+
+export const metadata: Metadata = {
+  title: "Licenses",
+  description: "Manage your VIVID license keys and plans",
+};
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
