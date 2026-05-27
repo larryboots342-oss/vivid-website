@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { OWNER_EMAIL } from "@/lib/owner-email";
 import AdminSidebar from "@/components/admin/sidebar";
 import AdminHeader from "@/components/admin/header";
-import AdminLayoutClient from "@/components/admin/layout-client";
+import PageTransition from "@/components/marketing/page-transition";
 
 export default async function AdminLayout({
   children,
@@ -28,7 +28,7 @@ export default async function AdminLayout({
         <div className="lg:ml-72 min-h-screen">
           <AdminHeader />
           <main id="main-content" className="p-6 lg:p-8 pt-20 lg:pt-6 max-w-7xl">
-            <AdminLayoutClient>{children}</AdminLayoutClient>
+            <PageTransition>{children}</PageTransition>
           </main>
         </div>
       </div>
@@ -57,7 +57,7 @@ export default async function AdminLayout({
       <div className="lg:ml-72 min-h-screen">
         <AdminHeader />
         <main id="main-content" className="p-6 lg:p-8 pt-20 lg:pt-6 max-w-7xl">
-          <AdminLayoutClient>{children}</AdminLayoutClient>
+          <PageTransition>{children}</PageTransition>
         </main>
       </div>
     </div>
