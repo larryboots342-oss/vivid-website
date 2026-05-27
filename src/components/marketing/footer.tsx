@@ -1,11 +1,11 @@
 "use client";
 
-import { useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 import Link from "next/link";
 import { ArrowRight, Heart, Shield, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
+import ParticleBackground from "@/components/marketing/particle-background";
 
 /* ------------------------------------------------------------------ */
 /*  Social Icons (inline SVG for premium look)                        */
@@ -36,119 +36,6 @@ function SocialIcon({
     >
       {children}
     </motion.a>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  Floating Particles Canvas                                         */
-/* ------------------------------------------------------------------ */
-function FooterParticles() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animId: number;
-    let particles: Array<{
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-      size: number;
-      opacity: number;
-      color: string;
-    }> = [];
-
-    const resize = () => {
-      canvas.width = canvas.offsetWidth * window.devicePixelRatio;
-      canvas.height = canvas.offsetHeight * window.devicePixelRatio;
-      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-    };
-
-    const initParticles = () => {
-      particles = [];
-      const isMobile = window.innerWidth < 768;
-      const density = isMobile ? 40000 : 25000;
-      const maxCount = isMobile ? 25 : 60;
-      const count = Math.floor(
-        (canvas.offsetWidth * canvas.offsetHeight) / density
-      );
-      for (let i = 0; i < Math.min(count, maxCount); i++) {
-        particles.push({
-          x: Math.random() * canvas.offsetWidth,
-          y: Math.random() * canvas.offsetHeight,
-          vx: (Math.random() - 0.5) * 0.3,
-          vy: (Math.random() - 0.5) * 0.3 - 0.1,
-          size: Math.random() * 2 + 0.5,
-          opacity: Math.random() * 0.5 + 0.1,
-          color: Math.random() > 0.5 ? "0, 245, 255" : "168, 85, 247",
-        });
-      }
-    };
-
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
-
-      particles.forEach((p) => {
-        p.x += p.vx;
-        p.y += p.vy;
-
-        if (p.x < 0) p.x = canvas.offsetWidth;
-        if (p.x > canvas.offsetWidth) p.x = 0;
-        if (p.y < 0) p.y = canvas.offsetHeight;
-        if (p.y > canvas.offsetHeight) p.y = 0;
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${p.color}, ${p.opacity})`;
-        ctx.fill();
-      });
-
-      // Draw faint connections
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 120) {
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(0, 245, 255, ${0.03 * (1 - dist / 120)})`;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
-          }
-        }
-      }
-
-      animId = requestAnimationFrame(draw);
-    };
-
-    resize();
-    initParticles();
-    draw();
-
-    window.addEventListener("resize", () => {
-      resize();
-      initParticles();
-    });
-
-    return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener("resize", resize);
-    };
-  }, []);
-
-  return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 w-full h-full pointer-events-none"
-      style={{ opacity: 0.6 }}
-      aria-hidden="true"
-    />
   );
 }
 
@@ -260,7 +147,7 @@ export default function Footer() {
       <div className="absolute bottom-20 right-0 w-[300px] h-[300px] bg-purple-500/[0.02] rounded-full blur-[120px] pointer-events-none" />
 
       {/* Floating particles */}
-      <FooterParticles />
+      <ParticleBackground className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity: 0.6 }} />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-14 sm:pt-20 pb-8">
         {/* Main grid */}

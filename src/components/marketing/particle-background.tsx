@@ -21,7 +21,13 @@ function getParticleCount(): number {
   return 50;
 }
 
-export default function ParticleBackground() {
+export default function ParticleBackground({
+  className,
+  style,
+}: {
+  className?: string;
+  style?: React.CSSProperties;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rafRef = useRef<number>(0);
   const frameCountRef = useRef(0);
@@ -146,8 +152,8 @@ export default function ParticleBackground() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-0 gpu-layer"
-      style={{ opacity: 0.6 }}
+      className={className ?? "fixed inset-0 pointer-events-none z-0 gpu-layer"}
+      style={style ?? { opacity: 0.6 }}
       aria-hidden="true"
     />
   );
