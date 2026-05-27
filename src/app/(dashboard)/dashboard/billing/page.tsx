@@ -197,8 +197,8 @@ export default function BillingPage() {
       {licenses.length > 0 && (
         <div className="space-y-4">
           <h2 className="text-lg font-semibold text-white">License History</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="overflow-x-auto -mx-6 px-6">
+            <table className="w-full text-sm min-w-[500px]">
               <thead>
                 <tr className="border-b border-vivid-border/40">
                   <th className="text-left py-3 px-4 text-vivid-textDim font-medium">License Key</th>

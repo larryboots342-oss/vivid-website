@@ -23,10 +23,8 @@ const variants: Variants = {
 
 export default function PageTransition({ children }: PageTransitionProps) {
   const [reducedMotion, setReducedMotion] = useState(false);
-  const [pathname, setPathname] = useState("");
 
   useEffect(() => {
-    setPathname(window.location.pathname);
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     setReducedMotion(mq.matches);
     const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
@@ -42,7 +40,7 @@ export default function PageTransition({ children }: PageTransitionProps) {
   return (
     <AnimatePresence mode="wait">
       <motion.div
-        key={pathname}
+        key={typeof window !== "undefined" ? window.location.pathname : "static"}
         variants={variants}
         initial="initial"
         animate="animate"

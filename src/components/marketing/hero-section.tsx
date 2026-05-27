@@ -3,6 +3,7 @@
 import { useRef, useEffect, Suspense, lazy } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
+import { MagneticButton } from "@/components/ui/magnetic-button";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
@@ -43,6 +44,9 @@ export default function HeroSection() {
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.9]);
   const y = useTransform(scrollYProgress, [0, 0.5], [0, -100]);
+  const orbY1 = useTransform(scrollYProgress, [0, 1], [0, -80]);
+  const orbY2 = useTransform(scrollYProgress, [0, 1], [0, -120]);
+  const orbY3 = useTransform(scrollYProgress, [0, 1], [0, -60]);
 
   // Update scroll progress ref for 3D scene
   useEffect(() => {
@@ -120,31 +124,34 @@ export default function HeroSection() {
   return (
     <section
       ref={containerRef}
-      className="relative min-h-[150vh] md:min-h-[200vh] overflow-hidden"
+      className="relative min-h-[100dvh] md:min-h-[200vh] overflow-hidden"
     >
       {/* Animated gradient background */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-vivid-bg" />
-        <div
+        <motion.div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[1200px] rounded-full opacity-30 gpu-layer"
           style={{
+            y: orbY1,
             background:
               "radial-gradient(circle, rgba(0,245,255,0.15) 0%, rgba(0,229,255,0.05) 40%, transparent 70%)",
             filter: "blur(80px)",
           }}
         />
-        <div
+        <motion.div
           className="absolute top-1/3 right-1/4 w-[600px] h-[600px] rounded-full opacity-20 gpu-layer"
           style={{
+            y: orbY2,
             background:
               "radial-gradient(circle, rgba(0,200,204,0.2) 0%, transparent 60%)",
             filter: "blur(60px)",
             animation: "pulseGlow 8s ease-in-out infinite",
           }}
         />
-        <div
+        <motion.div
           className="absolute bottom-1/4 left-1/4 w-[500px] h-[500px] rounded-full opacity-15 gpu-layer"
           style={{
+            y: orbY3,
             background:
               "radial-gradient(circle, rgba(0,153,170,0.15) 0%, transparent 60%)",
             filter: "blur(50px)",
@@ -154,7 +161,7 @@ export default function HeroSection() {
       </div>
 
       {/* 3D Scene */}
-      <div className="sticky top-0 h-screen">
+      <div className="sticky top-0 h-[100dvh]">
         <Suspense
           fallback={
             <div className="absolute inset-0 flex items-center justify-center">
@@ -204,21 +211,21 @@ export default function HeroSection() {
 
             {/* CTAs */}
             <div className="hero-cta flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 pointer-events-auto px-4">
-              <Link
+              <MagneticButton
                 href="/pricing"
                 className="group inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-vivid-primary text-vivid-bg font-bold text-base sm:text-lg hover:bg-vivid-primaryDim transition-all duration-300 glow-primary-strong active:scale-95 gpu-animate touch-target"
-                aria-label="Get started with VIVID"
+                strength={0.2}
               >
                 Get Started
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link
+              </MagneticButton>
+              <MagneticButton
                 href="/pricing"
                 className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl border border-vivid-border/60 text-white font-semibold hover:bg-white/5 backdrop-blur-sm transition-all duration-300 hover:border-vivid-primary/30 active:scale-95 gpu-animate touch-target"
-                aria-label="View VIVID pricing plans"
+                strength={0.2}
               >
                 View Pricing
-              </Link>
+              </MagneticButton>
             </div>
 
             {/* Trust indicators */}

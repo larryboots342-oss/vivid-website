@@ -231,12 +231,18 @@ export default function SettingsPage() {
           <Card className="lg:sticky lg:top-24 overflow-hidden">
             <CardContent className="p-2">
               {/* Mobile: horizontal scrollable tabs */}
-              <nav className="flex lg:flex-col gap-1 overflow-x-auto pb-1 lg:pb-0 -mx-2 px-2 lg:mx-0 lg:px-0 scrollbar-hide">
+              <nav 
+                className="flex lg:flex-col gap-1 overflow-x-auto pb-1 lg:pb-0 -mx-2 px-2 lg:mx-0 lg:px-0 scrollbar-hide"
+                role="tablist"
+                aria-label="Settings tabs"
+              >
                 {tabs.map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 whitespace-nowrap shrink-0 ${
+                    role="tab"
+                    aria-selected={activeTab === tab.id}
+                    className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 whitespace-nowrap shrink-0 min-h-[44px] touch-target ${
                       activeTab === tab.id
                         ? "bg-vivid-primary/10 text-vivid-primary border border-vivid-primary/20"
                         : "text-vivid-textMuted hover:text-white hover:bg-white/5 border border-transparent"

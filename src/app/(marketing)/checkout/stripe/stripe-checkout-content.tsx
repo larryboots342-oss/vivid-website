@@ -46,7 +46,7 @@ export default function StripeCheckoutContent() {
   }, [tier]);
 
   return (
-    <div className="pt-32 pb-16 px-6 flex items-center justify-center min-h-[70vh]">
+    <div className="pt-32 pb-16 px-4 sm:px-6 flex items-center justify-center min-h-[70vh]">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}

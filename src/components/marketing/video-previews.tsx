@@ -7,6 +7,7 @@ import { Play, Video, X } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { SkeletonCard } from "@/components/ui/skeleton-card";
+import { containerVariants, itemVariants } from "@/lib/animations";
 
 interface VideoItem {
   id: string;
@@ -30,7 +31,7 @@ export default function VideoPreviews() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-vivid-primary/[0.02] rounded-full blur-[150px]" />
       </div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10 px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-vivid-primary/10 border border-vivid-primary/20 text-vivid-primary text-xs font-semibold uppercase tracking-wider mb-6">
@@ -56,27 +57,30 @@ export default function VideoPreviews() {
 
         {/* Video Grid */}
         {!isLoading && videos.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+          >
             {videos.map((video, i) => (
               <motion.div
                 key={video.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.08 }}
-                className="group relative rounded-2xl overflow-hidden border aspect-video cursor-pointer border-vivid-border/50"
+                variants={itemVariants}
+                className="group relative rounded-2xl overflow-hidden border aspect-video cursor-pointer border-vivid-border/50 card-image-zoom"
                 style={{ background: "#0a0a0a" }}
                 onClick={() => setActiveVideo(video)}
               >
                 {/* Thumbnail or gradient fallback */}
-                <div className="absolute inset-0 bg-gradient-to-br from-vivid-primary/5 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-br from-vivid-primary/5 to-transparent z-10 pointer-events-none" />
                 {video.thumbnailUrl && (
                   <Image
                     src={video.thumbnailUrl}
                     alt={video.title}
                     fill
                     loading="lazy"
-                    className="object-cover opacity-60 group-hover:opacity-80 transition-opacity"
+                    className="object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-500"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
                 )}
@@ -103,7 +107,7 @@ export default function VideoPreviews() {
                 </div>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
 
         {/* Empty state */}
@@ -118,26 +122,28 @@ export default function VideoPreviews() {
         )}
       </div>
 
-      {/* Video Modal */}
+      {/* Video Modal — Bottom sheet on mobile, centered on desktop */}
       <AnimatePresence>
         {activeVideo && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+            className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm p-0 sm:p-4"
             onClick={() => setActiveVideo(null)}
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="relative w-full max-w-4xl aspect-video rounded-2xl overflow-hidden border border-vivid-border/50 bg-vivid-bg"
+              initial={{ scale: 0.9, opacity: 0, y: 100 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 100 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="relative w-full sm:max-w-4xl sm:aspect-video rounded-t-2xl sm:rounded-2xl overflow-hidden border border-vivid-border/50 bg-vivid-bg"
               onClick={(e) => e.stopPropagation()}
             >
               <button
                 onClick={() => setActiveVideo(null)}
-                className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/50 flex items-center justify-center text-white hover:bg-black/70 transition-colors"
+                className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/50 flex items-center justify-center text-white hover:bg-black/70 transition-colors touch-target"
+                aria-label="Close video"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -145,6 +151,7 @@ export default function VideoPreviews() {
                 src={activeVideo.url}
                 controls
                 autoPlay
+                playsInline
                 className="w-full h-full"
                 poster={activeVideo.thumbnailUrl || undefined}
               />

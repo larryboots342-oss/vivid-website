@@ -242,7 +242,7 @@ export default function DashboardContent({ data, justPurchased }: { data: Dashbo
       </motion.div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           title="Plan"
           value={planName}
@@ -362,8 +362,8 @@ export default function DashboardContent({ data, justPurchased }: { data: Dashbo
               </div>
             </CardHeader>
             <CardContent>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
+              <div className="overflow-x-auto -mx-6 px-6">
+                <table className="w-full text-sm min-w-[500px]">
                   <thead>
                     <tr className="border-b border-vivid-border/40">
                       <th className="text-left py-3 px-4 text-vivid-textDim font-medium">Key</th>

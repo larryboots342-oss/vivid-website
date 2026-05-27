@@ -113,6 +113,20 @@ const VideoPreviews = dynamic(
   }
 );
 
+const StatsSection = dynamic(
+  () => import("@/components/marketing/stats-section"),
+  {
+    loading: () => (
+      <section className="py-32 px-6">
+        <div className="max-w-7xl mx-auto">
+          <SkeletonHeader />
+          <SkeletonGrid count={4} className="md:grid-cols-2 lg:grid-cols-4" />
+        </div>
+      </section>
+    ),
+  }
+);
+
 const RealReviewsSection = dynamic(
   () => import("@/components/marketing/real-reviews"),
   {
@@ -146,6 +160,9 @@ export default function Home() {
         </Suspense>
         <Suspense fallback={null}>
           <GameCardsSection />
+        </Suspense>
+        <Suspense fallback={null}>
+          <StatsSection />
         </Suspense>
         <Suspense fallback={null}>
           <PricingSection />

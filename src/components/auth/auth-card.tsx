@@ -100,7 +100,7 @@ export default function AuthCard({
   className,
 }: AuthCardProps) {
   return (
-    <main id="main-content" className="relative min-h-screen bg-vivid-bg flex items-center justify-center px-6 py-12 overflow-hidden">
+    <main id="main-content" className="relative min-h-[100dvh] bg-vivid-bg flex items-center justify-center px-4 sm:px-6 py-12 overflow-hidden">
       {/* Background effects */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-vivid-primary/[0.04] rounded-full blur-[180px]" />
@@ -132,7 +132,7 @@ export default function AuthCard({
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-vivid-primary/40 to-transparent" />
 
           {/* Header */}
-          <div className="px-8 pt-10 pb-6 text-center">
+          <div className="px-6 sm:px-8 pt-10 pb-6 text-center">
             <Link
               href="/"
               className="inline-flex items-center gap-2.5 mb-6 group"
@@ -151,7 +151,7 @@ export default function AuthCard({
           </div>
 
           {/* Content */}
-          <div className="px-8 pb-10">{children}</div>
+          <div className="px-6 sm:px-8 pb-10">{children}</div>
         </div>
 
         {/* Footer */}

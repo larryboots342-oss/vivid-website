@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 import { AmbientGlow } from "@/components/marketing/ambient-glow";
+import { MagneticButton } from "@/components/ui/magnetic-button";
 import { ArrowRight, Download } from "lucide-react";
 
 export default function CTASection() {
@@ -28,20 +29,22 @@ export default function CTASection() {
           </p>
 
           <div className="flex flex-wrap justify-center gap-4">
-            <Link
+            <MagneticButton
               href="/download"
               className="group inline-flex items-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-vivid-primary text-vivid-bg font-bold text-base sm:text-lg hover:bg-vivid-primaryDim transition-all duration-300 glow-primary-strong active:scale-95 sm:hover:scale-105 touch-target"
+              strength={0.2}
             >
               <Download className="w-5 h-5 flex-shrink-0" />
               Download Free
-            </Link>
-            <Link
+            </MagneticButton>
+            <MagneticButton
               href="/pricing"
               className="group inline-flex items-center gap-2 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl border border-vivid-border/60 text-white font-semibold hover:bg-white/5 backdrop-blur-sm transition-all duration-300 hover:border-vivid-primary/30 active:scale-95 sm:hover:scale-105 touch-target"
+              strength={0.2}
             >
               View Pricing
               <ArrowRight className="w-5 h-5 flex-shrink-0 group-hover:translate-x-1 transition-transform" />
-            </Link>
+            </MagneticButton>
           </div>
         </div>
       </div>

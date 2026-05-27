@@ -27,7 +27,7 @@ export default function MarketingLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative min-h-screen bg-vivid-bg">
+    <div className="relative min-h-[100dvh] bg-vivid-bg">
       <Suspense fallback={null}>
         <ParticleBackground />
       </Suspense>

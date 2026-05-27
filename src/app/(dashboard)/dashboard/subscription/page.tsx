@@ -59,7 +59,7 @@ export default function SubscriptionPage() {
       <PageWrapper className="space-y-8">
         <div className="h-8 w-48 bg-white/5 animate-pulse rounded" />
         <div className="h-40 bg-white/5 animate-pulse rounded-2xl" />
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           <div className="h-96 bg-white/5 animate-pulse rounded-2xl" />
           <div className="h-96 bg-white/5 animate-pulse rounded-2xl" />
           <div className="h-96 bg-white/5 animate-pulse rounded-2xl" />

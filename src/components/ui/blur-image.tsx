@@ -61,8 +61,8 @@ export default function BlurImage({
           {!isLoaded && (
             <motion.div
               className="absolute inset-0 z-10"
-              initial={{ opacity: 1, scale: 1.05, filter: "blur(20px)" }}
-              exit={{ opacity: 0, scale: 1, filter: "blur(0px)" }}
+              initial={{ opacity: 1, scale: 1.05 }}
+              exit={{ opacity: 0, scale: 1 }}
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             >
               {placeholderSrc ? (

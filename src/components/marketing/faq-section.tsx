@@ -164,7 +164,7 @@ function AccordionItem({
         <button
           ref={buttonRef}
           onClick={onToggle}
-          className="relative w-full flex items-center justify-between gap-4 p-6 text-left"
+          className="relative w-full flex items-center justify-between gap-4 p-5 sm:p-6 text-left touch-target"
           aria-expanded={isOpen}
           aria-controls={`faq-content-${item.id}`}
           id={`faq-trigger-${item.id}`}
@@ -361,7 +361,7 @@ export default function FAQSection() {
               onFocus={() => setIsSearching(true)}
               onBlur={() => setIsSearching(false)}
               placeholder="Search questions..."
-              className="w-full bg-transparent py-4 pl-12 pr-12 text-white placeholder:text-vivid-textDim outline-none text-[15px]"
+              className="w-full bg-transparent py-4 pl-12 pr-12 text-white placeholder:text-vivid-textDim outline-none text-base sm:text-[15px]"
               aria-label="Search FAQ"
               aria-controls="faq-results"
             />
@@ -476,7 +476,7 @@ export default function FAQSection() {
                   setSearchQuery("");
                   setActiveCategory("All");
                 }}
-                className="mt-4 px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-vivid-border/50 hover:border-vivid-border text-sm text-vivid-text transition-all duration-300"
+                className="mt-4 px-5 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-vivid-border/50 hover:border-vivid-border text-sm text-vivid-text transition-all duration-300 touch-target"
               >
                 Clear filters
               </button>
@@ -514,7 +514,7 @@ export default function FAQSection() {
                 <a
                   href="mailto:support@vivid.gg"
                   className={cn(
-                    "group inline-flex items-center gap-2 px-6 py-3 rounded-xl",
+                    "group inline-flex items-center gap-2 px-6 py-3.5 rounded-xl touch-target",
                     "bg-vivid-primary/10 border border-vivid-primary/30 text-vivid-primary",
                     "hover:bg-vivid-primary/20 hover:border-vivid-primary/50 transition-all duration-300",
                     "text-sm font-semibold"
@@ -529,7 +529,7 @@ export default function FAQSection() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className={cn(
-                    "group inline-flex items-center gap-2 px-6 py-3 rounded-xl",
+                    "group inline-flex items-center gap-2 px-6 py-3.5 rounded-xl touch-target",
                     "bg-[#5865F2]/10 border border-[#5865F2]/30 text-[#5865F2]",
                     "hover:bg-[#5865F2]/20 hover:border-[#5865F2]/50 transition-all duration-300",
                     "text-sm font-semibold"

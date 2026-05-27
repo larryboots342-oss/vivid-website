@@ -26,7 +26,7 @@ export function Header({
   const justifyClass = title ? "justify-between" : "justify-end";
 
   return (
-    <header className={`lg:sticky lg:top-0 z-30 flex items-center ${justifyClass} gap-4 px-6 lg:px-8 py-4`}>
+    <header className={`lg:sticky lg:top-0 z-30 flex items-center ${justifyClass} gap-4 px-4 sm:px-6 lg:px-8 py-4`}>
       {title && (
         <div className="flex items-center gap-3">
           {titleIcon && (
@@ -50,7 +50,7 @@ export function Header({
           <div className="relative">
             <button
               onClick={() => setNotificationsOpen(!notificationsOpen)}
-              className="relative p-2.5 rounded-xl text-vivid-textMuted hover:text-white hover:bg-white/5 transition-all duration-200"
+              className="relative p-2.5 rounded-xl text-vivid-textMuted hover:text-white hover:bg-white/5 transition-all duration-200 touch-target min-w-[44px] min-h-[44px] flex items-center justify-center"
               aria-label="Notifications"
             >
               <Bell className="w-5 h-5" />
@@ -71,7 +71,7 @@ export function Header({
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
                     transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                    className="absolute right-0 top-full mt-3 w-80 z-50 rounded-2xl border border-vivid-border/60 bg-vivid-surface/95 backdrop-blur-xl shadow-2xl shadow-black/40 overflow-hidden"
+                    className="absolute right-0 top-full mt-3 w-[calc(100vw-2rem)] max-w-80 z-50 rounded-2xl border border-vivid-border/60 bg-vivid-surface/95 backdrop-blur-xl shadow-2xl shadow-black/40 overflow-hidden"
                   >
                     <div className="flex items-center justify-between px-5 py-4 border-b border-vivid-border/40">
                       <h3 className="text-sm font-semibold text-white">Notifications</h3>

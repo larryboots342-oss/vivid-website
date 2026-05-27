@@ -5,6 +5,8 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 import { SectionHeader } from "@/components/marketing/section-header";
+import { GlowCard } from "@/components/ui/glow-card";
+import { MagneticButton } from "@/components/ui/magnetic-button";
 import {
   Check,
   X,
@@ -23,28 +25,28 @@ function PlanCard({ plan, index }: { plan: PlanConfig; index: number }) {
   const isPopular = plan.popular;
 
   return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 60 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{
-        duration: 0.6,
-        delay: index * 0.12,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className={cn(
-        "relative rounded-2xl border p-7 sm:p-8 transition-all duration-500 gpu-animate flex flex-col h-full",
+    <GlowCard
+      delay={index * 0.12}
+      glowColor={
         isPopular
-          ? "border-vivid-primary/40 bg-gradient-to-b from-vivid-primary/[0.08] to-transparent shadow-[0_0_40px_rgba(0,245,255,0.08)]"
-          : "border-vivid-border/50 bg-vivid-surface/30 hover:border-vivid-primary/25 hover:bg-vivid-surface/50"
-      )}
-      style={{
-        transform: isHovered && !isPopular ? "translateY(-6px)" : undefined,
-      }}
+          ? "rgba(0, 245, 255, 0.1)"
+          : "rgba(0, 229, 255, 0.06)"
+      }
     >
+      <motion.div
+        layout
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className={cn(
+          "relative rounded-2xl border p-7 sm:p-8 transition-all duration-500 gpu-animate flex flex-col h-full",
+          isPopular
+            ? "border-vivid-primary/40 bg-gradient-to-b from-vivid-primary/[0.08] to-transparent shadow-[0_0_40px_rgba(0,245,255,0.08)]"
+            : "border-vivid-border/50 bg-vivid-surface/30 hover:border-vivid-primary/25 hover:bg-vivid-surface/50"
+        )}
+        style={{
+          transform: isHovered && !isPopular ? "translateY(-6px)" : undefined,
+        }}
+      >
       {/* Popular glow */}
       {isPopular && (
         <div className="absolute -top-px left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-vivid-primary to-transparent" />
@@ -120,19 +122,21 @@ function PlanCard({ plan, index }: { plan: PlanConfig; index: number }) {
       </ul>
 
       {/* CTA */}
-      <Link
+      <MagneticButton
         href={`/checkout/stripe?tier=${plan.id}`}
         className={cn(
-          "group relative flex items-center justify-center gap-2 w-full px-6 py-3.5 rounded-xl font-bold text-sm transition-all duration-300 overflow-hidden",
+          "group relative flex items-center justify-center gap-2 w-full px-6 py-4 rounded-xl font-bold text-sm transition-all duration-300 overflow-hidden touch-target",
           isPopular
             ? "bg-vivid-primary text-vivid-bg hover:shadow-[0_0_30px_rgba(0,245,255,0.3)]"
             : "bg-white/5 text-white border border-vivid-border/60 hover:border-vivid-primary/40 hover:bg-vivid-primary/10"
         )}
+        strength={0.15}
       >
         <span className="relative z-10">Get {plan.name}</span>
         <ArrowRight className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform" />
-      </Link>
-    </motion.div>
+      </MagneticButton>
+      </motion.div>
+    </GlowCard>
   );
 }
 

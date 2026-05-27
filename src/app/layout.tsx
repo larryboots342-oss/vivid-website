@@ -4,6 +4,8 @@ import { Providers } from "@/components/providers";
 import SkipLink from "@/components/ui/skip-link";
 import StructuredData from "@/components/marketing/structured-data";
 import PageLoader from "@/components/ui/page-loader";
+import { ScrollProgress } from "@/components/ui/scroll-progress";
+import { CustomCursor } from "@/components/ui/custom-cursor";
 import VisitorTracker from "@/components/analytics/visitor-tracker";
 import { Suspense } from "react";
 import "./globals.css";
@@ -144,14 +146,14 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
       </head>
-      <body className="antialiased font-sans">
+      <body className="antialiased font-sans min-h-[100dvh]">
         <SkipLink />
         <Providers>
           <PageLoader />
           <Suspense fallback={null}>
             <VisitorTracker />
           </Suspense>
-          <div id="main-content">{children}</div>
+          <div id="main-content" className="min-h-[100dvh]">{children}</div>
         </Providers>
       </body>
     </html>

@@ -1,7 +1,10 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 import { SectionHeader } from "@/components/marketing/section-header";
+import { GlowCard } from "@/components/ui/glow-card";
+import { containerVariants, itemVariants } from "@/lib/animations";
 import { Check, Clock } from "lucide-react";
 
 const games = [
@@ -86,47 +89,54 @@ export default function GameCardsSection() {
           />
         </div>
 
-        <div
+        <motion.div
           ref={cardsRef}
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
           className="game-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-4 sm:px-0"
         >
-          {games.map((game) => (
-            <div
-              key={game.name}
-              className={`game-card group relative rounded-2xl border ${game.borderColor} bg-gradient-to-br ${game.color} p-6 sm:p-8 overflow-hidden hover:-translate-y-2 transition-all duration-500 gpu-animate active:scale-[0.98]`}
-            >
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-vivid-primary/5" />
+          {games.map((game, i) => (
+            <motion.div key={game.name} variants={itemVariants}>
+              <GlowCard delay={i * 0.08}>
+                <div
+                  className={`game-card group relative rounded-2xl border ${game.borderColor} bg-gradient-to-br ${game.color} p-5 sm:p-8 overflow-hidden hover:-translate-y-2 transition-all duration-500 gpu-animate active:scale-[0.98] break-words`}
+                >
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-vivid-primary/5" />
 
-              <div className="relative z-10">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-2xl font-bold text-white">{game.name}</h3>
-                  {game.status === "available" ? (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-green-500/20 text-green-400 text-xs font-semibold border border-green-500/30">
-                      <Check className="w-3 h-3" />
-                      {game.statusText}
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 text-xs font-semibold border border-amber-500/20">
-                      <Clock className="w-3 h-3" />
-                      {game.statusText}
-                    </span>
-                  )}
+                  <div className="relative z-10">
+                    <div className="flex items-center justify-between mb-6 flex-wrap gap-2">
+                      <h3 className="text-xl sm:text-2xl font-bold text-white">{game.name}</h3>
+                      {game.status === "available" ? (
+                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-green-500/20 text-green-400 text-xs font-semibold border border-green-500/30">
+                          <Check className="w-3 h-3" />
+                          {game.statusText}
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 text-xs font-semibold border border-amber-500/20">
+                          <Clock className="w-3 h-3" />
+                          {game.statusText}
+                        </span>
+                      )}
+                    </div>
+
+                    <p className="text-vivid-textMuted mb-6">{game.description}</p>
+
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-current opacity-60" />
+                      <span className={`text-sm ${game.accent} font-medium`}>
+                        {game.status === "available"
+                          ? "Active Development"
+                          : "In Development"}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-
-                <p className="text-vivid-textMuted mb-6">{game.description}</p>
-
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-current opacity-60" />
-                  <span className={`text-sm ${game.accent} font-medium`}>
-                    {game.status === "available"
-                      ? "Active Development"
-                      : "In Development"}
-                  </span>
-                </div>
-              </div>
-            </div>
+              </GlowCard>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
