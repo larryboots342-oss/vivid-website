@@ -15,6 +15,8 @@ import {
   Gamepad2,
   Video,
   PoundSterling,
+  AlertTriangle,
+  RefreshCw,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CURRENCY_SYMBOL } from "@/lib/constants";
@@ -90,19 +92,28 @@ function StatCard({
 export default function AdminOverviewPage() {
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(false);
 
-  useEffect(() => {
+  const fetchStats = () => {
+    setLoading(true);
+    setError(false);
     fetch("/api/admin/stats")
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error("Failed to fetch stats");
+        return r.json();
+      })
       .then((data) => {
         setStats(data);
         setLoading(false);
       })
       .catch(() => {
-        setError("Failed to load admin stats.");
+        setError(true);
         setLoading(false);
       });
+  };
+
+  useEffect(() => {
+    fetchStats();
   }, []);
 
   const getStatValue = (key: string) => {
@@ -132,8 +143,18 @@ export default function AdminOverviewPage() {
       </div>
 
       {error && (
-        <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-400">
-          {error}
+        <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-4 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3 text-sm text-red-400">
+            <AlertTriangle className="w-4 h-4 shrink-0" />
+            Failed to load admin stats.
+          </div>
+          <button
+            onClick={fetchStats}
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-medium hover:bg-red-500/20 transition-colors"
+          >
+            <RefreshCw className="w-3.5 h-3.5" />
+            Retry
+          </button>
         </div>
       )}
 
