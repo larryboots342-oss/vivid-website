@@ -22,7 +22,16 @@ function getReferrer(): string | null {
   }
 }
 
+function isOptedOut(): boolean {
+  if (typeof window === "undefined") return false;
+  if (window.localStorage.getItem("vivid-opt-out") === "1") return true;
+  if (navigator.doNotTrack === "1") return true;
+  return false;
+}
+
 async function trackPageView(path: string) {
+  if (isOptedOut()) return;
+
   const visitorId = getVisitorId();
   if (!visitorId) return;
 
