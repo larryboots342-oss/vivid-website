@@ -5,6 +5,14 @@ import { parseUserAgent } from "@/lib/ua-parser";
 import { auth } from "@clerk/nextjs/server";
 import { rateLimit } from "@/lib/rate-limit";
 import { getClientIp, withRateLimit, errorResponse } from "@/lib/api-utils";
+import { z } from "zod";
+
+const schema = z.object({
+  visitorId: z.string().min(1).max(128),
+  path: z.string().max(500),
+  referrer: z.string().max(1000).optional().nullable(),
+  userAgent: z.string().max(1000).optional().nullable(),
+});
 
 const limiter = rateLimit({ interval: 60 * 1000 });
 
@@ -31,16 +39,17 @@ export async function POST(req: NextRequest) {
     withRateLimit(limiter, ip, 60);
 
     const body = await req.json();
+    const parsed = schema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Invalid input", issues: parsed.error.issues }, { status: 400 });
+    }
+
     const {
       visitorId,
       path,
       referrer,
       userAgent: rawUA,
-    } = body;
-
-    if (!visitorId || !path) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-    }
+    } = parsed.data;
 
     const geo = await getGeoFromIP(ip);
     const ua = parseUserAgent(rawUA || req.headers.get("user-agent"));
@@ -65,12 +74,12 @@ export async function POST(req: NextRequest) {
         ...(geo?.city ? { city: geo.city } : {}),
         ...(geo?.region ? { region: geo.region } : {}),
         ip: ip === "unknown" ? undefined : ip,
-        userAgent: rawUA || undefined,
+        userAgent: rawUA ?? null,
         device: ua.device,
         browser: ua.browser,
         os: ua.os,
-        referrer: referrer || undefined,
-        source: getSourceFromReferrer(referrer),
+        referrer: referrer ?? null,
+        source: getSourceFromReferrer(referrer ?? null),
       },
       create: {
         visitorId,
@@ -79,12 +88,12 @@ export async function POST(req: NextRequest) {
         city: geo?.city || undefined,
         region: geo?.region || undefined,
         ip: ip === "unknown" ? undefined : ip,
-        userAgent: rawUA || undefined,
+        userAgent: rawUA ?? null,
         device: ua.device,
         browser: ua.browser,
         os: ua.os,
-        referrer: referrer || undefined,
-        source: getSourceFromReferrer(referrer),
+        referrer: referrer ?? null,
+        source: getSourceFromReferrer(referrer ?? null),
         visitCount: 1,
       },
     });
@@ -93,10 +102,10 @@ export async function POST(req: NextRequest) {
       data: {
         visitorId: visitor.id,
         path,
-        referrer: referrer || undefined,
+        referrer: referrer ?? null,
         country: geo?.country || undefined,
         ip: ip === "unknown" ? undefined : ip,
-        userAgent: rawUA || undefined,
+        userAgent: rawUA ?? null,
         device: ua.device,
         browser: ua.browser,
         os: ua.os,

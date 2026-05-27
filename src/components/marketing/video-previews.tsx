@@ -3,8 +3,10 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Video, X } from "lucide-react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { SkeletonCard } from "@/components/ui/skeleton-card";
+import NextImage from "next/image";
 
 interface VideoItem {
   id: string;
@@ -85,7 +87,7 @@ export default function VideoPreviews() {
                 {/* Thumbnail or gradient fallback */}
                 <div className="absolute inset-0 bg-gradient-to-br from-vivid-primary/5 to-transparent" />
                 {video.thumbnailUrl && (
-                  <Image
+                  <NextImage
                     src={video.thumbnailUrl}
                     alt={video.title}
                     fill
