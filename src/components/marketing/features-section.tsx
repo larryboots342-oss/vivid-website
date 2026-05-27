@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef, useEffect } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
+import { AmbientGlow } from "@/components/marketing/ambient-glow";
+import { SectionHeader } from "@/components/marketing/section-header";
 import {
   Activity,
   BrainCircuit,
@@ -11,8 +11,6 @@ import {
   Gauge,
   Shield,
 } from "lucide-react";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const features = [
   {
@@ -54,72 +52,30 @@ const features = [
 ];
 
 export default function FeaturesSection() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    if (prefersReducedMotion) return;
-
-    const ctx = gsap.context(() => {
-      // Title animation
-      gsap.fromTo(
-        ".features-title",
-        { y: 50, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 85%",
-          },
-        }
-      );
-
-      // Cards stagger
-      gsap.fromTo(
-        ".feature-card",
-        { y: 60, opacity: 0, scale: 0.95 },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 0.7,
-          ease: "power3.out",
-          stagger: 0.1,
-          scrollTrigger: {
-            trigger: cardsRef.current,
-            start: "top 85%",
-          },
-        }
-      );
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
+  const titleRef = useScrollReveal({ selector: ".features-title", y: 50 });
+  const cardsRef = useScrollReveal({
+    selector: ".feature-card",
+    y: 60,
+    scale: 0.95,
+    stagger: 0.1,
+  });
 
   return (
-    <section id="features" ref={sectionRef} className="relative section-padding overflow-hidden">
-      {/* Background glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-vivid-primary/3 rounded-full blur-[150px] pointer-events-none" />
+    <section id="features" className="relative section-padding overflow-hidden">
+      <AmbientGlow />
 
       <div className="max-w-7xl mx-auto relative z-10">
-        <div className="features-title text-center mb-16 md:mb-20">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-vivid-primary/10 border border-vivid-primary/20 text-vivid-primary text-xs font-semibold uppercase tracking-wider mb-6">
-            <Activity className="w-3.5 h-3.5" />
-            Feature Highlights
-          </div>
-          <h2 className="text-fluid-3xl font-bold mb-4 md:mb-6 text-balance">
-            Powerful <span className="gradient-text">Features</span>
-          </h2>
-          <p className="text-vivid-textMuted text-fluid-base max-w-2xl mx-auto leading-relaxed px-4">
-            Every feature is designed around performance, privacy, and precision.
-            No bloat. Just results.
-          </p>
+        <div ref={titleRef} className="mb-16 md:mb-20">
+          <SectionHeader
+            className="features-title"
+            badge={{ icon: Activity, label: "Feature Highlights" }}
+            title={
+              <>
+                Powerful <span className="gradient-text">Features</span>
+              </>
+            }
+            subtitle="Every feature is designed around performance, privacy, and precision. No bloat. Just results."
+          />
         </div>
 
         <div ref={cardsRef} className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

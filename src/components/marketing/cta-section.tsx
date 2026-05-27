@@ -1,47 +1,24 @@
 "use client";
 
-import { useRef, useEffect } from "react";
 import Link from "next/link";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
+import { AmbientGlow } from "@/components/marketing/ambient-glow";
 import { ArrowRight, Download } from "lucide-react";
 
-gsap.registerPlugin(ScrollTrigger);
-
 export default function CTASection() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    if (prefersReducedMotion) return;
-
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        ".cta-content",
-        { y: 60, opacity: 0, scale: 0.95 },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 1,
-          ease: "power3.out",
-          scrollTrigger: { trigger: sectionRef.current, start: "top 85%" },
-        }
-      );
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
+  const sectionRef = useScrollReveal({
+    selector: ".cta-content",
+    y: 60,
+    scale: 0.95,
+    duration: 1,
+  });
 
   return (
-    <section ref={sectionRef} className="relative section-padding overflow-hidden">
-      {/* Background glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-vivid-primary/5 rounded-full blur-[150px] pointer-events-none" />
+    <section className="relative section-padding overflow-hidden">
+      <AmbientGlow className="bg-vivid-primary/5" />
 
       <div className="max-w-4xl mx-auto text-center relative z-10">
-        <div className="cta-content gpu-animate">
+        <div ref={sectionRef} className="cta-content gpu-animate">
           <h2 className="text-fluid-3xl font-bold text-white mb-4 md:mb-6 text-balance">
             Ready to <span className="gradient-text">dominate</span>?
           </h2>

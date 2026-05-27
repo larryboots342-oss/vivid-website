@@ -1,11 +1,8 @@
 "use client";
 
-import { useRef, useEffect } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
+import { SectionHeader } from "@/components/marketing/section-header";
 import { Check, Clock } from "lucide-react";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const games = [
   {
@@ -65,63 +62,34 @@ const games = [
 ];
 
 export default function GameCardsSection() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    if (prefersReducedMotion) return;
-
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        ".games-title",
-        { y: 50, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: "power3.out",
-          scrollTrigger: { trigger: sectionRef.current, start: "top 85%" },
-        }
-      );
-
-      gsap.fromTo(
-        ".game-card",
-        { y: 60, opacity: 0, scale: 0.95 },
-        {
-          y: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 0.7,
-          ease: "power3.out",
-          stagger: 0.08,
-          scrollTrigger: { trigger: ".game-grid", start: "top 85%" },
-        }
-      );
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
+  const titleRef = useScrollReveal({ selector: ".games-title", y: 50 });
+  const cardsRef = useScrollReveal({
+    selector: ".game-card",
+    y: 60,
+    scale: 0.95,
+    stagger: 0.08,
+  });
 
   return (
-    <section id="showcase" ref={sectionRef} className="relative section-padding">
+    <section id="showcase" className="relative section-padding">
       <div className="max-w-7xl mx-auto">
-        <div className="games-title text-center mb-16 md:mb-20">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-vivid-primary/10 border border-vivid-primary/20 text-vivid-primary text-xs font-semibold uppercase tracking-wider mb-6">
-            <Clock className="w-3.5 h-3.5" />
-            Platform Support
-          </div>
-          <h2 className="text-fluid-3xl font-bold mb-4 md:mb-6 text-balance">
-            Supported <span className="gradient-text">Platforms</span>
-          </h2>
-          <p className="text-vivid-textMuted text-fluid-base max-w-2xl mx-auto leading-relaxed px-4">
-            Currently optimized for Roblox, with more platforms launching very
-            soon. Our AI models adapt to each game&apos;s unique mechanics.
-          </p>
+        <div ref={titleRef} className="mb-16 md:mb-20">
+          <SectionHeader
+            className="games-title"
+            badge={{ icon: Clock, label: "Platform Support" }}
+            title={
+              <>
+                Supported <span className="gradient-text">Platforms</span>
+              </>
+            }
+            subtitle="Currently optimized for Roblox, with more platforms launching very soon. Our AI models adapt to each game's unique mechanics."
+          />
         </div>
 
-        <div className="game-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-4 sm:px-0">
+        <div
+          ref={cardsRef}
+          className="game-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-4 sm:px-0"
+        >
           {games.map((game) => (
             <div
               key={game.name}

@@ -1,15 +1,22 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion } from "framer-motion";
-import { Check, X, Zap, Infinity, Clock, Crown, ArrowRight, Sparkles } from "lucide-react";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
+import { SectionHeader } from "@/components/marketing/section-header";
+import {
+  Check,
+  X,
+  Zap,
+  Infinity,
+  Clock,
+  Crown,
+  ArrowRight,
+  Sparkles,
+} from "lucide-react";
 import { PLANS, type PlanConfig } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-
-gsap.registerPlugin(ScrollTrigger);
 
 function PlanCard({ plan, index }: { plan: PlanConfig; index: number }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -21,7 +28,11 @@ function PlanCard({ plan, index }: { plan: PlanConfig; index: number }) {
       initial={{ opacity: 0, y: 60 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.6, delay: index * 0.12, ease: [0.22, 1, 0.36, 1] }}
+      transition={{
+        duration: 0.6,
+        delay: index * 0.12,
+        ease: [0.22, 1, 0.36, 1],
+      }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={cn(
@@ -68,7 +79,9 @@ function PlanCard({ plan, index }: { plan: PlanConfig; index: number }) {
           </div>
           <div>
             <h3 className="text-xl font-bold text-white">{plan.name}</h3>
-            <p className="text-xs text-vivid-textDim uppercase tracking-wider">{plan.durationLabel}</p>
+            <p className="text-xs text-vivid-textDim uppercase tracking-wider">
+              {plan.durationLabel}
+            </p>
           </div>
         </div>
 
@@ -124,48 +137,24 @@ function PlanCard({ plan, index }: { plan: PlanConfig; index: number }) {
 }
 
 export default function PricingSection() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotion) return;
-
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        ".pricing-title",
-        { y: 50, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: "power3.out",
-          scrollTrigger: { trigger: sectionRef.current, start: "top 85%" },
-        }
-      );
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
+  const sectionRef = useScrollReveal({ selector: ".pricing-title", y: 50 });
 
   return (
-    <section id="pricing" ref={sectionRef} className="relative section-padding">
-      {/* Background ambient */}
+    <section id="pricing" className="relative section-padding">
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[900px] h-[600px] bg-vivid-primary/[0.02] rounded-full blur-[150px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* Header */}
-        <div className="pricing-title text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-vivid-primary/10 border border-vivid-primary/20 text-vivid-primary text-xs font-semibold uppercase tracking-wider mb-6">
-            <Crown className="w-3.5 h-3.5" />
-            License Tiers
-          </div>
-          <h2 className="text-fluid-3xl font-bold mb-4 md:mb-6 text-balance">
-            Choose Your <span className="gradient-text">Access</span>
-          </h2>
-          <p className="text-vivid-textMuted text-fluid-base max-w-2xl mx-auto leading-relaxed px-4">
-            One-time purchase. Instant delivery. No recurring fees.
-            Your license key is emailed immediately after payment.
-          </p>
+        <div ref={sectionRef} className="mb-16">
+          <SectionHeader
+            className="pricing-title"
+            badge={{ icon: Crown, label: "License Tiers" }}
+            title={
+              <>
+                Choose Your <span className="gradient-text">Access</span>
+              </>
+            }
+            subtitle="One-time purchase. Instant delivery. No recurring fees. Your license key is emailed immediately after payment."
+          />
         </div>
 
         {/* Cards */}

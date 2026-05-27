@@ -1,9 +1,10 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useState } from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
+import { AmbientGlow } from "@/components/marketing/ambient-glow";
+import { SectionHeader } from "@/components/marketing/section-header";
 import {
   BrainCircuit,
   Cpu,
@@ -19,8 +20,6 @@ import {
   Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-gsap.registerPlugin(ScrollTrigger);
 
 interface FeatureCard {
   id: string;
@@ -248,10 +247,12 @@ function BentoCard({
         />
 
         {/* Animated background blobs */}
-        <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-700"
+        <div
+          className="absolute -top-10 -right-10 w-32 h-32 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity duration-700"
           style={{ background: feature.glowColor }}
         />
-        <div className="absolute -bottom-10 -left-10 w-24 h-24 rounded-full blur-3xl opacity-0 group-hover:opacity-20 transition-opacity duration-700 delay-100"
+        <div
+          className="absolute -bottom-10 -left-10 w-24 h-24 rounded-full blur-3xl opacity-0 group-hover:opacity-20 transition-opacity duration-700 delay-100"
           style={{ background: feature.glowColor }}
         />
 
@@ -264,7 +265,9 @@ function BentoCard({
               "bg-white/5 border border-white/10",
               "group-hover:scale-110 group-hover:border-white/20"
             )}
-            whileHover={shouldReduceMotion ? undefined : { rotate: [0, -10, 10, 0] }}
+            whileHover={
+              shouldReduceMotion ? undefined : { rotate: [0, -10, 10, 0] }
+            }
             transition={{ duration: 0.5 }}
           >
             <Icon
@@ -320,47 +323,7 @@ function BentoCard({
 /* ------------------------------------------------------------------ */
 export default function FeaturesShowcase() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLDivElement>(null);
-  const shouldReduceMotion = useReducedMotion();
-
-  useEffect(() => {
-    if (shouldReduceMotion) return;
-
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        ".showcase-title",
-        { y: 60, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: titleRef.current,
-            start: "top 85%",
-          },
-        }
-      );
-
-      gsap.fromTo(
-        ".showcase-subtitle",
-        { y: 40, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: "power3.out",
-          delay: 0.15,
-          scrollTrigger: {
-            trigger: titleRef.current,
-            start: "top 85%",
-          },
-        }
-      );
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, [shouldReduceMotion]);
+  const titleRef = useScrollReveal({ selector: ".showcase-header", y: 60 });
 
   return (
     <section
@@ -370,32 +333,23 @@ export default function FeaturesShowcase() {
     >
       {/* Ambient background effects */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-vivid-primary/3 rounded-full blur-[150px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-purple-500/3 rounded-full blur-[150px]" />
+        <AmbientGlow className="top-1/4 left-1/4 -translate-x-0 -translate-y-0 bg-vivid-primary/[0.03]" />
+        <AmbientGlow className="bottom-1/4 right-1/4 top-auto left-auto -translate-x-0 -translate-y-0 w-[500px] h-[500px] bg-purple-500/[0.03]" />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header */}
-        <div ref={titleRef} className="text-center mb-20">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-vivid-primary/10 border border-vivid-primary/20 text-vivid-primary text-sm font-medium mb-8"
-          >
-            <Sparkles className="w-4 h-4" />
-            Feature Highlights
-          </motion.div>
-
-          <h2 className="showcase-title text-fluid-3xl font-bold mb-4 md:mb-6 text-balance">
-            Built for{" "}
-            <span className="gradient-text">Performance</span>
-          </h2>
-          <p className="showcase-subtitle text-fluid-base text-vivid-textMuted max-w-2xl mx-auto leading-relaxed px-4">
-            Every feature engineered for speed, privacy, and precision.
-            Experience the next generation of AI-powered gaming assistance.
-          </p>
+        <div ref={titleRef} className="mb-20">
+          <SectionHeader
+            className="showcase-header"
+            badge={{ icon: Sparkles, label: "Feature Highlights" }}
+            title={
+              <>
+                Built for <span className="gradient-text">Performance</span>
+              </>
+            }
+            subtitle="Every feature engineered for speed, privacy, and precision. Experience the next generation of AI-powered gaming assistance."
+          />
         </div>
 
         {/* Bento Grid */}

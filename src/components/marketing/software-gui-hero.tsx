@@ -3,6 +3,8 @@
 import { useRef, useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { AmbientGlow } from "@/components/marketing/ambient-glow";
+import { SectionHeader } from "@/components/marketing/section-header";
 import {
   Zap,
   Settings,
@@ -46,7 +48,9 @@ export default function SoftwareGuiHero() {
   const guiRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
     if (prefersReducedMotion) return;
 
     const ctx = gsap.context(() => {
@@ -84,22 +88,20 @@ export default function SoftwareGuiHero() {
       className="relative py-24 sm:py-32 overflow-hidden"
       style={{ perspective: "1200px" }}
     >
-      {/* Background glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-vivid-primary/[0.03] rounded-full blur-[150px] pointer-events-none" />
+      <AmbientGlow className="w-[800px] h-[600px] bg-vivid-primary/[0.03]" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
         {/* Section header */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-vivid-primary/10 border border-vivid-primary/20 text-vivid-primary text-xs font-semibold uppercase tracking-wider mb-6">
-            <Gamepad2 className="w-3.5 h-3.5" />
-            The Software
-          </div>
-          <h2 className="text-fluid-3xl font-bold mb-4 md:mb-6 text-balance">
-            See It In <span className="gradient-text">Action</span>
-          </h2>
-          <p className="text-vivid-textMuted text-fluid-base max-w-2xl mx-auto leading-relaxed">
-            Scroll to explore the VIVID interface. Built for precision, designed for dominance.
-          </p>
+        <div className="mb-16">
+          <SectionHeader
+            badge={{ icon: Gamepad2, label: "The Software" }}
+            title={
+              <>
+                See It In <span className="gradient-text">Action</span>
+              </>
+            }
+            subtitle="Scroll to explore the VIVID interface. Built for precision, designed for dominance."
+          />
         </div>
 
         {/* 3D GUI Mockup */}
@@ -130,7 +132,9 @@ export default function SoftwareGuiHero() {
                   >
                     V
                   </div>
-                  <span className="text-white font-bold text-sm tracking-wide">VIVID</span>
+                  <span className="text-white font-bold text-sm tracking-wide">
+                    VIVID
+                  </span>
                 </div>
 
                 {/* Nav items */}
@@ -141,7 +145,9 @@ export default function SoftwareGuiHero() {
                     style={{
                       background: item.active ? "#131313" : "transparent",
                       color: item.active ? "#ffffff" : "#707070",
-                      borderLeft: item.active ? "3px solid #00e5ff" : "3px solid transparent",
+                      borderLeft: item.active
+                        ? "3px solid #00e5ff"
+                        : "3px solid transparent",
                       marginLeft: item.active ? "-2.5px" : "0",
                     }}
                   >
@@ -154,10 +160,15 @@ export default function SoftwareGuiHero() {
                 <div className="flex-1" />
 
                 {/* Status */}
-                <div className="px-3 py-2 rounded-lg" style={{ background: "#0f0f0f" }}>
+                <div
+                  className="px-3 py-2 rounded-lg"
+                  style={{ background: "#0f0f0f" }}
+                >
                   <div className="flex items-center gap-2">
                     <Circle className="w-2.5 h-2.5 fill-green-400 text-green-400" />
-                    <span className="text-[10px] text-[#a0a0a0]">System Ready</span>
+                    <span className="text-[10px] text-[#a0a0a0]">
+                      System Ready
+                    </span>
                   </div>
                 </div>
               </div>
@@ -170,7 +181,9 @@ export default function SoftwareGuiHero() {
                   style={{ background: "#0d0d0d" }}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-[#00e5ff] font-bold text-sm tracking-wide">VIVID</span>
+                    <span className="text-[#00e5ff] font-bold text-sm tracking-wide">
+                      VIVID
+                    </span>
                     <span className="text-[#404040]">/</span>
                     <span
                       className="px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider"
@@ -203,10 +216,15 @@ export default function SoftwareGuiHero() {
                       style={{ background: "#0a0a0a", borderColor: "#1a1a1a" }}
                     >
                       {/* Roblox status */}
-                      <div className="px-3 py-2.5 border-b flex items-center justify-between" style={{ borderColor: "#1a1a1a" }}>
+                      <div
+                        className="px-3 py-2.5 border-b flex items-center justify-between"
+                        style={{ borderColor: "#1a1a1a" }}
+                      >
                         <div className="flex items-center gap-2">
                           <Circle className="w-2 h-2 fill-green-400 text-green-400" />
-                          <span className="text-[10px] text-[#a0a0a0]">Roblox</span>
+                          <span className="text-[10px] text-[#a0a0a0]">
+                            Roblox
+                          </span>
                         </div>
                         <div
                           className="w-8 h-4 rounded-full relative"
@@ -246,7 +264,10 @@ export default function SoftwareGuiHero() {
                     </div>
 
                     {/* Right panel - Editor */}
-                    <div className="flex-1 flex flex-col min-w-0" style={{ background: "#111111" }}>
+                    <div
+                      className="flex-1 flex flex-col min-w-0"
+                      style={{ background: "#111111" }}
+                    >
                       {/* Editor toolbar */}
                       <div
                         className="h-9 flex items-center gap-1 px-2 border-b flex-shrink-0"
@@ -262,48 +283,70 @@ export default function SoftwareGuiHero() {
                             key={i}
                             className="w-7 h-7 rounded flex items-center justify-center transition-colors hover:bg-white/5"
                           >
-                            <btn.icon className="w-3.5 h-3.5" style={{ color: btn.color }} />
+                            <btn.icon
+                              className="w-3.5 h-3.5"
+                              style={{ color: btn.color }}
+                            />
                           </button>
                         ))}
                       </div>
 
                       {/* Code area */}
-                      <div className="flex-1 p-4 font-mono text-[11px] leading-relaxed overflow-hidden" style={{ color: "#a0a0a0" }}>
+                      <div
+                        className="flex-1 p-4 font-mono text-[11px] leading-relaxed overflow-hidden"
+                        style={{ color: "#a0a0a0" }}
+                      >
                         <span style={{ color: "#b829dd" }}>local</span>{" "}
-                        <span style={{ color: "#ffffff" }}>Vivid</span>{" "}={" "}
+                        <span style={{ color: "#ffffff" }}>Vivid</span> ={" "}
                         <span style={{ color: "#00e5ff" }}>loadstring</span>(
-                        <span style={{ color: "#00ff9d" }}>&quot;https://vivid.gg/api/v2&quot;</span>)()
+                        <span style={{ color: "#00ff9d" }}>
+                          &quot;https://vivid.gg/api/v2&quot;
+                        </span>
+                        )()
                         <br />
                         <br />
-                        <span style={{ color: "#707070" }}>-- Initialize AI Aimbot</span>
+                        <span style={{ color: "#707070" }}>
+                          -- Initialize AI Aimbot
+                        </span>
                         <br />
                         <span style={{ color: "#ffffff" }}>Vivid</span>.
                         <span style={{ color: "#00e5ff" }}>aimbot</span>.
                         <span style={{ color: "#ffd600" }}>enable</span>({"{"}
                         <br />
                         &nbsp;&nbsp;
-                        <span style={{ color: "#a0a0a0" }}>game</span>{" "}={" "}
-                        <span style={{ color: "#00ff9d" }}>&quot;Arsenal&quot;</span>,
+                        <span style={{ color: "#a0a0a0" }}>game</span> ={" "}
+                        <span style={{ color: "#00ff9d" }}>
+                          &quot;Arsenal&quot;
+                        </span>
+                        ,
                         <br />
                         &nbsp;&nbsp;
-                        <span style={{ color: "#a0a0a0" }}>mode</span>{" "}={" "}
-                        <span style={{ color: "#00ff9d" }}>&quot;precision&quot;</span>,
+                        <span style={{ color: "#a0a0a0" }}>mode</span> ={" "}
+                        <span style={{ color: "#00ff9d" }}>
+                          &quot;precision&quot;
+                        </span>
+                        ,
                         <br />
                         &nbsp;&nbsp;
-                        <span style={{ color: "#a0a0a0" }}>fov</span>{" "}={" "}
+                        <span style={{ color: "#a0a0a0" }}>fov</span> ={" "}
                         <span style={{ color: "#ffd600" }}>120</span>
                         <br />
                         {"}"})
                         <br />
                         <br />
-                        <span style={{ color: "#707070" }}>-- Auto-attach on game start</span>
+                        <span style={{ color: "#707070" }}>
+                          -- Auto-attach on game start
+                        </span>
                         <br />
                         <span style={{ color: "#ffffff" }}>Vivid</span>.
                         <span style={{ color: "#00e5ff" }}>autoAttach</span>(
                         <span style={{ color: "#00ff9d" }}>true</span>)
                         <br />
                         <br />
-                        <span className="animate-pulse" style={{ color: "#00ff9d" }}>
+                        <span
+                          className="animate-pulse"
+                          style={{ color: "#00ff9d" }}
+                        >
                           ✓ Ready — AI models loaded (4.2ms inference)
                         </span>
                       </div>
@@ -317,24 +360,24 @@ export default function SoftwareGuiHero() {
                   style={{ background: "#050505", color: "#707070" }}
                 >
                   <div>
-                    <span style={{ color: "#00e5ff" }}>[INFO]</span>{" "}
-                    VIVID v2.7.0 initialized
+                    <span style={{ color: "#00e5ff" }}>[INFO]</span> VIVID
+                    v2.7.0 initialized
                   </div>
                   <div>
-                    <span style={{ color: "#00ff9d" }}>[OK]</span>{" "}
-                    ONNX Runtime loaded (DirectML backend)
+                    <span style={{ color: "#00ff9d" }}>[OK]</span> ONNX Runtime
+                    loaded (DirectML backend)
                   </div>
                   <div>
-                    <span style={{ color: "#00e5ff" }}>[INFO]</span>{" "}
-                    Roblox process detected (PID: 8424)
+                    <span style={{ color: "#00e5ff" }}>[INFO]</span> Roblox
+                    process detected (PID: 8424)
                   </div>
                   <div>
-                    <span style={{ color: "#00ff9d" }}>[OK]</span>{" "}
-                    Auto-attach enabled — monitoring for injection point
+                    <span style={{ color: "#00ff9d" }}>[OK]</span> Auto-attach
+                    enabled — monitoring for injection point
                   </div>
                   <div>
-                    <span style={{ color: "#ffd600" }}>[WARN]</span>{" "}
-                    Arsenal game profile loaded — custom configs applied
+                    <span style={{ color: "#ffd600" }}>[WARN]</span> Arsenal
+                    game profile loaded — custom configs applied
                   </div>
                 </div>
 

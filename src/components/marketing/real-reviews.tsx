@@ -3,8 +3,19 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Star, Quote, Loader2 } from "lucide-react";
+import { SectionHeader } from "@/components/marketing/section-header";
 import { cn } from "@/lib/utils";
-import type { Review } from "@/types";
+
+interface Review {
+  id: string;
+  name: string;
+  avatar: string;
+  rating: number;
+  content: string;
+  tier: string;
+  game?: string;
+  createdAt: string;
+}
 
 function StarRating({ rating }: { rating: number }) {
   return (
@@ -62,27 +73,22 @@ export default function RealReviewsSection() {
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6">
-        <div className="text-center mb-12">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-vivid-primary/10 border border-vivid-primary/20 text-vivid-primary text-sm font-medium mb-6"
-          >
-            <Star className="w-4 h-4 fill-vivid-primary" />
-            Verified Reviews
-          </motion.div>
-
-          <h2 className="text-fluid-3xl font-bold mb-4 text-balance">
-            From Real <span className="gradient-text">Players</span>
-          </h2>
-          <p className="text-fluid-base text-vivid-textMuted max-w-2xl mx-auto leading-relaxed">
-            Only verified license holders can leave reviews. 
-            {stats.total > 0 && (
-              <span className="text-white font-medium"> {stats.average}/5</span>
-            )} average from {stats.total} review{stats.total !== 1 ? "s" : ""}.
-          </p>
+        <div className="mb-12">
+          <SectionHeader
+            badge={{ icon: Star, label: "Verified Reviews" }}
+            title={
+              <>
+                From Real <span className="gradient-text">Players</span>
+              </>
+            }
+            subtitle={`Only verified license holders can leave reviews. ${
+              stats.total > 0
+                ? `${stats.average}/5 average from ${stats.total} review${
+                    stats.total !== 1 ? "s" : ""
+                  }.`
+                : ""
+            }`}
+          />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
