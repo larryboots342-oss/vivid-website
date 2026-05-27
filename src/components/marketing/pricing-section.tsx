@@ -37,7 +37,7 @@ function PlanCard({ plan, index }: { plan: PlanConfig; index: number }) {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         className={cn(
-          "relative rounded-2xl border p-7 sm:p-8 transition-all duration-500 gpu-animate flex flex-col h-full",
+          "relative rounded-2xl border p-7 pt-10 sm:p-8 sm:pt-11 transition-all duration-500 gpu-animate flex flex-col h-full overflow-hidden",
           isPopular
             ? "border-vivid-primary/40 bg-gradient-to-b from-vivid-primary/[0.08] to-transparent shadow-[0_0_40px_rgba(0,245,255,0.08)]"
             : "border-vivid-border/50 bg-vivid-surface/30 hover:border-vivid-primary/25 hover:bg-vivid-surface/50"
@@ -54,7 +54,7 @@ function PlanCard({ plan, index }: { plan: PlanConfig; index: number }) {
       {/* Badge */}
       {plan.badge && (
         <div
-          className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider"
+          className="absolute top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs sm:text-sm font-bold uppercase tracking-wider"
           style={{
             backgroundColor: `${plan.badgeColor}15`,
             border: `1px solid ${plan.badgeColor}40`,
@@ -80,17 +80,17 @@ function PlanCard({ plan, index }: { plan: PlanConfig; index: number }) {
           </div>
           <div>
             <h3 className="text-xl font-bold text-white">{plan.name}</h3>
-            <p className="text-xs text-vivid-textDim uppercase tracking-wider">
+            <p className="text-base text-vivid-textDim uppercase tracking-wider">
               {plan.durationLabel}
             </p>
           </div>
         </div>
 
         <div className="flex items-baseline gap-1 mb-2">
-          <span className="text-4xl sm:text-5xl font-bold text-white tracking-tight">
+          <span className="text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight">
             £{plan.price}
           </span>
-          <span className="text-vivid-textMuted text-sm">one-time</span>
+          <span className="text-vivid-textMuted text-base">one-time</span>
         </div>
         <p className="text-base text-vivid-textMuted leading-relaxed">
           {plan.description}
@@ -107,7 +107,7 @@ function PlanCard({ plan, index }: { plan: PlanConfig; index: number }) {
             <div className="w-5 h-5 rounded-full bg-vivid-primary/10 flex items-center justify-center shrink-0 mt-0.5">
               <Check className="w-3 h-3 text-vivid-primary" />
             </div>
-            <span className="text-base text-vivid-text">{feature}</span>
+            <span className="text-sm md:text-base text-vivid-text">{feature}</span>
           </li>
         ))}
         {plan.notIncluded?.map((feature) => (
@@ -115,7 +115,7 @@ function PlanCard({ plan, index }: { plan: PlanConfig; index: number }) {
             <div className="w-5 h-5 rounded-full bg-vivid-border flex items-center justify-center shrink-0 mt-0.5">
               <X className="w-3 h-3 text-vivid-textDim" />
             </div>
-            <span className="text-base text-vivid-textMuted">{feature}</span>
+            <span className="text-sm md:text-base text-vivid-textMuted">{feature}</span>
           </li>
         ))}
       </ul>
@@ -124,7 +124,7 @@ function PlanCard({ plan, index }: { plan: PlanConfig; index: number }) {
       <MagneticButton
         href={`/checkout/stripe?tier=${plan.id}`}
         className={cn(
-          "group relative flex items-center justify-center gap-2 w-full px-6 py-4 rounded-xl font-bold text-sm transition-all duration-300 overflow-hidden touch-target",
+          "group relative flex items-center justify-center gap-2 w-full px-6 py-4 rounded-xl font-bold text-base transition-all duration-300 overflow-hidden touch-target",
           isPopular
             ? "bg-vivid-primary text-vivid-bg hover:shadow-[0_0_30px_rgba(0,245,255,0.3)]"
             : "bg-white/5 text-white border border-vivid-border/60 hover:border-vivid-primary/40 hover:bg-vivid-primary/10"
@@ -176,19 +176,19 @@ export default function PricingSection() {
           className="mt-16 text-center"
         >
           <div className="inline-flex flex-wrap items-center justify-center gap-6 px-8 py-4 rounded-2xl border border-vivid-border/30 bg-vivid-surface/20">
-            <div className="flex items-center gap-2 text-sm text-vivid-textMuted">
+            <div className="flex items-center gap-2 text-base text-vivid-textMuted">
               <Check className="w-4 h-4 text-vivid-primary" />
               Instant Email Delivery
             </div>
-            <div className="flex items-center gap-2 text-sm text-vivid-textMuted">
+            <div className="flex items-center gap-2 text-base text-vivid-textMuted">
               <Check className="w-4 h-4 text-vivid-primary" />
               Secure Stripe Checkout
             </div>
-            <div className="flex items-center gap-2 text-sm text-vivid-textMuted">
+            <div className="flex items-center gap-2 text-base text-vivid-textMuted">
               <Check className="w-4 h-4 text-vivid-primary" />
               HWID Protection
             </div>
-            <div className="flex items-center gap-2 text-sm text-vivid-textMuted">
+            <div className="flex items-center gap-2 text-base text-vivid-textMuted">
               <Check className="w-4 h-4 text-vivid-primary" />
               24/7 Support
             </div>

@@ -243,14 +243,14 @@ export default function AdminUsersPage() {
                           <select
                             value={u.role}
                             onChange={(e) => updateRole(u.clerkId, e.target.value)}
-                            className="h-8 px-2 rounded-lg bg-white/[0.04] border border-white/10 text-white text-xs outline-none focus:border-vivid-primary/50"
+                            className="h-10 px-2 rounded-lg bg-white/[0.04] border border-white/10 text-white text-sm outline-none focus:border-vivid-primary/50"
                           >
                             <option value="user">User</option>
                             <option value="admin">Admin</option>
                           </select>
                           <button
                             onClick={() => setDeleteDialog({ open: true, userId: u.clerkId, userName: u.name || u.email })}
-                            className="h-8 w-8 rounded-lg bg-white/[0.04] border border-white/10 text-vivid-accent hover:bg-vivid-accent/10 flex items-center justify-center transition-colors"
+                            className="h-10 w-10 rounded-lg bg-white/[0.04] border border-white/10 text-vivid-accent hover:bg-vivid-accent/10 flex items-center justify-center transition-colors touch-target"
                             title="Delete user"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -274,14 +274,14 @@ export default function AdminUsersPage() {
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page <= 1}
-              className="p-2 rounded-lg bg-white/[0.04] border border-white/10 text-vivid-textMuted hover:text-white disabled:opacity-30 transition-colors"
+              className="p-2 rounded-lg bg-white/[0.04] border border-white/10 text-vivid-textMuted hover:text-white disabled:opacity-30 transition-colors touch-target"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page >= totalPages}
-              className="p-2 rounded-lg bg-white/[0.04] border border-white/10 text-vivid-textMuted hover:text-white disabled:opacity-30 transition-colors"
+              className="p-2 rounded-lg bg-white/[0.04] border border-white/10 text-vivid-textMuted hover:text-white disabled:opacity-30 transition-colors touch-target"
             >
               <ChevronRight className="w-4 h-4" />
             </button>

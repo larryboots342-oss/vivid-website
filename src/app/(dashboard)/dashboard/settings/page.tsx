@@ -58,7 +58,7 @@ export default function SettingsPage() {
       return (
         <Card>
           <CardContent className="py-12 text-center">
-            <p className="text-sm text-red-400">Failed to load license data.</p>
+            <p className="text-base text-red-400">Failed to load license data.</p>
           </CardContent>
         </Card>
       );
@@ -74,7 +74,7 @@ export default function SettingsPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <LicenseCountdown licenses={data?.licenses || []} />
-          <p className="text-xs text-vivid-textDim">
+          <p className="text-base text-vivid-textDim">
             License keys are shared between the website and the VIVID desktop app.
             Validate your key in either place — both sync through the same system.
           </p>
@@ -128,7 +128,7 @@ export default function SettingsPage() {
               {i > 0 && <Separator className="bg-vivid-border/40 mb-4" />}
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium text-white">{item.title}</p>
+                  <p className="text-base font-medium text-white">{item.title}</p>
                   <p className="text-base text-vivid-textMuted mt-0.5 leading-relaxed">{item.description}</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer shrink-0 mt-0.5">
@@ -144,7 +144,7 @@ export default function SettingsPage() {
             </div>
           ))}
 
-          <p className="text-xs text-vivid-textDim pt-2">
+          <p className="text-base text-vivid-textDim pt-2">
             Settings auto-save when toggled.
           </p>
         </CardContent>
@@ -170,7 +170,7 @@ export default function SettingsPage() {
                 <Moon className="w-5 h-5 text-vivid-primary" />
               </div>
               <div className="min-w-0">
-                <p className="text-sm font-medium text-white">Dark Mode</p>
+                <p className="text-base font-medium text-white">Dark Mode</p>
                 <p className="text-base text-vivid-textMuted">Always use dark theme</p>
               </div>
             </div>
@@ -188,12 +188,12 @@ export default function SettingsPage() {
           <Separator className="bg-vivid-border/40" />
 
           <div>
-            <p className="text-sm font-medium text-white mb-3">Dashboard Layout</p>
+            <p className="text-base font-medium text-white mb-3">Dashboard Layout</p>
             <div className="grid grid-cols-3 gap-2 sm:gap-3">
               {["Compact", "Comfortable", "Detailed"].map((layout) => (
                 <button
                   key={layout}
-                  className={`p-3 sm:p-4 rounded-xl border text-sm font-medium transition-all ${
+                  className={`p-3 sm:p-4 rounded-xl border text-base font-medium transition-all ${
                     layout === "Comfortable"
                       ? "border-vivid-primary bg-vivid-primary/10 text-vivid-primary"
                       : "border-vivid-border text-vivid-textMuted hover:border-vivid-primary/30"
@@ -217,7 +217,7 @@ export default function SettingsPage() {
         transition={{ duration: 0.5 }}
       >
         <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1">Settings</h1>
-        <p className="text-vivid-textMuted text-sm sm:text-base">Manage your account preferences</p>
+        <p className="text-vivid-textMuted text-base">Manage your account preferences</p>
       </motion.div>
 
       <div className="flex flex-col lg:flex-row gap-6">
@@ -242,7 +242,7 @@ export default function SettingsPage() {
                     onClick={() => setActiveTab(tab.id)}
                     role="tab"
                     aria-selected={activeTab === tab.id}
-                    className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 whitespace-nowrap shrink-0 min-h-[44px] touch-target ${
+                    className={`flex items-center gap-2 px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 whitespace-nowrap shrink-0 min-h-[44px] touch-target ${
                       activeTab === tab.id
                         ? "bg-vivid-primary/10 text-vivid-primary border border-vivid-primary/20"
                         : "text-vivid-textMuted hover:text-white hover:bg-white/5 border border-transparent"
@@ -327,7 +327,7 @@ export default function SettingsPage() {
                         <Shield className="w-5 h-5 text-vivid-primary" />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-sm font-medium text-white">Two-Factor Authentication</p>
+                        <p className="text-base font-medium text-white">Two-Factor Authentication</p>
                         <p className="text-base text-vivid-textMuted">Protect your account with an additional layer</p>
                       </div>
                     </div>
@@ -342,7 +342,7 @@ export default function SettingsPage() {
                         <Globe className="w-5 h-5 text-vivid-primary" />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-sm font-medium text-white">Active Sessions</p>
+                        <p className="text-base font-medium text-white">Active Sessions</p>
                         <p className="text-base text-vivid-textMuted">View and manage your active sessions</p>
                       </div>
                     </div>

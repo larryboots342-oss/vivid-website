@@ -207,14 +207,14 @@ export default function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-vivid-primary/10 border border-vivid-primary/20 text-vivid-primary text-sm font-medium mb-8 pointer-events-auto backdrop-blur-sm gpu-animate"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-vivid-primary/10 border border-vivid-primary/20 text-vivid-primary text-base font-medium mb-8 pointer-events-auto backdrop-blur-sm gpu-animate"
             >
               <Sparkles className="w-4 h-4" />
               Next-Gen AI Gaming Assistant
             </motion.div>
 
             {/* Title */}
-            <h1 className="text-fluid-5xl font-bold leading-[0.95] tracking-tight mb-6 md:mb-8 perspective-1000 text-balance break-words">
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.95] tracking-tight mb-6 md:mb-8 perspective-1000 text-balance break-words hyphens-auto">
               <span className="hero-title-line block gradient-text">
                 VIVID
               </span>
@@ -224,7 +224,7 @@ export default function HeroSection() {
             </h1>
 
             {/* Subtitle */}
-            <p className="hero-subtitle text-fluid-base text-vivid-textMuted max-w-2xl mx-auto mb-8 md:mb-10 leading-relaxed px-2">
+            <p className="hero-subtitle text-base md:text-lg text-vivid-textMuted max-w-2xl mx-auto mb-8 md:mb-10 leading-relaxed">
               GPU-accelerated performance. Hardware-optimized inference.
               <span className="hidden md:inline"><br /></span>{" "}
               Experience the next generation of intelligent gaming assistance.
@@ -276,7 +276,7 @@ export default function HeroSection() {
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
             className="flex flex-col items-center gap-2"
           >
-            <span className="text-vivid-textDim text-xs uppercase tracking-widest">
+            <span className="text-vivid-textDim text-base uppercase tracking-widest">
               Scroll to explore
             </span>
             <div className="w-5 h-8 rounded-full border border-vivid-textDim/30 flex items-start justify-center p-1">

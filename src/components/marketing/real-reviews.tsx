@@ -165,7 +165,7 @@ export default function RealReviewsSection() {
                         {review.avatar}
                       </div>
                       <div>
-                        <span className="text-sm font-semibold text-white block">
+                        <span className="text-base font-semibold text-white block">
                           {review.name}
                         </span>
                         <span className="text-[10px] text-vivid-textDim uppercase tracking-wider">

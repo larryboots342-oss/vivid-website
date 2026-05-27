@@ -35,8 +35,8 @@ function UserProfile() {
           userProfileUrl="/dashboard/settings"
         />
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-white truncate">Account</p>
-          <p className="text-xs text-vivid-textDim truncate">Manage profile</p>
+          <p className="text-base font-medium text-white truncate">Account</p>
+          <p className="text-base text-vivid-textDim truncate">Manage profile</p>
         </div>
       </div>
       <SignOutButton variant="menu" />
@@ -50,14 +50,14 @@ function ProCard() {
       <div className="absolute top-0 right-0 w-20 h-20 bg-vivid-primary/10 rounded-full blur-2xl" />
       <div className="relative z-10">
         <div className="flex items-center gap-2 mb-2">
-          <span className="text-sm font-semibold text-white">Get License</span>
+          <span className="text-base font-semibold text-white">Get License</span>
         </div>
-        <p className="text-xs text-vivid-textMuted mb-3">
+        <p className="text-base text-vivid-textMuted mb-3">
           Unlock all features and priority support
         </p>
         <a
           href="/dashboard/subscription"
-          className="inline-flex items-center gap-1 text-xs font-semibold text-vivid-primary hover:text-vivid-primaryDim transition-colors"
+          className="inline-flex items-center gap-1 text-base font-semibold text-vivid-primary hover:text-vivid-primaryDim transition-colors"
         >
           View Plans →
         </a>

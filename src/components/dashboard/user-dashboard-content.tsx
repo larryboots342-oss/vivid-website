@@ -103,7 +103,7 @@ function LicenseKeyCard({ license }: { license: LicenseData }) {
         <CardContent className="space-y-4">
           {/* License Key */}
           <div className="relative">
-            <div className="flex items-center gap-2 p-3 rounded-xl bg-vivid-bg border border-vivid-border/60 font-mono text-sm">
+            <div className="flex items-center gap-2 p-3 rounded-xl bg-vivid-bg border border-vivid-border/60 font-mono text-base">
               <code className="text-vivid-primary truncate flex-1">{license.key}</code>
               <button
                 onClick={handleCopy}
@@ -120,7 +120,7 @@ function LicenseKeyCard({ license }: { license: LicenseData }) {
           </div>
 
           {/* Status row */}
-          <div className="flex items-center gap-4 text-sm">
+          <div className="flex items-center gap-4 text-base">
             {license.isLifetime ? (
               <span className="flex items-center gap-1.5 text-green-400">
                 <Infinity className="w-4 h-4" />
@@ -213,7 +213,7 @@ export default function UserDashboardContent({ data, justPurchased }: { data: Us
                   <h3 className="text-xl font-bold text-white mb-2">
                     No Active License
                   </h3>
-                  <p className="text-vivid-textMuted text-sm mb-6 max-w-sm mx-auto">
+                  <p className="text-vivid-textMuted text-base mb-6 max-w-sm mx-auto">
                     Get a license to unlock GPU-accelerated AI inference, hardware optimization, and more.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -248,7 +248,7 @@ export default function UserDashboardContent({ data, justPurchased }: { data: Us
                     <Download className="w-5 h-5 text-vivid-primary" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-white group-hover:text-vivid-primary transition-colors">
+                    <p className="text-base font-medium text-white group-hover:text-vivid-primary transition-colors">
                       Download VIVID
                     </p>
                     <p className="text-base text-vivid-textMuted">Latest version</p>
@@ -263,7 +263,7 @@ export default function UserDashboardContent({ data, justPurchased }: { data: Us
                     <Key className="w-5 h-5 text-vivid-primary" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-white group-hover:text-vivid-primary transition-colors">
+                    <p className="text-base font-medium text-white group-hover:text-vivid-primary transition-colors">
                       My Licenses
                     </p>
                     <p className="text-base text-vivid-textMuted">View all keys</p>
@@ -278,7 +278,7 @@ export default function UserDashboardContent({ data, justPurchased }: { data: Us
                     <Zap className="w-5 h-5 text-vivid-primary" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-white group-hover:text-vivid-primary transition-colors">
+                    <p className="text-base font-medium text-white group-hover:text-vivid-primary transition-colors">
                       Upgrade Plan
                     </p>
                     <p className="text-base text-vivid-textMuted">More features</p>
@@ -295,7 +295,7 @@ export default function UserDashboardContent({ data, justPurchased }: { data: Us
                     <MessageCircle className="w-5 h-5 text-vivid-primary" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-white group-hover:text-vivid-primary transition-colors">
+                    <p className="text-base font-medium text-white group-hover:text-vivid-primary transition-colors">
                       Support
                     </p>
                     <p className="text-base text-vivid-textMuted">Get help</p>
@@ -321,7 +321,7 @@ export default function UserDashboardContent({ data, justPurchased }: { data: Us
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-base text-vivid-textMuted">Current Plan</span>
-                  <span className={cn("text-sm font-semibold", tierStyle.color)}>
+                  <span className={cn("text-base font-semibold", tierStyle.color)}>
                     {tierStyle.label}
                   </span>
                 </div>
@@ -334,7 +334,7 @@ export default function UserDashboardContent({ data, justPurchased }: { data: Us
                 <div className="flex items-center justify-between">
                   <span className="text-base text-vivid-textMuted">Status</span>
                   <span className={cn(
-                    "text-sm font-semibold",
+                    "text-base font-semibold",
                     hasLicense ? "text-green-400" : "text-vivid-textMuted"
                   )}>
                     {hasLicense ? "Active" : "None"}
@@ -393,7 +393,7 @@ export default function UserDashboardContent({ data, justPurchased }: { data: Us
                     <div key={activity.id} className="flex items-start gap-3">
                       <div className="w-2 h-2 rounded-full bg-vivid-primary mt-1.5 shrink-0" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-white truncate">{activity.title}</p>
+                        <p className="text-base text-white truncate">{activity.title}</p>
                         <p className="text-base text-vivid-textDim">{formatRelativeTime(activity.createdAt)}</p>
                       </div>
                     </div>

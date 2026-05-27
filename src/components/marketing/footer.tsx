@@ -149,9 +149,9 @@ export default function Footer() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-14 sm:pt-20 pb-8">
         {/* Main grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 lg:grid-cols-12 gap-8 lg:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-8">
           {/* Brand column */}
-          <div ref={brandRef} className="footer-brand col-span-2 md:col-span-6 lg:col-span-4">
+          <div ref={brandRef} className="footer-brand col-span-1 sm:col-span-2 lg:col-span-2">
             <Link href="/" className="inline-flex items-center gap-3 mb-5 group">
               <div className="relative w-11 h-11 rounded-xl bg-gradient-to-br from-vivid-primary to-vivid-primaryDim flex items-center justify-center overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" />
@@ -175,7 +175,7 @@ export default function Footer() {
             </p>
 
             {/* Social icons */}
-            <div className="flex items-center gap-3 mb-8">
+            <div className="flex items-center justify-center sm:justify-start gap-4 mb-8">
               <SocialIcon href="https://discord.gg/KHXpfmF3" label="Discord">
                 <svg
                   className="w-[18px] h-[18px]"
@@ -221,7 +221,7 @@ export default function Footer() {
 
           {/* Link columns */}
           {linkGroups.map((group) => (
-            <div key={group.title} className="col-span-1 md:col-span-2 lg:col-span-2">
+            <div key={group.title} className="col-span-1 sm:col-span-1 lg:col-span-1">
               <LinkColumn
                 title={group.title}
                 links={group.links}
@@ -240,7 +240,7 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div ref={bottomRef} className="footer-bottom flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 text-base text-vivid-textDim">
+          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 text-sm text-vivid-textDim">
             <span className="flex items-center gap-1.5">
               <Shield className="w-3.5 h-3.5 text-vivid-primary/60" />
               &copy; {new Date().getFullYear()} VIVID Software
@@ -255,17 +255,17 @@ export default function Footer() {
           <div className="flex items-center gap-4 sm:gap-6">
             <Link
               href="/terms"
-              className="text-base sm:text-sm text-vivid-textDim hover:text-vivid-text transition-colors min-h-[44px] flex items-center px-2"
+              className="text-sm text-vivid-textDim hover:text-vivid-text transition-colors min-h-[44px] flex items-center px-2"
             >
               Terms
             </Link>
             <Link
               href="/privacy"
-              className="text-base sm:text-sm text-vivid-textDim hover:text-vivid-text transition-colors min-h-[44px] flex items-center px-2"
+              className="text-sm text-vivid-textDim hover:text-vivid-text transition-colors min-h-[44px] flex items-center px-2"
             >
               Privacy
             </Link>
-            <span className="flex items-center gap-1 text-base sm:text-sm text-vivid-textDim min-h-[44px] flex items-center px-2">
+            <span className="flex items-center gap-1 text-sm text-vivid-textDim min-h-[44px] flex items-center px-2">
               <Heart className="w-3 h-3 text-vivid-primary/70 fill-vivid-primary/30" />
               Built for gamers
             </span>

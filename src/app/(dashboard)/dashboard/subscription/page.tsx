@@ -130,17 +130,17 @@ export default function SubscriptionPage() {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div>
-                <p className="text-vivid-textDim text-xs uppercase tracking-wider">Plan</p>
+                <p className="text-vivid-textDim text-base uppercase tracking-wider">Plan</p>
                 <p className="text-white font-semibold capitalize">{highestTier.tier}</p>
               </div>
               <div>
-                <p className="text-vivid-textDim text-xs uppercase tracking-wider">Type</p>
+                <p className="text-vivid-textDim text-base uppercase tracking-wider">Type</p>
                 <p className="text-white font-semibold">
                   {highestTier.isLifetime ? "Lifetime" : "Time-Limited"}
                 </p>
               </div>
               <div>
-                <p className="text-vivid-textDim text-xs uppercase tracking-wider">Activated</p>
+                <p className="text-vivid-textDim text-base uppercase tracking-wider">Activated</p>
                 <p className="text-white font-semibold">
                   {highestTier.activatedAt
                     ? new Date(highestTier.activatedAt).toLocaleDateString("en-GB")
@@ -148,7 +148,7 @@ export default function SubscriptionPage() {
                 </p>
               </div>
               <div>
-                <p className="text-vivid-textDim text-xs uppercase tracking-wider">Status</p>
+                <p className="text-vivid-textDim text-base uppercase tracking-wider">Status</p>
                 <p className="text-white font-semibold">
                   {highestTier.isActive ? "Active" : "Inactive"}
                 </p>
@@ -156,8 +156,8 @@ export default function SubscriptionPage() {
             </div>
 
             <div className="rounded-lg bg-vivid-bg border border-vivid-border p-4">
-              <p className="text-vivid-textDim text-xs mb-1.5">License Key</p>
-              <code className="text-sm font-mono text-vivid-primary">{highestTier.key}</code>
+              <p className="text-vivid-textDim text-base mb-1.5">License Key</p>
+              <code className="text-base font-mono text-vivid-primary">{highestTier.key}</code>
             </div>
           </CardContent>
         </Card>
@@ -166,7 +166,7 @@ export default function SubscriptionPage() {
       {/* Plan Comparison */}
       <div>
         <h2 className="text-lg font-semibold text-white mb-4">Available Plans</h2>
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {PLANS.map((plan) => {
             const isCurrent = currentTier === plan.id;
             return (
@@ -205,7 +205,7 @@ export default function SubscriptionPage() {
                       {CURRENCY_SYMBOL}{plan.price.toFixed(2)}
                     </span>
                     <span className="text-vivid-textMuted"> one-time</span>
-                    <p className="text-vivid-textDim text-xs mt-1">
+                    <p className="text-vivid-textDim text-base mt-1">
                       {plan.durationLabel}
                     </p>
                   </div>
@@ -213,13 +213,13 @@ export default function SubscriptionPage() {
                 <CardContent className="space-y-4">
                   <ul className="space-y-2">
                     {plan.features.map((feature) => (
-                      <li key={feature} className="flex items-center gap-2 text-sm text-vivid-text">
+                      <li key={feature} className="flex items-center gap-2 text-sm md:text-base text-vivid-text">
                         <Check className="w-4 h-4 text-green-400 shrink-0" />
                         {feature}
                       </li>
                     ))}
                     {plan.notIncluded?.map((feature) => (
-                      <li key={feature} className="flex items-center gap-2 text-sm text-vivid-textDim">
+                      <li key={feature} className="flex items-center gap-2 text-sm md:text-base text-vivid-textDim">
                         <X className="w-4 h-4 shrink-0" />
                         {feature}
                       </li>

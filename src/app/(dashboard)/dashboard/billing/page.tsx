@@ -115,13 +115,13 @@ export default function BillingPage() {
                       <p className="text-white font-bold text-lg">
                         {CURRENCY_SYMBOL}{plan?.price || "—"}
                       </p>
-                      <p className="text-vivid-textDim text-xs">One-time purchase</p>
+                      <p className="text-vivid-textDim text-base">One-time purchase</p>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="rounded-lg bg-vivid-bg border border-vivid-border p-4">
-                    <p className="text-vivid-textDim text-xs mb-1.5">License Key</p>
+                    <p className="text-vivid-textDim text-base mb-1.5">License Key</p>
                     <div className="flex items-center gap-3">
                       <code className="flex-1 text-base font-mono text-vivid-primary bg-black/30 rounded-lg px-4 py-2.5">
                         {license.key}
@@ -130,7 +130,7 @@ export default function BillingPage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-base">
                     <div>
                       <p className="text-vivid-textDim text-sm sm:text-base uppercase tracking-wider">Tier</p>
                       <p className="text-white font-semibold capitalize">{license.tier}</p>
@@ -217,7 +217,7 @@ export default function BillingPage() {
                       className="border-b border-vivid-border/20 hover:bg-white/[0.02] transition-colors"
                     >
                       <td className="py-3 px-4">
-                        <code className="text-vivid-primary font-mono text-xs">{license.key}</code>
+                        <code className="text-vivid-primary font-mono text-base">{license.key}</code>
                       </td>
                       <td className="py-3 px-4 capitalize text-white">{license.tier}</td>
                       <td className="py-3 px-4">

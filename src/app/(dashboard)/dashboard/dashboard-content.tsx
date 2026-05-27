@@ -79,7 +79,7 @@ function StatCard({
               <div className="w-8 h-8 rounded-lg bg-vivid-primary/10 flex items-center justify-center group-hover:bg-vivid-primary/20 transition-colors">
                 <Icon className="w-4 h-4 text-vivid-primary" />
               </div>
-              <CardTitle className="text-sm font-medium text-vivid-textMuted">
+              <CardTitle className="text-base font-medium text-vivid-textMuted">
                 {title}
               </CardTitle>
             </div>
@@ -144,14 +144,14 @@ function ActivityItem({
         <Icon className="w-5 h-5" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-white group-hover:text-vivid-primary transition-colors">
+        <p className="text-base font-medium text-white group-hover:text-vivid-primary transition-colors">
           {title}
         </p>
         {description && (
           <p className="text-base text-vivid-textMuted mt-0.5">{description}</p>
         )}
       </div>
-      <span className="text-xs text-vivid-textDim shrink-0">{time}</span>
+      <span className="text-base text-vivid-textDim shrink-0">{time}</span>
     </motion.div>
   );
 }
@@ -332,8 +332,8 @@ export default function DashboardContent({ data, justPurchased }: { data: Dashbo
               ) : (
                 <div className="p-8 text-center">
                   <Activity className="w-8 h-8 text-vivid-textDim mx-auto mb-3" />
-                  <p className="text-sm text-vivid-textMuted">No activity yet</p>
-                  <p className="text-xs text-vivid-textDim mt-1">
+                  <p className="text-base text-vivid-textMuted">No activity yet</p>
+                  <p className="text-base text-vivid-textDim mt-1">
                     Activities will appear here as you use VIVID
                   </p>
                 </div>
@@ -379,7 +379,7 @@ export default function DashboardContent({ data, justPurchased }: { data: Dashbo
                         className="border-b border-vivid-border/20 hover:bg-white/[0.02] transition-colors"
                       >
                         <td className="py-3 px-4">
-                          <code className="text-vivid-primary font-mono text-xs">{license.key}</code>
+                          <code className="text-vivid-primary font-mono text-base">{license.key}</code>
                         </td>
                         <td className="py-3 px-4">
                           <span className="capitalize text-white">{license.tier}</span>
@@ -444,8 +444,8 @@ export default function DashboardContent({ data, justPurchased }: { data: Dashbo
             <CardContent>
               <div className="py-12 text-center">
                 <Activity className="w-8 h-8 text-vivid-textDim mx-auto mb-3" />
-                <p className="text-sm text-vivid-textMuted">No usage data yet</p>
-                <p className="text-xs text-vivid-textDim mt-1">
+                <p className="text-base text-vivid-textMuted">No usage data yet</p>
+                <p className="text-base text-vivid-textDim mt-1">
                   Usage statistics will appear once you start using VIVID
                 </p>
               </div>

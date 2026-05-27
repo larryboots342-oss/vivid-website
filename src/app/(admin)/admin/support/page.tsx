@@ -241,7 +241,7 @@ export default function AdminSupportPage() {
                   <select
                     value={ticket.metadata?.status || "open"}
                     onChange={(e) => updateStatus(ticket.id, e.target.value)}
-                    className="h-7 px-2 rounded-lg bg-white/[0.04] border border-white/10 text-white text-xs outline-none focus:border-vivid-primary/50"
+                    className="h-10 px-2 rounded-lg bg-white/[0.04] border border-white/10 text-white text-sm outline-none focus:border-vivid-primary/50"
                   >
                     <option value="open">Open</option>
                     <option value="in_progress">In Progress</option>

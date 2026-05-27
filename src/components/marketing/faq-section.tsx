@@ -184,7 +184,7 @@ function AccordionItem({
 
             <span
               className={cn(
-                "text-base md:text-lg font-medium transition-colors duration-300",
+                "text-base md:text-lg font-medium transition-colors duration-300 break-words pr-4",
                 isOpen ? "text-white" : "text-vivid-text group-hover:text-white"
               )}
             >
@@ -223,7 +223,7 @@ function AccordionItem({
             >
               <div className="px-6 pb-6 pt-0">
                 <div className="pl-0 sm:pl-12">
-                  <p className="text-base md:text-[15px] text-vivid-textMuted leading-[1.8] max-w-2xl">
+                  <p className="text-sm md:text-base text-vivid-textMuted leading-[1.8] max-w-2xl">
                     {item.answer}
                   </p>
                 </div>
@@ -391,7 +391,7 @@ export default function FAQSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="flex flex-wrap justify-center gap-2 mb-10"
+          className="flex flex-nowrap overflow-x-auto scrollbar-hide justify-start sm:justify-center gap-2 mb-10 pb-1"
           role="tablist"
           aria-label="FAQ categories"
         >
