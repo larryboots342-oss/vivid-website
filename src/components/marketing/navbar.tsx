@@ -130,7 +130,7 @@ export default function Navbar() {
                   key={item.label}
                   href={isHome ? item.href : `/${item.href}`}
                   onClick={isHome ? (e) => handleAnchorClick(e, item.href) : undefined}
-                  className="relative px-4 py-2 text-sm font-medium text-vivid-textMuted hover:text-white transition-colors duration-300 rounded-lg hover:bg-white/5 min-h-[44px] flex items-center"
+                  className="relative px-4 py-2 text-sm font-medium text-vivid-textMuted hover:text-white transition-colors duration-300 rounded-lg hover:bg-white/5 min-h-[44px] flex items-center link-underline"
                   aria-current={isActive ? "page" : undefined}
                 >
                   {item.label}
@@ -153,7 +153,7 @@ export default function Navbar() {
                 <Link
                   href="/dashboard"
                   onMouseEnter={() => router.prefetch("/dashboard")}
-                  className="px-4 py-2 text-sm font-medium text-vivid-textMuted hover:text-white transition-colors duration-300 rounded-lg hover:bg-white/5"
+                  className="px-4 py-2 text-sm font-medium text-vivid-textMuted hover:text-white transition-colors duration-300 rounded-lg hover:bg-white/5 link-underline"
                 >
                   Dashboard
                 </Link>
@@ -266,7 +266,7 @@ export default function Navbar() {
                           href={isHome ? item.href : `/${item.href}`}
                           onClick={isHome ? (e) => handleAnchorClick(e, item.href) : () => setMobileOpen(false)}
                           className={cn(
-                            "flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-medium transition-colors touch-target",
+                            "flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-medium transition-colors touch-target link-underline",
                             isActive
                               ? "text-vivid-primary bg-vivid-primary/10"
                               : "text-vivid-textMuted hover:text-white hover:bg-white/5"
