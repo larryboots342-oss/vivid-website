@@ -21,16 +21,28 @@ model code_bindings {
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+/// Managed directly in Supabase (not by Prisma migrations). Keep @@ignore.
 model license_keys {
-  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  license_key String    @unique
-  user_id     String?   @db.Uuid
-  hwid        String?
-  tier        String?   @default("Standard")
-  status      String?   @default("active")
-  created_at  DateTime? @default(now()) @db.Timestamptz(6)
-  updated_at  DateTime? @default(now()) @db.Timestamptz(6)
-  account_id  String?
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  license_key       String    @unique
+  user_id           String?   @db.Uuid
+  hwid              String?
+  tier              String?   @default("standard")
+  status            String?   @default("active")
+  email             String?
+  display_name      String?
+  created_at        DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime? @default(now()) @db.Timestamptz(6)
+  activated_at      DateTime? @db.Timestamptz(6)
+  expires_at        DateTime? @db.Timestamptz(6)
+  trial_expires_at  DateTime? @db.Timestamptz(6)
+  account_id        String?
+  license_signature String?
+  payment_provider  String?
+  payment_order_id  String?
+  payment_amount    String?
+  payment_currency  String?   @default("GBP")
+  paid_at           DateTime? @db.Timestamptz(6)
 
   @@ignore
 }

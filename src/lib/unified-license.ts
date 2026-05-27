@@ -1,10 +1,10 @@
 /**
  * Unified License Data Layer
- * 
+ *
  * All purchase flows (Stripe, manual) write to BOTH:
  * - Prisma `License` model (website ORM)
  * - Supabase `license_keys` table (desktop app)
- * 
+ *
  * Validation checks Prisma first, then Supabase fallback.
  */
 
@@ -22,6 +22,9 @@ interface CreateLicenseInput {
   paymentCurrency?: string;
   ipAddress?: string;
   country?: string;
+  hwid?: string;
+  displayName?: string;
+  licenseSignature?: string;
 }
 
 /**
@@ -76,26 +79,37 @@ export async function createUnifiedLicense(input: CreateLicenseInput) {
     });
   }
 
-  // 3. Create in Supabase (for desktop app)
-  if (supabase) {
-    try {
-      await supabase.from("license_keys").insert({
-        license_key: licenseKey,
-        tier,
-        status: "active",
-        email: input.email,
-        created_at: nowIso,
-        activated_at: nowIso,
-        expires_at: expiresAt ? expiresAt.toISOString() : null,
-        payment_provider: input.paymentProvider,
-        payment_order_id: input.paymentOrderId || null,
-        payment_amount: input.paymentAmount != null ? String(input.paymentAmount) : null,
-        payment_currency: input.paymentCurrency || "GBP",
-        paid_at: nowIso,
-      });
-    } catch (err) {
-      console.error("Supabase license insert failed (non-critical):", err);
-    }
+  // 3. Create in Supabase (CRITICAL — desktop app depends on this)
+  if (!supabase) {
+    throw new Error("Supabase client is not configured. License cannot be created.");
+  }
+
+  const { error: supabaseError } = await supabase.from("license_keys").insert({
+    license_key: licenseKey,
+    tier,
+    status: "active",
+    email: input.email,
+    user_id: input.userId || null,
+    hwid: input.hwid || null,
+    license_signature: input.licenseSignature || null,
+    display_name: input.displayName || null,
+    created_at: nowIso,
+    activated_at: nowIso,
+    expires_at: expiresAt ? expiresAt.toISOString() : null,
+    payment_provider: input.paymentProvider,
+    payment_order_id: input.paymentOrderId || null,
+    payment_amount: input.paymentAmount != null ? String(input.paymentAmount) : null,
+    payment_currency: input.paymentCurrency || "GBP",
+    paid_at: nowIso,
+  });
+
+  if (supabaseError) {
+    // Rollback Prisma license to keep systems in sync
+    await prisma.license.delete({ where: { id: prismaLicense.id } }).catch(() => {});
+    throw new Error(
+      `Supabase license insert failed: ${supabaseError.message}. ` +
+      `Prisma license has been rolled back to prevent data inconsistency.`
+    );
   }
 
   return { licenseKey, prismaLicense, expiresAt };

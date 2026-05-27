@@ -116,7 +116,10 @@ export default function LicenseValidator({ onValidated }: LicenseValidatorProps)
                 <div className="rounded-xl bg-green-500/10 border border-green-500/20 p-4 space-y-3">
                   <div className="flex items-center gap-2">
                     <ShieldCheck className="w-5 h-5 text-green-400" />
-                    <span className="text-green-400 font-semibold">License Activated</span>
+                    <span className="text-green-400 font-semibold">License Active</span>
+                    <Badge className="bg-green-500/20 text-green-300 border-green-500/30 text-xs">
+                      ● Active
+                    </Badge>
                   </div>
                   <div className="flex items-center gap-3">
                     <Badge
