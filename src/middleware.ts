@@ -46,7 +46,13 @@ export default clerkMiddleware(async (auth, req) => {
   try {
     // ── Public routes ─────────────────────────────────────────────
     if (isPublicRoute(req)) {
-      const authData = await auth().catch(() => ({ userId: null }));
+      let authData: { userId: string | null };
+      try {
+        authData = await auth();
+      } catch (err) {
+        console.error("Middleware auth error:", err);
+        authData = { userId: null };
+      }
       if (authData.userId && isAuthRoute(req)) {
         response = NextResponse.redirect(new URL("/dashboard", req.url));
       } else {
@@ -69,7 +75,13 @@ export default clerkMiddleware(async (auth, req) => {
     // ── API routes ────────────────────────────────────────────────
     if (pathname.startsWith("/api/")) {
       if (pathname.startsWith("/api/subscription")) {
-        const authData = await auth().catch(() => ({ userId: null }));
+        let authData: { userId: string | null };
+        try {
+          authData = await auth();
+        } catch (err) {
+          console.error("Middleware auth error:", err);
+          authData = { userId: null };
+        }
         if (!authData.userId) {
           return new Response(JSON.stringify({ error: "Unauthorized" }), {
             status: 401,
@@ -81,7 +93,13 @@ export default clerkMiddleware(async (auth, req) => {
     }
 
     // ── Everything else (checkout, dashboard, etc.) requires auth ─
-    const authData = await auth().catch(() => ({ userId: null, sessionClaims: null }));
+    let authData: { userId: string | null; sessionClaims: unknown | null };
+    try {
+      authData = await auth();
+    } catch (err) {
+      console.error("Middleware auth error:", err);
+      authData = { userId: null, sessionClaims: null };
+    }
     const userId = authData.userId;
 
     if (!userId) {
