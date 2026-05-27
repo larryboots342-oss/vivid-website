@@ -58,6 +58,19 @@ const nextConfig = {
             value:
               "camera=(), microphone=(), geolocation=(), interest-cohort=()",
           },
+          {
+            key: "Content-Security-Policy",
+            value:
+              "default-src 'self'; " +
+              "script-src 'self' https://js.stripe.com https://www.paypal.com; " +
+              "style-src 'self' 'unsafe-inline'; " +
+              "img-src 'self' https: data: blob:; " +
+              "connect-src 'self' https://api.stripe.com https://www.paypal.com; " +
+              "frame-src https://js.stripe.com https://hooks.stripe.com; " +
+              "font-src 'self'; " +
+              "object-src 'none'; " +
+              "base-uri 'self';",
+          },
         ],
       },
       {
