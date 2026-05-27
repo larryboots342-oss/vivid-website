@@ -11,8 +11,6 @@ import {
   Check,
   X,
   Zap,
-  Infinity,
-  Clock,
   Crown,
   ArrowRight,
   Sparkles,
@@ -28,7 +26,7 @@ function PlanCard({ plan, index }: { plan: PlanConfig; index: number }) {
     <GlowCard
       delay={index * 0.12}
       className="overflow-visible"
-      glowColor=
+      glowColor={
         isPopular
           ? "rgba(0, 245, 255, 0.1)"
           : "rgba(0, 229, 255, 0.06)"

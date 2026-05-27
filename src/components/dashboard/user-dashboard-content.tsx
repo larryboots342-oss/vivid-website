@@ -251,7 +251,7 @@ export default function UserDashboardContent({ data, justPurchased }: { data: Us
                     <p className="text-sm font-medium text-white group-hover:text-vivid-primary transition-colors">
                       Download VIVID
                     </p>
-                    <p className="text-xs text-vivid-textMuted">Latest version</p>
+                    <p className="text-base text-vivid-textMuted">Latest version</p>
                   </div>
                 </Link>
 
@@ -266,7 +266,7 @@ export default function UserDashboardContent({ data, justPurchased }: { data: Us
                     <p className="text-sm font-medium text-white group-hover:text-vivid-primary transition-colors">
                       My Licenses
                     </p>
-                    <p className="text-xs text-vivid-textMuted">View all keys</p>
+                    <p className="text-base text-vivid-textMuted">View all keys</p>
                   </div>
                 </Link>
 
@@ -281,7 +281,7 @@ export default function UserDashboardContent({ data, justPurchased }: { data: Us
                     <p className="text-sm font-medium text-white group-hover:text-vivid-primary transition-colors">
                       Upgrade Plan
                     </p>
-                    <p className="text-xs text-vivid-textMuted">More features</p>
+                    <p className="text-base text-vivid-textMuted">More features</p>
                   </div>
                 </Link>
 
@@ -298,7 +298,7 @@ export default function UserDashboardContent({ data, justPurchased }: { data: Us
                     <p className="text-sm font-medium text-white group-hover:text-vivid-primary transition-colors">
                       Support
                     </p>
-                    <p className="text-xs text-vivid-textMuted">Get help</p>
+                    <p className="text-base text-vivid-textMuted">Get help</p>
                   </div>
                 </a>
               </CardContent>
@@ -320,19 +320,19 @@ export default function UserDashboardContent({ data, justPurchased }: { data: Us
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-vivid-textMuted">Current Plan</span>
+                  <span className="text-base text-vivid-textMuted">Current Plan</span>
                   <span className={cn("text-sm font-semibold", tierStyle.color)}>
                     {tierStyle.label}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-vivid-textMuted">License Keys</span>
-                  <span className="text-sm font-semibold text-white">
+                  <span className="text-base text-vivid-textMuted">License Keys</span>
+                  <span className="text-base font-semibold text-white">
                     {activeLicenses.length}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-vivid-textMuted">Status</span>
+                  <span className="text-base text-vivid-textMuted">Status</span>
                   <span className={cn(
                     "text-sm font-semibold",
                     hasLicense ? "text-green-400" : "text-vivid-textMuted"
@@ -342,8 +342,8 @@ export default function UserDashboardContent({ data, justPurchased }: { data: Us
                 </div>
                 {latestLicense && !latestLicense.isLifetime && (
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-vivid-textMuted">Expires</span>
-                    <span className="text-sm font-semibold text-white">
+                    <span className="text-base text-vivid-textMuted">Expires</span>
+                    <span className="text-base font-semibold text-white">
                       {latestLicense.expiresAt
                         ? new Date(latestLicense.expiresAt).toLocaleDateString("en-GB")
                         : "—"}
@@ -364,7 +364,7 @@ export default function UserDashboardContent({ data, justPurchased }: { data: Us
               <CardContent className="p-6 text-center">
                 <Download className="w-8 h-8 text-vivid-primary mx-auto mb-3" />
                 <h3 className="text-white font-semibold mb-1">VIVID v2.7.0</h3>
-                <p className="text-vivid-textMuted text-xs mb-4">
+                <p className="text-vivid-textMuted text-base mb-4">
                   Windows • 27 MB
                 </p>
                 <Link href="/download">
@@ -394,7 +394,7 @@ export default function UserDashboardContent({ data, justPurchased }: { data: Us
                       <div className="w-2 h-2 rounded-full bg-vivid-primary mt-1.5 shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm text-white truncate">{activity.title}</p>
-                        <p className="text-xs text-vivid-textDim">{formatRelativeTime(activity.createdAt)}</p>
+                        <p className="text-base text-vivid-textDim">{formatRelativeTime(activity.createdAt)}</p>
                       </div>
                     </div>
                   ))}
@@ -421,7 +421,7 @@ export default function UserDashboardContent({ data, justPurchased }: { data: Us
                 <h3 className="text-xl font-bold text-white mb-1">
                   Ready to upgrade?
                 </h3>
-                <p className="text-vivid-textMuted text-sm mb-0">
+                <p className="text-vivid-textMuted text-base mb-0">
                   Choose a plan that fits your play style. Pro for £7, Elite for £20, or Enterprise for lifetime access at £100.
                 </p>
               </div>
