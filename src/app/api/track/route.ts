@@ -3,9 +3,12 @@ import { prisma } from "@/lib/prisma";
 import { getGeoFromIP } from "@/lib/geo";
 import { parseUserAgent } from "@/lib/ua-parser";
 import { auth } from "@clerk/nextjs/server";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
+
+const limiter = rateLimit({ interval: 60 * 1000 });
 
 function getSourceFromReferrer(referrer: string | null): string {
   if (!referrer) return "Direct";
@@ -26,6 +29,17 @@ function getSourceFromReferrer(referrer: string | null): string {
 
 export async function POST(req: NextRequest) {
   try {
+    const forwarded = req.headers.get("x-forwarded-for");
+    const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
+    try {
+      limiter.check(ip, 60);
+    } catch {
+      return NextResponse.json(
+        { error: "Rate limit exceeded" },
+        { status: 429 }
+      );
+    }
+
     const body = await req.json();
     const {
       visitorId,
@@ -39,8 +53,6 @@ export async function POST(req: NextRequest) {
     }
 
     // Get IP & geo
-    const forwarded = req.headers.get("x-forwarded-for");
-    const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
     const geo = await getGeoFromIP(ip);
 
     // Parse UA

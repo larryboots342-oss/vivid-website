@@ -1,12 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
+
+const limiter = rateLimit({ interval: 60 * 1000 });
 
 // GET /api/reviews - Fetch all approved reviews with optional limit
 export async function GET(req: NextRequest) {
   try {
+    const forwarded = req.headers.get("x-forwarded-for");
+    const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
+    try {
+      limiter.check(ip, 10);
+    } catch {
+      return NextResponse.json(
+        { error: "Rate limit exceeded" },
+        { status: 429 }
+      );
+    }
+
     const { searchParams } = new URL(req.url);
     const limit = parseInt(searchParams.get("limit") || "10", 10);
     const offset = parseInt(searchParams.get("offset") || "0", 10);
@@ -57,6 +71,17 @@ export async function GET(req: NextRequest) {
 // POST /api/reviews - Submit a new review (requires auth + active license)
 export async function POST(req: NextRequest) {
   try {
+    const forwarded = req.headers.get("x-forwarded-for");
+    const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
+    try {
+      limiter.check(ip, 10);
+    } catch {
+      return NextResponse.json(
+        { error: "Rate limit exceeded" },
+        { status: 429 }
+      );
+    }
+
     const { userId } = await auth();
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

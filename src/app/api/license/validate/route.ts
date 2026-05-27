@@ -3,9 +3,12 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { supabase } from "@/lib/supabase";
 import { isLicenseValid } from "@/lib/license";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+const limiter = rateLimit({ interval: 60 * 1000 });
 
 function normalizeKey(key: string): string {
   return key.trim().toUpperCase().replace(/\s+/g, "-");
@@ -13,6 +16,17 @@ function normalizeKey(key: string): string {
 
 export async function POST(req: NextRequest) {
   try {
+    const forwarded = req.headers.get("x-forwarded-for");
+    const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
+    try {
+      limiter.check(ip, 30);
+    } catch {
+      return NextResponse.json(
+        { error: "Rate limit exceeded" },
+        { status: 429 }
+      );
+    }
+
     const { userId } = await auth();
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -71,6 +85,7 @@ export async function POST(req: NextRequest) {
         license: {
           key: existingPrisma.key,
           tier: existingPrisma.tier,
+          isActive: true,
           isLifetime: existingPrisma.isLifetime,
           expiresAt: existingPrisma.expiresAt?.toISOString() || null,
           activatedAt: existingPrisma.activatedAt?.toISOString() || null,
@@ -136,6 +151,7 @@ export async function POST(req: NextRequest) {
         license: {
           key: prismaLicense.key,
           tier: prismaLicense.tier,
+          isActive: true,
           isLifetime: prismaLicense.isLifetime,
           expiresAt: prismaLicense.expiresAt?.toISOString() || null,
           activatedAt: prismaLicense.activatedAt?.toISOString() || null,
