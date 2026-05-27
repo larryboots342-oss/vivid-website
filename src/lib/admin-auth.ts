@@ -1,16 +1,13 @@
 import { auth } from "@clerk/nextjs/server";
-import { currentUser } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
-import { OWNER_EMAIL } from "@/lib/owner-email";
+import { isOwner } from "@/lib/owner";
 
 export async function requireAdmin(): Promise<{ userId: string; isOwner: boolean }> {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
 
-  const clerkUser = await currentUser();
-  const email = clerkUser?.primaryEmailAddress?.emailAddress;
-
-  if (email === OWNER_EMAIL) {
+  const owner = await isOwner(userId);
+  if (owner) {
     return { userId, isOwner: true };
   }
 

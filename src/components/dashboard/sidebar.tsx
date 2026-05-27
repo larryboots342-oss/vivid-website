@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import SignOutButton from "@/components/auth/sign-out-button";
 import { Sidebar } from "@/components/shared/sidebar";
-import { OWNER_EMAIL } from "@/lib/owner-email";
+import { isOwnerEmail } from "@/lib/owner";
 
 const allSidebarLinks = [
   { href: "/dashboard", label: "Overview", icon: <LayoutDashboard className="w-5 h-5" />, ownerOnly: false },
@@ -68,8 +68,8 @@ function ProCard() {
 
 export default function DashboardSidebar() {
   const { user } = useUser();
-  const isOwner = user?.primaryEmailAddress?.emailAddress === OWNER_EMAIL;
-  const sidebarLinks = allSidebarLinks.filter((link) => !link.ownerOnly || isOwner);
+  const owner = isOwnerEmail(user?.primaryEmailAddress?.emailAddress);
+  const sidebarLinks = allSidebarLinks.filter((link) => !link.ownerOnly || owner);
 
   return (
     <Sidebar

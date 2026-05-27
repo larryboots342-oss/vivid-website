@@ -2,8 +2,7 @@ import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-
-export const dynamic = "force-dynamic";
+import { errorResponse } from "@/lib/api-utils";
 
 const webhookSecret = process.env.CLERK_WEBHOOK_SECRET || "";
 
@@ -31,7 +30,6 @@ export async function POST(req: NextRequest) {
 
     const eventType = evt.type;
 
-    /* ── User created ─────────────────────────────────────────── */
     if (eventType === "user.created") {
       const {
         id,
@@ -73,7 +71,6 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    /* ── User updated ─────────────────────────────────────────── */
     if (eventType === "user.updated") {
       const {
         id,
@@ -116,7 +113,6 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    /* ── User deleted ─────────────────────────────────────────── */
     if (eventType === "user.deleted") {
       const { id } = evt.data;
       await prisma.user.deleteMany({
@@ -124,7 +120,6 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    /* ── Session created (activity logging) ───────────────────── */
     if (eventType === "session.created") {
       const { user_id } = evt.data;
       const user = await prisma.user.findUnique({
@@ -144,7 +139,6 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    /* ── Session revoked (activity logging) ───────────────────── */
     if (eventType === "session.revoked" || eventType === "session.ended") {
       const { user_id } = evt.data;
       const user = await prisma.user.findUnique({
@@ -164,7 +158,6 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    /* ── Email verified ───────────────────────────────────────── */
     if (eventType === "email.created" || eventType === "email.updated") {
       const { user_id, email_address, verification } = evt.data;
       if (verification?.status === "verified") {
@@ -176,11 +169,7 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ received: true });
-  } catch (error: any) {
-    console.error("Clerk webhook error:", error);
-    return NextResponse.json(
-      { error: error.message || "Internal server error" },
-      { status: 500 }
-    );
+  } catch (error) {
+    return errorResponse(error);
   }
 }

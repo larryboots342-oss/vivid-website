@@ -4,9 +4,7 @@ import { getGeoFromIP } from "@/lib/geo";
 import { parseUserAgent } from "@/lib/ua-parser";
 import { auth } from "@clerk/nextjs/server";
 import { rateLimit } from "@/lib/rate-limit";
-
-export const dynamic = "force-dynamic";
-export const runtime = "nodejs";
+import { getClientIp, withRateLimit, errorResponse } from "@/lib/api-utils";
 
 const limiter = rateLimit({ interval: 60 * 1000 });
 
@@ -29,16 +27,8 @@ function getSourceFromReferrer(referrer: string | null): string {
 
 export async function POST(req: NextRequest) {
   try {
-    const forwarded = req.headers.get("x-forwarded-for");
-    const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
-    try {
-      limiter.check(ip, 60);
-    } catch {
-      return NextResponse.json(
-        { error: "Rate limit exceeded" },
-        { status: 429 }
-      );
-    }
+    const ip = getClientIp(req);
+    withRateLimit(limiter, ip, 60);
 
     const body = await req.json();
     const {
@@ -52,13 +42,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    // Get IP & geo
     const geo = await getGeoFromIP(ip);
-
-    // Parse UA
     const ua = parseUserAgent(rawUA || req.headers.get("user-agent"));
 
-    // Check auth for linking
     const authData = await auth().catch(() => ({ userId: null }));
     let dbUserId: string | undefined;
     if (authData.userId) {
@@ -69,7 +55,6 @@ export async function POST(req: NextRequest) {
       if (user) dbUserId = user.id;
     }
 
-    // Upsert visitor
     const visitor = await prisma.visitor.upsert({
       where: { visitorId },
       update: {
@@ -104,7 +89,6 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Create page view
     await prisma.pageView.create({
       data: {
         visitorId: visitor.id,
@@ -121,7 +105,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Track error:", error);
-    return NextResponse.json({ error: "Tracking failed" }, { status: 500 });
+    return errorResponse(error);
   }
 }

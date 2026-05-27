@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-
-export const dynamic = "force-dynamic";
+import { errorResponse } from "@/lib/api-utils";
 
 export async function GET() {
   try {
@@ -21,7 +20,7 @@ export async function GET() {
       averageRating: avgRating._avg.rating ? Number(avgRating._avg.rating.toFixed(1)) : 0,
       supportStatus: "24/7",
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Stats API error:", error);
     // Return fallback zeros so the UI doesn't break
     return NextResponse.json({

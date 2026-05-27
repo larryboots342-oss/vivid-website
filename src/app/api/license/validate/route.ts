@@ -1,17 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { supabase } from "@/lib/supabase";
 import { isLicenseValid } from "@/lib/license";
 import { rateLimit } from "@/lib/rate-limit";
+import { requireAuth, getClientIp, withRateLimit, errorResponse } from "@/lib/api-utils";
 
 const validateLicenseSchema = z.object({
   key: z.string().min(1),
 });
-
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
 
 const limiter = rateLimit({ interval: 60 * 1000 });
 
@@ -21,21 +18,10 @@ function normalizeKey(key: string): string {
 
 export async function POST(req: NextRequest) {
   try {
-    const forwarded = req.headers.get("x-forwarded-for");
-    const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
-    try {
-      limiter.check(ip, 30);
-    } catch {
-      return NextResponse.json(
-        { error: "Rate limit exceeded" },
-        { status: 429 }
-      );
-    }
+    const ip = getClientIp(req);
+    withRateLimit(limiter, ip, 30);
 
-    const { userId } = await auth();
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const userId = await requireAuth();
 
     const body = await req.json();
     const parsed = validateLicenseSchema.safeParse(body);
@@ -52,7 +38,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid key format" }, { status: 400 });
     }
 
-    // Get current user from Prisma
     const dbUser = await prisma.user.findUnique({
       where: { clerkId: userId },
     });
@@ -60,7 +45,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // 1. Check if already owned by this user in Prisma
     const existingPrisma = await prisma.license.findUnique({
       where: { key },
     });
@@ -81,7 +65,6 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      // Bind to current user if not already bound
       if (!existingPrisma.userId) {
         await prisma.license.update({
           where: { key },
@@ -107,7 +90,6 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // 2. Fallback: check Supabase (desktop-created licenses)
     if (supabase) {
       const { data: sbLicense, error } = await supabase
         .from("license_keys")
@@ -138,7 +120,6 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      // Create Prisma record for this license (sync into website DB)
       const prismaLicense = await prisma.license.create({
         data: {
           userId: dbUser.id,
@@ -177,11 +158,7 @@ export async function POST(req: NextRequest) {
       { error: "License key not found" },
       { status: 404 }
     );
-  } catch (error: any) {
-    console.error("License validation error:", error);
-    return NextResponse.json(
-      { error: error.message || "Internal server error" },
-      { status: 500 }
-    );
+  } catch (error) {
+    return errorResponse(error);
   }
 }

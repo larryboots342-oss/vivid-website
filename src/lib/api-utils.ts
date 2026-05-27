@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 
+export { requireAdmin } from "./admin-auth";
+
 // ── Auth guard ──
 export async function requireAuth() {
   const { userId } = await auth();

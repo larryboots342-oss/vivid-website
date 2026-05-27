@@ -70,7 +70,7 @@ export default async function DashboardPage({
     redirect("/sign-in");
   }
 
-  const owner = await isOwner();
+  const owner = await isOwner(user.id);
   const params = await searchParams;
   const justPurchased = params.success === "true";
 

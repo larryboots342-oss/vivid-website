@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 
-export const dynamic = "force-dynamic";
-
 export async function GET() {
   const checks: Record<string, boolean | string> = {
     supabase_url: !!process.env.SUPABASE_URL,

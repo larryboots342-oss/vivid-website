@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 import { currentUser } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
-import { OWNER_EMAIL } from "@/lib/owner-email";
+import { isOwner } from "@/lib/owner";
 import AdminSidebar from "@/components/admin/sidebar";
 import AdminHeader from "@/components/admin/header";
 import PageTransition from "@/components/marketing/page-transition";
@@ -18,10 +18,8 @@ export default async function AdminLayout({
     redirect("/sign-in?redirect_url=/admin");
   }
 
-  // Owner email bypass
-  const clerkUser = await currentUser();
-  const email = clerkUser?.primaryEmailAddress?.emailAddress;
-  if (email === OWNER_EMAIL) {
+  const owner = await isOwner(clerkId);
+  if (owner) {
     return (
       <div className="min-h-screen bg-vivid-bg">
         <AdminSidebar />
@@ -34,6 +32,8 @@ export default async function AdminLayout({
       </div>
     );
   }
+
+  const clerkUser = await currentUser();
 
   // Check admin role from DB
   const dbUser = await prisma.user.findUnique({

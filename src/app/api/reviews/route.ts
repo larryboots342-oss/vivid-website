@@ -1,32 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
-import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
-
-const reviewSchema = z.object({
-  rating: z.number().int().min(1).max(5),
-  content: z.string().trim().min(5).max(500),
-  game: z.string().optional(),
-});
-
-export const dynamic = "force-dynamic";
+import { requireAuth, getClientIp, withRateLimit, errorResponse } from "@/lib/api-utils";
 
 const limiter = rateLimit({ interval: 60 * 1000 });
 
-// GET /api/reviews - Fetch all approved reviews with optional limit
 export async function GET(req: NextRequest) {
   try {
-    const forwarded = req.headers.get("x-forwarded-for");
-    const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
-    try {
-      limiter.check(ip, 10);
-    } catch {
-      return NextResponse.json(
-        { error: "Rate limit exceeded" },
-        { status: 429 }
-      );
-    }
+    const ip = getClientIp(req);
+    withRateLimit(limiter, ip, 10);
 
     const { searchParams } = new URL(req.url);
     const limit = parseInt(searchParams.get("limit") || "10", 10);
@@ -66,33 +48,17 @@ export async function GET(req: NextRequest) {
       total,
       averageRating: avgRating._avg.rating ? Number(avgRating._avg.rating.toFixed(1)) : 0,
     });
-  } catch (error: any) {
-    console.error("Reviews GET error:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch reviews" },
-      { status: 500 }
-    );
+  } catch (error) {
+    return errorResponse(error);
   }
 }
 
-// POST /api/reviews - Submit a new review (requires auth + active license)
 export async function POST(req: NextRequest) {
   try {
-    const forwarded = req.headers.get("x-forwarded-for");
-    const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
-    try {
-      limiter.check(ip, 10);
-    } catch {
-      return NextResponse.json(
-        { error: "Rate limit exceeded" },
-        { status: 429 }
-      );
-    }
+    const ip = getClientIp(req);
+    withRateLimit(limiter, ip, 10);
 
-    const { userId } = await auth();
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const userId = await requireAuth();
 
     const user = await prisma.user.findUnique({
       where: { clerkId: userId },
@@ -108,7 +74,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Must have at least one active license to review
     if (user.licenses.length === 0) {
       return NextResponse.json(
         { error: "Active license required to leave a review" },
@@ -117,23 +82,20 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const parsed = reviewSchema.safeParse(body);
-    if (!parsed.success) {
-      return NextResponse.json(
-        { error: "Invalid review data", details: parsed.error.format() },
-        { status: 400 }
-      );
+    const { rating, content, game } = body;
+
+    if (typeof rating !== "number" || rating < 1 || rating > 5) {
+      return NextResponse.json({ error: "Invalid rating" }, { status: 400 });
+    }
+    if (!content || typeof content !== "string" || content.trim().length < 5) {
+      return NextResponse.json({ error: "Review content too short" }, { status: 400 });
     }
 
-    const { rating, content, game } = parsed.data;
-
-    // Check if user already reviewed
     const existing = await prisma.review.findFirst({
       where: { userId: user.id },
     });
 
     if (existing) {
-      // Update existing review
       const updated = await prisma.review.update({
         where: { id: existing.id },
         data: {
@@ -157,11 +119,7 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ success: true, review });
-  } catch (error: any) {
-    console.error("Reviews POST error:", error);
-    return NextResponse.json(
-      { error: error.message || "Failed to submit review" },
-      { status: 500 }
-    );
+  } catch (error) {
+    return errorResponse(error);
   }
 }

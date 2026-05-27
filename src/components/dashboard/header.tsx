@@ -4,13 +4,13 @@ import { motion } from "framer-motion";
 import { useUser } from "@clerk/nextjs";
 import { Shield } from "lucide-react";
 import { Header } from "@/components/shared/header";
-import { OWNER_EMAIL } from "@/lib/owner-email";
+import { isOwnerEmail } from "@/lib/owner";
 
 export default function DashboardHeader() {
   const { user } = useUser();
-  const isOwner = user?.primaryEmailAddress?.emailAddress === OWNER_EMAIL;
+  const owner = isOwnerEmail(user?.primaryEmailAddress?.emailAddress);
 
-  const ownerBadge = isOwner ? (
+  const ownerBadge = owner ? (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
