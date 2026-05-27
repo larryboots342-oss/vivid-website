@@ -1,7 +1,6 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-
-const OWNER_EMAIL = "coryholes1234@gmail.com";
+import { OWNER_EMAIL } from "@/lib/owner-email";
 
 function generateVisitorId() {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
@@ -22,7 +21,8 @@ const isPublicRoute = createRouteMatcher([
   "/sign-up(.*)",
   "/forgot-password",
   "/api/webhooks/(.*)",
-  "/api/license/(.*)",
+  "/api/license/validate",
+  "/api/license/verify",
   "/api/health",
   "/robots.txt",
   "/sitemap.xml",
