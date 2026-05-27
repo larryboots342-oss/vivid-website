@@ -1,3 +1,5 @@
+import { version } from "@/../package.json";
+
 export default function StructuredData() {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://vivid.gg";
 
@@ -11,7 +13,7 @@ export default function StructuredData() {
           "AI-Powered Gaming Assistant with GPU-accelerated local inference",
         applicationCategory: "GameApplication",
         operatingSystem: "Windows 10/11",
-        softwareVersion: "2.7.0",
+        softwareVersion: version,
         offers: [
           {
             "@type": "Offer",
