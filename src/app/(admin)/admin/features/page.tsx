@@ -10,6 +10,7 @@ import {
   Percent,
   CheckCircle2,
   AlertCircle,
+  Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -26,6 +27,7 @@ export default function AdminFeaturesPage() {
   const [features, setFeatures] = useState<FeatureFlag[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [newFeature, setNewFeature] = useState({ key: "", description: "", enabled: false, rollout: 0 });
 
   const fetchFeatures = async () => {
@@ -62,12 +64,14 @@ export default function AdminFeaturesPage() {
 
   const createFeature = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitting(true);
     await fetch("/api/admin/features", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newFeature),
     });
     toast.success("Feature flag created");
+    setSubmitting(false);
     setShowCreate(false);
     setNewFeature({ key: "", description: "", enabled: false, rollout: 0 });
     fetchFeatures();
@@ -135,8 +139,8 @@ export default function AdminFeaturesPage() {
                   Enabled
                 </label>
               </div>
-              <button type="submit" className="w-full h-11 rounded-xl bg-vivid-primary text-vivid-bg font-semibold hover:bg-vivid-primaryDim transition-colors">
-                Create Flag
+              <button type="submit" disabled={submitting} className="w-full h-11 rounded-xl bg-vivid-primary text-vivid-bg font-semibold hover:bg-vivid-primaryDim transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Create Flag"}
               </button>
             </form>
           </motion.div>

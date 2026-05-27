@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, X, Send, CheckCircle2 } from "lucide-react";
+import { Star, X, Send, CheckCircle2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
@@ -148,8 +148,8 @@ export default function ReviewPrompt({ onDismiss }: { onDismiss?: () => void }) 
                 size="sm"
                 className="gap-2"
               >
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
                 {loading ? "Sending..." : "Submit Review"}
-                <Send className="w-3.5 h-3.5" />
               </Button>
             </div>
           </>

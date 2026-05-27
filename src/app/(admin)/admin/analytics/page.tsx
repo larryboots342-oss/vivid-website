@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useState } from "react";
+import useSWR from "swr";
 import { motion } from "framer-motion";
 import {
   AreaChart,
@@ -142,27 +143,11 @@ function ChartTooltip({ active, payload, label }: any) {
 /* ── Main Page ───────────────────────────────────────────────────── */
 
 export default function AdminAnalyticsPage() {
-  const [data, setData] = useState<VisitorData | null>(null);
-  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"today" | "week" | "month">("today");
   const [page, setPage] = useState(1);
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/admin/visitors?filter=${filter}&page=${page}&limit=25`);
-      const json = await res.json();
-      setData(json);
-    } catch {
-      // ignore
-    } finally {
-      setLoading(false);
-    }
-  }, [filter, page]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  const queryKey = `/api/admin/visitors?filter=${filter}&page=${page}&limit=25`;
+  const { data, isLoading } = useSWR<VisitorData>(queryKey);
 
   const stats = data?.summary;
 
@@ -196,7 +181,7 @@ export default function AdminAnalyticsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <StatCard
           label="Total Visitors"
-          value={loading ? "—" : stats?.totalVisitors.toLocaleString() || "0"}
+          value={isLoading ? "—" : stats?.totalVisitors.toLocaleString() || "0"}
           icon={Users}
           color="text-blue-400"
           bg="bg-blue-500/10"
@@ -206,7 +191,7 @@ export default function AdminAnalyticsPage() {
         />
         <StatCard
           label="Total Page Views"
-          value={loading ? "—" : stats?.totalPageViews.toLocaleString() || "0"}
+          value={isLoading ? "—" : stats?.totalPageViews.toLocaleString() || "0"}
           icon={Eye}
           color="text-purple-400"
           bg="bg-purple-500/10"
@@ -216,7 +201,7 @@ export default function AdminAnalyticsPage() {
         />
         <StatCard
           label="Active Now"
-          value={loading ? "—" : stats?.activeNow.toLocaleString() || "0"}
+          value={isLoading ? "—" : stats?.activeNow.toLocaleString() || "0"}
           icon={Activity}
           color="text-green-400"
           bg="bg-green-500/10"
@@ -226,7 +211,7 @@ export default function AdminAnalyticsPage() {
         />
         <StatCard
           label={`Unique ${filter === "today" ? "Today" : filter === "week" ? "This Week" : "This Month"}`}
-          value={loading ? "—" : stats?.uniqueInRange.toLocaleString() || "0"}
+          value={isLoading ? "—" : stats?.uniqueInRange.toLocaleString() || "0"}
           icon={Globe}
           color="text-cyan-400"
           bg="bg-cyan-500/10"
@@ -235,7 +220,7 @@ export default function AdminAnalyticsPage() {
         />
         <StatCard
           label={`Views ${filter === "today" ? "Today" : filter === "week" ? "This Week" : "This Month"}`}
-          value={loading ? "—" : stats?.pageViewsInRange.toLocaleString() || "0"}
+          value={isLoading ? "—" : stats?.pageViewsInRange.toLocaleString() || "0"}
           icon={MousePointer}
           color="text-pink-400"
           bg="bg-pink-500/10"
@@ -541,7 +526,7 @@ export default function AdminAnalyticsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-vivid-border/30">
-              {loading ? (
+              {isLoading ? (
                 Array.from({ length: 5 }).map((_, i) => (
                   <tr key={i}>
                     <td className="px-6 py-4"><div className="h-8 rounded-lg bg-white/5 animate-pulse w-32" /></td>

@@ -12,6 +12,7 @@ import {
   Clock,
   Filter,
   ChevronDown,
+  Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -44,6 +45,7 @@ export default function AdminSupportPage() {
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("");
   const [showCreate, setShowCreate] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [newTicket, setNewTicket] = useState({ title: "", description: "", priority: "medium" });
 
   const fetchTickets = async () => {
@@ -62,12 +64,14 @@ export default function AdminSupportPage() {
 
   const createTicket = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitting(true);
     await fetch("/api/admin/tickets", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newTicket),
     });
     toast.success("Ticket created");
+    setSubmitting(false);
     setShowCreate(false);
     setNewTicket({ title: "", description: "", priority: "medium" });
     fetchTickets();
@@ -171,9 +175,10 @@ export default function AdminSupportPage() {
                 </div>
                 <button
                   type="submit"
-                  className="w-full h-11 rounded-xl bg-vivid-primary text-vivid-bg font-semibold hover:bg-vivid-primaryDim transition-colors"
+                  disabled={submitting}
+                  className="w-full h-11 rounded-xl bg-vivid-primary text-vivid-bg font-semibold hover:bg-vivid-primaryDim transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
-                  Create Ticket
+                  {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Create Ticket"}
                 </button>
               </form>
             </motion.div>
