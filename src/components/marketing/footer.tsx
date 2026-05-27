@@ -117,7 +117,7 @@ export default function Footer() {
     {
       title: "Support",
       links: [
-        { label: "Discord Community", href: "https://discord.gg/vivid" },
+        { label: "Discord Community", href: "https://discord.gg/KHXpfmF3" },
         { label: "Contact Us", href: "mailto:support@vivid.gg" },
         { label: "FAQ", href: "/#faq" },
       ],
@@ -176,7 +176,7 @@ export default function Footer() {
 
             {/* Social icons */}
             <div className="flex items-center gap-3 mb-8">
-              <SocialIcon href="https://discord.gg/vivid" label="Discord">
+              <SocialIcon href="https://discord.gg/KHXpfmF3" label="Discord">
                 <svg
                   className="w-[18px] h-[18px]"
                   fill="currentColor"
@@ -208,7 +208,7 @@ export default function Footer() {
                   </p>
                 </div>
                 <a
-                  href="https://discord.gg/vivid"
+                  href="https://discord.gg/KHXpfmF3"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="ml-auto px-4 py-2.5 rounded-lg bg-[#5865F2]/15 border border-[#5865F2]/30 text-[#5865F2] text-xs font-semibold hover:bg-[#5865F2]/25 transition-colors touch-target flex items-center"

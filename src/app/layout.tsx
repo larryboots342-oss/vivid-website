@@ -145,6 +145,13 @@ export default function RootLayout({
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
+        <link rel="preconnect" href="https://img.clerk.com" />
+        <link rel="dns-prefetch" href="https://js.stripe.com" />
+        <link rel="dns-prefetch" href="https://api.stripe.com" />
+        {process.env.SUPABASE_URL && (
+          <link rel="dns-prefetch" href={process.env.SUPABASE_URL} />
+        )}
+        <link rel="dns-prefetch" href="https://va.vercel-scripts.com" />
       </head>
       <body className="antialiased font-sans min-h-[100dvh]">
         <SkipLink />
