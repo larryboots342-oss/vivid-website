@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import useSWR from "swr";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Video, X } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { SkeletonCard } from "@/components/ui/skeleton-card";
-import NextImage from "next/image";
 
 interface VideoItem {
   id: string;
@@ -18,26 +18,10 @@ interface VideoItem {
 }
 
 export default function VideoPreviews() {
-  const [videos, setVideos] = useState<VideoItem[]>([]);
   const [activeVideo, setActiveVideo] = useState<VideoItem | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data, isLoading } = useSWR<{ videos: VideoItem[] }>("/api/videos");
 
-  useEffect(() => {
-    async function fetchVideos() {
-      try {
-        const res = await fetch("/api/videos");
-        const data = await res.json();
-        if (data.videos) {
-          setVideos(data.videos);
-        }
-      } catch (err) {
-        console.error("Failed to fetch videos:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchVideos();
-  }, []);
+  const videos = data?.videos || [];
 
   return (
     <section id="previews" className="relative section-padding">
@@ -62,7 +46,7 @@ export default function VideoPreviews() {
         </div>
 
         {/* Loading */}
-        {loading && (
+        {isLoading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {Array.from({ length: 6 }).map((_, i) => (
               <SkeletonCard key={i} className="aspect-video" />
@@ -71,7 +55,7 @@ export default function VideoPreviews() {
         )}
 
         {/* Video Grid */}
-        {!loading && videos.length > 0 && (
+        {!isLoading && videos.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {videos.map((video, i) => (
               <motion.div
@@ -80,26 +64,18 @@ export default function VideoPreviews() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.08 }}
-                role="button"
-                tabIndex={0}
-                aria-label={`Play video: ${video.title}`}
                 className="group relative rounded-2xl overflow-hidden border aspect-video cursor-pointer border-vivid-border/50"
                 style={{ background: "#0a0a0a" }}
                 onClick={() => setActiveVideo(video)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    setActiveVideo(video);
-                  }
-                }}
               >
                 {/* Thumbnail or gradient fallback */}
                 <div className="absolute inset-0 bg-gradient-to-br from-vivid-primary/5 to-transparent" />
                 {video.thumbnailUrl && (
-                  <NextImage
+                  <Image
                     src={video.thumbnailUrl}
                     alt={video.title}
                     fill
+                    loading="lazy"
                     className="object-cover opacity-60 group-hover:opacity-80 transition-opacity"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
@@ -131,7 +107,7 @@ export default function VideoPreviews() {
         )}
 
         {/* Empty state */}
-        {!loading && videos.length === 0 && (
+        {!isLoading && videos.length === 0 && (
           <div className="text-center py-16">
             <Video className="w-12 h-12 text-vivid-textDim mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-white mb-2">No Videos Yet</h3>
@@ -162,7 +138,6 @@ export default function VideoPreviews() {
               <button
                 onClick={() => setActiveVideo(null)}
                 className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/50 flex items-center justify-center text-white hover:bg-black/70 transition-colors"
-                aria-label="Close video modal"
               >
                 <X className="w-5 h-5" />
               </button>

@@ -41,9 +41,10 @@ export function getExpirationDate(tier: string): Date | null {
 /**
  * Check if a license is valid (not expired)
  */
-export function isLicenseValid(expiresAt: Date | null): boolean {
+export function isLicenseValid(expiresAt: Date | string | null): boolean {
   if (expiresAt === null) return true; // Lifetime
-  return new Date() < expiresAt;
+  const date = typeof expiresAt === "string" ? new Date(expiresAt) : expiresAt;
+  return new Date() < date;
 }
 
 /**
