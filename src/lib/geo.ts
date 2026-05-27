@@ -21,7 +21,8 @@ export async function getCountryFromIp(ip: string): Promise<string | null> {
     if (!res.ok) return null;
     const text = (await res.text()).trim();
     return text || null;
-  } catch {
+  } catch (err) {
+    console.error("Geo IP lookup failed:", err);
     return null;
   }
 }
@@ -55,7 +56,8 @@ export async function getGeoFromIP(ip: string): Promise<GeoData | null> {
       city: data.city || null,
       region: data.region || null,
     };
-  } catch {
+  } catch (err) {
+    console.error("Geo IP lookup failed:", err);
     return null;
   }
 }
