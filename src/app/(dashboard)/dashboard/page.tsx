@@ -80,7 +80,7 @@ export default async function DashboardPage({
     data = await getDashboardData(user.id);
   } catch (e) {
     // DB not configured yet — render with Clerk fallback data
-    console.warn("Dashboard DB query failed, using fallback:", e);
+    console.error("Dashboard DB query failed, using fallback:", e);
   }
 
   const dashboardData = data || {
