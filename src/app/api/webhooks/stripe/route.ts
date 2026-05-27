@@ -43,7 +43,10 @@ export async function POST(req: NextRequest) {
 
         if (!user) {
           console.error("User not found for license creation:", userId);
-          break;
+          return NextResponse.json(
+            { error: "User not found" },
+            { status: 500 }
+          );
         }
 
         // Geolocation
