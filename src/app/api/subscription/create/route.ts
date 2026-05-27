@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth, clerkClient } from "@clerk/nextjs/server";
+import { Role } from "@prisma/client";
 import { stripe, getPriceId } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 
@@ -44,7 +45,7 @@ export async function POST(req: NextRequest) {
           email,
           name: [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(" ") || null,
           image: clerkUser.imageUrl,
-          role: (clerkUser.publicMetadata?.role as string) || "user",
+          role: ((clerkUser.publicMetadata?.role as string) as Role) || Role.user,
         },
       });
     }

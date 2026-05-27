@@ -11,7 +11,7 @@ import { rateLimit } from "@/lib/rate-limit";
 const createLicenseSchema = z.object({
   email: z.string().email(),
   tier: z.string().min(1),
-  provider: z.string().optional(),
+  provider: z.enum(["stripe", "manual"]).optional(),
   providerOrderId: z.string().optional(),
   amount: z.number().optional(),
   currency: z.string().optional(),
