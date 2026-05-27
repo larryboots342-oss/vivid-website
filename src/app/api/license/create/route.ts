@@ -1,12 +1,41 @@
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
+import { currentUser } from "@clerk/nextjs/server";
 import { createUnifiedLicense } from "@/lib/unified-license";
 import { sendLicenseEmail } from "@/lib/email";
 import { PLANS } from "@/lib/constants";
+import { OWNER_EMAIL } from "@/lib/owner-email";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
+const limiter = rateLimit({ interval: 60 * 1000 });
+
 export async function POST(req: NextRequest) {
   try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const clerkUser = await currentUser();
+    const clerkEmail = clerkUser?.primaryEmailAddress?.emailAddress;
+    if (clerkEmail !== OWNER_EMAIL) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Owner is exempt from rate limiting
+    const forwarded = req.headers.get("x-forwarded-for");
+    const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
+    try {
+      limiter.check(ip, 5);
+    } catch {
+      return NextResponse.json(
+        { error: "Rate limit exceeded" },
+        { status: 429 }
+      );
+    }
+
     const { email, tier, provider, providerOrderId, amount, currency } =
       await req.json();
 
