@@ -1,15 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/admin-auth";
-
-export const dynamic = "force-dynamic";
-export const runtime = "nodejs";
+import { errorResponse } from "@/lib/api-utils";
 
 export async function GET(req: NextRequest) {
   try {
     await requireAdmin();
 
-    // Get stats in parallel
     const [
       totalUsers,
       totalLicenses,
@@ -60,14 +57,12 @@ export async function GET(req: NextRequest) {
         },
       }),
       prisma.video.count(),
-      // REAL revenue: sum of all completed payment amounts
       prisma.payment
         .aggregate({
           where: { status: "completed" },
           _sum: { amount: true },
         })
         .then((r) => r._sum.amount || 0),
-      // Revenue by tier from actual payments
       prisma.$queryRaw<
         Array<{ tier: string; count: bigint; revenue: number }>
       >`
@@ -80,7 +75,6 @@ export async function GET(req: NextRequest) {
         GROUP BY l.tier
         ORDER BY revenue DESC
       `,
-      // Recent payments for activity feed
       prisma.payment.findMany({
         orderBy: { createdAt: "desc" },
         take: 5,
@@ -129,17 +123,7 @@ export async function GET(req: NextRequest) {
       },
       activities: recentActivities,
     });
-  } catch (error: any) {
-    console.error("Admin stats error:", error);
-    const status =
-      error.message === "Unauthorized"
-        ? 401
-        : error.message === "Forbidden"
-          ? 403
-          : 500;
-    return NextResponse.json(
-      { error: error.message || "Internal server error" },
-      { status }
-    );
+  } catch (error) {
+    return errorResponse(error);
   }
 }

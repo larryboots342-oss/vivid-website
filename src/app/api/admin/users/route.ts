@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/admin-auth";
+import { errorResponse } from "@/lib/api-utils";
 
-export const dynamic = "force-dynamic";
-export const runtime = "nodejs";
-
-/* ── GET /api/admin/users ───────────────────────────────────────── */
 export async function GET(req: NextRequest) {
   try {
     await requireAdmin();
@@ -59,14 +56,11 @@ export async function GET(req: NextRequest) {
     ]);
 
     return NextResponse.json({ users, total, page, limit, pages: Math.ceil(total / limit) });
-  } catch (error: any) {
-    console.error("Admin users error:", error);
-    const status = error.message === "Unauthorized" ? 401 : error.message === "Forbidden" ? 403 : 500;
-    return NextResponse.json({ error: error.message }, { status });
+  } catch (error) {
+    return errorResponse(error);
   }
 }
 
-/* ── PATCH /api/admin/users/:id ─────────────────────────────────── */
 export async function PATCH(req: NextRequest) {
   try {
     await requireAdmin();
@@ -89,9 +83,7 @@ export async function PATCH(req: NextRequest) {
     });
 
     return NextResponse.json(updated);
-  } catch (error: any) {
-    console.error("Admin user patch error:", error);
-    const status = error.message === "Unauthorized" ? 401 : error.message === "Forbidden" ? 403 : 500;
-    return NextResponse.json({ error: error.message }, { status });
+  } catch (error) {
+    return errorResponse(error);
   }
 }
