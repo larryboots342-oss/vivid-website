@@ -160,6 +160,12 @@
   outline-offset: 2px;
 }
 
+/* Strong focus-visible for all interactive elements */
+*:focus-visible {
+  outline: 2px solid #00e5ff;
+  outline-offset: 2px;
+}
+
 /* Remove tap highlight on mobile */
 * {
   -webkit-tap-highlight-color: transparent;

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import useSWR from "swr";
 import { motion } from "framer-motion";
 import {
   Search,
@@ -21,6 +22,7 @@ import { TIER_RANK } from "@/lib/tiers";
 
 interface AdminUser {
   id: string;
+  clerkId: string;
   email: string;
   name: string | null;
   image: string | null;
@@ -39,45 +41,51 @@ interface AdminUser {
 }
 
 export default function AdminUsersPage() {
-  const [users, setUsers] = useState<AdminUser[]>([]);
-  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
 
-  const fetchUsers = async () => {
-    setLoading(true);
-    const params = new URLSearchParams();
-    if (search) params.set("search", search);
-    if (roleFilter) params.set("role", roleFilter);
-    params.set("page", String(page));
-    const res = await fetch(`/api/admin/users?${params}`);
-    const data = await res.json();
-    setUsers(data.users || []);
-    setTotalPages(data.pages || 1);
-    setLoading(false);
-  };
+  const queryKey = `/api/admin/users?${new URLSearchParams({
+    ...(search && { search }),
+    ...(roleFilter && { role: roleFilter }),
+    page: String(page),
+  }).toString()}`;
 
-  useEffect(() => {
-    fetchUsers();
-  }, [page, roleFilter]);
+  const { data, isLoading, mutate } = useSWR<{ users: AdminUser[]; total: number; pages: number }>(queryKey);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setPage(1);
-      fetchUsers();
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [search]);
+  const users = data?.users || [];
+  const totalPages = data?.pages || 1;
 
-  const updateRole = async (userId: string, newRole: string) => {
-    await fetch("/api/admin/users", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, role: newRole }),
-    });
-    fetchUsers();
+  const updateRole = async (clerkId: string, newRole: string) => {
+    // Optimistic update
+    const previousUsers = users;
+    mutate(
+      {
+        users: users.map((u) => (u.clerkId === clerkId ? { ...u, role: newRole } : u)),
+        total: data?.total || 0,
+        pages: totalPages,
+      },
+      false
+    );
+
+    try {
+      await fetch("/api/admin/users", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ clerkId, role: newRole }),
+      });
+      mutate();
+    } catch {
+      // Rollback on error
+      mutate(
+        {
+          users: previousUsers,
+          total: data?.total || 0,
+          pages: totalPages,
+        },
+        false
+      );
+    }
   };
 
   const getHighestTier = (licenses: AdminUser["licenses"]) => {
@@ -100,14 +108,14 @@ export default function AdminUsersPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-vivid-textDim" />
             <input
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
               placeholder="Search users..."
               className="h-10 pl-9 pr-4 rounded-xl bg-white/[0.04] border border-white/10 text-white placeholder:text-vivid-textDim focus:border-vivid-primary/50 outline-none text-sm w-64"
             />
           </div>
           <select
             value={roleFilter}
-            onChange={(e) => setRoleFilter(e.target.value)}
+            onChange={(e) => { setRoleFilter(e.target.value); setPage(1); }}
             className="h-10 px-3 rounded-xl bg-white/[0.04] border border-white/10 text-white text-sm outline-none focus:border-vivid-primary/50"
           >
             <option value="">All roles</option>
@@ -130,7 +138,7 @@ export default function AdminUsersPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-vivid-border/30">
-              {loading ? (
+              {isLoading ? (
                 Array.from({ length: 5 }).map((_, i) => (
                   <tr key={i}>
                     <td className="px-6 py-4"><div className="h-10 rounded-lg bg-white/5 animate-pulse w-48" /></td>
@@ -201,7 +209,7 @@ export default function AdminUsersPage() {
                       <td className="px-6 py-4">
                         <select
                           value={u.role}
-                          onChange={(e) => updateRole(u.id, e.target.value)}
+                          onChange={(e) => updateRole(u.clerkId, e.target.value)}
                           className="h-8 px-2 rounded-lg bg-white/[0.04] border border-white/10 text-white text-xs outline-none focus:border-vivid-primary/50"
                         >
                           <option value="user">User</option>

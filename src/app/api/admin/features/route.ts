@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/admin-auth";
 import { errorResponse } from "@/lib/api-utils";
+import { z } from "zod";
 
 export async function GET(req: NextRequest) {
   try {
@@ -41,7 +42,11 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { key, description, enabled = false, rollout = 0 } = body;
+    const parsed = postSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Invalid request body", details: parsed.error.format() }, { status: 400 });
+    }
+    const { key, description, enabled = false, rollout = 0 } = parsed.data;
 
     const flag = await prisma.activity.create({
       data: {
@@ -59,12 +64,29 @@ export async function POST(req: NextRequest) {
   }
 }
 
+const postSchema = z.object({
+  key: z.string().min(1).max(200),
+  description: z.string().max(1000).optional(),
+  enabled: z.boolean().optional(),
+  rollout: z.number().int().min(0).max(100).optional(),
+});
+
+const patchSchema = z.object({
+  featureId: z.string().min(1),
+  enabled: z.boolean().optional(),
+  rollout: z.number().int().min(0).max(100).optional(),
+});
+
 export async function PATCH(req: NextRequest) {
   try {
     await requireAdmin();
 
     const body = await req.json();
-    const { featureId, enabled, rollout } = body;
+    const parsed = patchSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Invalid request body", details: parsed.error.format() }, { status: 400 });
+    }
+    const { featureId, enabled, rollout } = parsed.data;
 
     const existing = await prisma.activity.findUnique({
       where: { id: featureId },

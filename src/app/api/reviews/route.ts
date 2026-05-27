@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
 import { requireAuth, getClientIp, withRateLimit, errorResponse } from "@/lib/api-utils";
+import { z } from "zod";
 
 const limiter = rateLimit({ interval: 60 * 1000 });
 
@@ -82,14 +83,16 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { rating, content, game } = body;
-
-    if (typeof rating !== "number" || rating < 1 || rating > 5) {
-      return NextResponse.json({ error: "Invalid rating" }, { status: 400 });
+    const postSchema = z.object({
+      rating: z.number().int().min(1).max(5),
+      content: z.string().min(5).max(2000),
+      game: z.string().max(30).optional(),
+    });
+    const parsed = postSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Invalid request body", details: parsed.error.format() }, { status: 400 });
     }
-    if (!content || typeof content !== "string" || content.trim().length < 5) {
-      return NextResponse.json({ error: "Review content too short" }, { status: 400 });
-    }
+    const { rating, content, game } = parsed.data;
 
     const existing = await prisma.review.findFirst({
       where: { userId: user.id },

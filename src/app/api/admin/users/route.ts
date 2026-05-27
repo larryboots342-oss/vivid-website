@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/admin-auth";
 import { errorResponse } from "@/lib/api-utils";
+import { z } from "zod";
 
 export async function GET(req: NextRequest) {
   try {
@@ -61,16 +62,22 @@ export async function GET(req: NextRequest) {
   }
 }
 
+const patchSchema = z.object({
+  clerkId: z.string().min(1),
+  role: z.enum(["user", "admin"]).optional(),
+  name: z.string().min(1).max(100).optional(),
+});
+
 export async function PATCH(req: NextRequest) {
   try {
     await requireAdmin();
 
     const body = await req.json();
-    const { clerkId, role, name } = body;
-
-    if (!clerkId) {
-      return NextResponse.json({ error: "Missing clerkId" }, { status: 400 });
+    const parsed = patchSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Invalid request body", details: parsed.error.format() }, { status: 400 });
     }
+    const { clerkId, role, name } = parsed.data;
 
     const updateData: any = {};
     if (role !== undefined) updateData.role = role;
@@ -83,6 +90,24 @@ export async function PATCH(req: NextRequest) {
     });
 
     return NextResponse.json(updated);
+  } catch (error) {
+    return errorResponse(error);
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    await requireAdmin();
+
+    const body = await req.json();
+    const parsed = z.object({ clerkId: z.string().min(1) }).safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Invalid request body", details: parsed.error.format() }, { status: 400 });
+    }
+    const { clerkId } = parsed.data;
+
+    await prisma.user.delete({ where: { clerkId } });
+    return NextResponse.json({ success: true });
   } catch (error) {
     return errorResponse(error);
   }

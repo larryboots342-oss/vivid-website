@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/admin-auth";
 import { errorResponse } from "@/lib/api-utils";
+import { z } from "zod";
 
 export async function GET(req: NextRequest) {
   try {
@@ -51,7 +52,11 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { title, description, priority = "medium" } = body;
+    const parsed = postSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Invalid request body", details: parsed.error.format() }, { status: 400 });
+    }
+    const { title, description, priority = "medium" } = parsed.data;
 
     const ticket = await prisma.activity.create({
       data: {
@@ -69,12 +74,28 @@ export async function POST(req: NextRequest) {
   }
 }
 
+const postSchema = z.object({
+  title: z.string().min(1).max(200),
+  description: z.string().max(2000).optional(),
+  priority: z.enum(["low", "medium", "high", "critical"]).optional(),
+});
+
+const patchSchema = z.object({
+  ticketId: z.string().min(1),
+  status: z.enum(["open", "in_progress", "resolved", "closed"]).optional(),
+  priority: z.enum(["low", "medium", "high", "critical"]).optional(),
+});
+
 export async function PATCH(req: NextRequest) {
   try {
     await requireAdmin();
 
     const body = await req.json();
-    const { ticketId, status, priority } = body;
+    const parsed = patchSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Invalid request body", details: parsed.error.format() }, { status: 400 });
+    }
+    const { ticketId, status, priority } = parsed.data;
 
     const existing = await prisma.activity.findUnique({
       where: { id: ticketId },

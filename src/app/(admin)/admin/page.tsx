@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import useSWR from "swr";
 import { motion } from "framer-motion";
 import {
   Users,
@@ -90,31 +90,7 @@ function StatCard({
 }
 
 export default function AdminOverviewPage() {
-  const [stats, setStats] = useState<AdminStats | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-
-  const fetchStats = () => {
-    setLoading(true);
-    setError(false);
-    fetch("/api/admin/stats")
-      .then((r) => {
-        if (!r.ok) throw new Error("Failed to fetch stats");
-        return r.json();
-      })
-      .then((data) => {
-        setStats(data);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError(true);
-        setLoading(false);
-      });
-  };
-
-  useEffect(() => {
-    fetchStats();
-  }, []);
+  const { data: stats, error, isLoading, mutate } = useSWR<AdminStats>("/api/admin/stats");
 
   const getStatValue = (key: string) => {
     if (!stats) return "—";
@@ -149,7 +125,7 @@ export default function AdminOverviewPage() {
             Failed to load admin stats.
           </div>
           <button
-            onClick={fetchStats}
+            onClick={() => mutate()}
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-medium hover:bg-red-500/20 transition-colors"
           >
             <RefreshCw className="w-3.5 h-3.5" />
@@ -164,7 +140,7 @@ export default function AdminOverviewPage() {
           <StatCard
             key={card.key}
             label={card.label}
-            value={loading ? "..." : error ? "—" : getStatValue(card.key)}
+            value={isLoading ? "..." : error ? "—" : getStatValue(card.key)}
             icon={card.icon}
             color={card.color}
             bg={card.bg}
