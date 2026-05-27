@@ -90,6 +90,7 @@ function StatCard({
 export default function AdminOverviewPage() {
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/admin/stats")
@@ -98,7 +99,10 @@ export default function AdminOverviewPage() {
         setStats(data);
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch(() => {
+        setError("Failed to load admin stats.");
+        setLoading(false);
+      });
   }, []);
 
   const getStatValue = (key: string) => {
@@ -127,13 +131,19 @@ export default function AdminOverviewPage() {
         </p>
       </div>
 
+      {error && (
+        <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-400">
+          {error}
+        </div>
+      )}
+
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map((card, i) => (
           <StatCard
             key={card.key}
             label={card.label}
-            value={loading ? "..." : getStatValue(card.key)}
+            value={loading ? "..." : error ? "—" : getStatValue(card.key)}
             icon={card.icon}
             color={card.color}
             bg={card.bg}

@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Star, Quote, Loader2 } from "lucide-react";
+import { Star, Quote } from "lucide-react";
 import { SectionHeader } from "@/components/marketing/section-header";
 import { cn } from "@/lib/utils";
+import { SkeletonCard } from "@/components/ui/skeleton-card";
 
 interface Review {
   id: string;
@@ -39,6 +40,7 @@ export default function RealReviewsSection() {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [stats, setStats] = useState({ total: 0, average: 0 });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/reviews?limit=6")
@@ -48,14 +50,32 @@ export default function RealReviewsSection() {
         setStats({ total: data.total || 0, average: data.averageRating || 0 });
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch(() => {
+        setError("Failed to load reviews.");
+        setLoading(false);
+      });
   }, []);
 
   if (loading) {
     return (
       <section className="relative section-padding overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="h-12 w-1/3 bg-white/5 rounded-lg animate-pulse mb-12 mx-auto" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <SkeletonCard key={i} className="h-64" />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="relative section-padding overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 text-center">
-          <Loader2 className="w-8 h-8 text-vivid-primary animate-spin mx-auto" />
+          <p className="text-sm text-red-400">{error}</p>
         </div>
       </section>
     );

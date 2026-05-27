@@ -14,8 +14,6 @@ import {
   Monitor,
   Moon,
   Globe,
-  Save,
-  Check,
   Key,
 } from "lucide-react";
 import LicenseCountdown from "@/components/dashboard/license-countdown";
@@ -30,12 +28,6 @@ const tabs = [
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("profile");
-  const [saved, setSaved] = useState(false);
-
-  const handleSave = () => {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
-  };
 
   function LicenseTabContent() {
     const [licenses, setLicenses] = useState<Array<{
@@ -47,6 +39,7 @@ export default function SettingsPage() {
       expiresAt: string | null;
     }>>([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
       fetch("/api/user/licenses")
@@ -55,7 +48,10 @@ export default function SettingsPage() {
           setLicenses(data.licenses || []);
           setLoading(false);
         })
-        .catch(() => setLoading(false));
+        .catch(() => {
+          setError("Failed to load license data.");
+          setLoading(false);
+        });
     }, []);
 
     if (loading) {
@@ -66,6 +62,16 @@ export default function SettingsPage() {
               <div className="h-4 w-32 bg-vivid-border/50 rounded mx-auto" />
               <div className="h-20 w-full bg-vivid-border/30 rounded" />
             </div>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    if (error) {
+      return (
+        <Card>
+          <CardContent className="py-12 text-center">
+            <p className="text-sm text-red-400">{error}</p>
           </CardContent>
         </Card>
       );
@@ -236,21 +242,9 @@ export default function SettingsPage() {
                     </div>
                   ))}
 
-                  <div className="pt-4">
-                    <Button onClick={handleSave} className="gap-2">
-                      {saved ? (
-                        <>
-                          <Check className="w-4 h-4" />
-                          Saved
-                        </>
-                      ) : (
-                        <>
-                          <Save className="w-4 h-4" />
-                          Save Preferences
-                        </>
-                      )}
-                    </Button>
-                  </div>
+                  <p className="text-xs text-vivid-textDim pt-2">
+                    Settings auto-save when toggled.
+                  </p>
                 </CardContent>
               </Card>
             </div>
@@ -268,16 +262,16 @@ export default function SettingsPage() {
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between p-4 rounded-xl bg-vivid-bg border border-vivid-border">
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0">
-                        <Shield className="w-5 h-5 text-green-400" />
+                      <div className="w-10 h-10 rounded-lg bg-vivid-primary/10 flex items-center justify-center shrink-0">
+                        <Shield className="w-5 h-5 text-vivid-primary" />
                       </div>
                       <div className="min-w-0">
                         <p className="text-sm font-medium text-white">Two-Factor Authentication</p>
                         <p className="text-xs text-vivid-textMuted">Protect your account with an additional layer</p>
                       </div>
                     </div>
-                    <Badge variant="outline" className="border-green-500/30 text-green-400 shrink-0 ml-2">
-                      Enabled
+                    <Badge variant="outline" className="border-vivid-border text-vivid-textMuted shrink-0 ml-2">
+                      Coming soon
                     </Badge>
                   </div>
 
@@ -288,12 +282,12 @@ export default function SettingsPage() {
                       </div>
                       <div className="min-w-0">
                         <p className="text-sm font-medium text-white">Active Sessions</p>
-                        <p className="text-xs text-vivid-textMuted">2 active sessions on 2 devices</p>
+                        <p className="text-xs text-vivid-textMuted">View and manage your active sessions</p>
                       </div>
                     </div>
-                    <Button variant="outline" size="sm" className="shrink-0 ml-2">
-                      Manage
-                    </Button>
+                    <Badge variant="outline" className="border-vivid-border text-vivid-textMuted shrink-0 ml-2">
+                      Coming soon
+                    </Badge>
                   </div>
                 </CardContent>
               </Card>
