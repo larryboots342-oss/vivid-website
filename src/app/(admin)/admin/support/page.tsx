@@ -14,6 +14,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 interface Ticket {
   id: string;
@@ -66,6 +67,7 @@ export default function AdminSupportPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newTicket),
     });
+    toast.success("Ticket created");
     setShowCreate(false);
     setNewTicket({ title: "", description: "", priority: "medium" });
     fetchTickets();
@@ -77,6 +79,7 @@ export default function AdminSupportPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ticketId, status }),
     });
+    toast.success("Ticket status updated");
     fetchTickets();
   };
 

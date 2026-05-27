@@ -12,6 +12,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 interface FeatureFlag {
   id: string;
@@ -45,6 +46,7 @@ export default function AdminFeaturesPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ featureId: id, enabled }),
     });
+    toast.success("Feature updated");
     fetchFeatures();
   };
 
@@ -54,6 +56,7 @@ export default function AdminFeaturesPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ featureId: id, rollout }),
     });
+    toast.success("Rollout updated");
     fetchFeatures();
   };
 
@@ -64,6 +67,7 @@ export default function AdminFeaturesPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newFeature),
     });
+    toast.success("Feature flag created");
     setShowCreate(false);
     setNewFeature({ key: "", description: "", enabled: false, rollout: 0 });
     fetchFeatures();

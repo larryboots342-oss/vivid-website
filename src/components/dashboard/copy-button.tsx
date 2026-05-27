@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Copy, Check } from "lucide-react";
+import { toast } from "sonner";
 
 export function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
@@ -14,6 +15,7 @@ export function CopyButton({ text }: { text: string }) {
       onClick={() => {
         navigator.clipboard.writeText(text);
         setCopied(true);
+        toast.success("License key copied to clipboard");
         setTimeout(() => setCopied(false), 2000);
       }}
       className="shrink-0"

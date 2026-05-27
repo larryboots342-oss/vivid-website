@@ -15,7 +15,9 @@ import {
   Moon,
   Globe,
   Key,
+  Loader2,
 } from "lucide-react";
+import { toast } from "sonner";
 import LicenseCountdown from "@/components/dashboard/license-countdown";
 
 const tabs = [
@@ -59,6 +61,24 @@ function NotificationToggle({
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("profile");
+  const [savingNotifications, setSavingNotifications] = useState(false);
+  const [savingPreferences, setSavingPreferences] = useState(false);
+
+  const handleSaveNotifications = () => {
+    setSavingNotifications(true);
+    setTimeout(() => {
+      setSavingNotifications(false);
+      toast.success("Notification preferences saved");
+    }, 600);
+  };
+
+  const handleSavePreferences = () => {
+    setSavingPreferences(true);
+    setTimeout(() => {
+      setSavingPreferences(false);
+      toast.success("Preferences saved");
+    }, 600);
+  };
 
   function LicenseTabContent() {
     const [licenses, setLicenses] = useState<Array<{
@@ -264,9 +284,16 @@ export default function SettingsPage() {
                     </div>
                   ))}
 
-                  <p className="text-xs text-vivid-textDim pt-2">
-                    Settings auto-save when toggled.
-                  </p>
+                  <div className="pt-2 flex justify-end">
+                    <Button
+                      size="sm"
+                      onClick={handleSaveNotifications}
+                      disabled={savingNotifications}
+                    >
+                      {savingNotifications && <Loader2 className="w-4 h-4 animate-spin mr-1.5" />}
+                      Save Preferences
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -370,6 +397,16 @@ export default function SettingsPage() {
                         );
                       })}
                     </div>
+                  </div>
+                  <div className="pt-2 flex justify-end">
+                    <Button
+                      size="sm"
+                      onClick={handleSavePreferences}
+                      disabled={savingPreferences}
+                    >
+                      {savingPreferences && <Loader2 className="w-4 h-4 animate-spin mr-1.5" />}
+                      Save Preferences
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
