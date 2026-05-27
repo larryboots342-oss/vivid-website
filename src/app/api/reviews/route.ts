@@ -1,7 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
+import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
+
+const reviewSchema = z.object({
+  rating: z.number().int().min(1).max(5),
+  content: z.string().trim().min(5).max(500),
+  game: z.string().optional(),
+});
 
 export const dynamic = "force-dynamic";
 
@@ -110,28 +117,15 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { rating, content, game } = body;
-
-    if (!rating || typeof rating !== "number" || rating < 1 || rating > 5) {
+    const parsed = reviewSchema.safeParse(body);
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: "Rating must be between 1 and 5" },
+        { error: "Invalid review data", details: parsed.error.format() },
         { status: 400 }
       );
     }
 
-    if (!content || typeof content !== "string" || content.trim().length < 5) {
-      return NextResponse.json(
-        { error: "Review content must be at least 5 characters" },
-        { status: 400 }
-      );
-    }
-
-    if (content.trim().length > 500) {
-      return NextResponse.json(
-        { error: "Review content must be under 500 characters" },
-        { status: 400 }
-      );
-    }
+    const { rating, content, game } = parsed.data;
 
     // Check if user already reviewed
     const existing = await prisma.review.findFirst({

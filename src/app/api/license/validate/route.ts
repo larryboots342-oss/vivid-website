@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
+import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { supabase } from "@/lib/supabase";
 import { isLicenseValid } from "@/lib/license";
 import { rateLimit } from "@/lib/rate-limit";
+
+const validateLicenseSchema = z.object({
+  key: z.string().min(1),
+});
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -33,10 +38,14 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const rawKey = body.key;
-    if (!rawKey || typeof rawKey !== "string") {
-      return NextResponse.json({ error: "License key required" }, { status: 400 });
+    const parsed = validateLicenseSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "License key required", details: parsed.error.format() },
+        { status: 400 }
+      );
     }
+    const rawKey = parsed.data.key;
 
     const key = normalizeKey(rawKey);
     if (!key.startsWith("VIVID-")) {

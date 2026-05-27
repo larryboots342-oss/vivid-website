@@ -1,11 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { currentUser } from "@clerk/nextjs/server";
+import { z } from "zod";
 import { createUnifiedLicense } from "@/lib/unified-license";
 import { sendLicenseEmail } from "@/lib/email";
 import { PLANS } from "@/lib/constants";
 import { OWNER_EMAIL } from "@/lib/owner-email";
 import { rateLimit } from "@/lib/rate-limit";
+
+const createLicenseSchema = z.object({
+  email: z.string().email(),
+  tier: z.string().min(1),
+  provider: z.string().optional(),
+  providerOrderId: z.string().optional(),
+  amount: z.number().optional(),
+  currency: z.string().optional(),
+});
 
 export const dynamic = "force-dynamic";
 
@@ -36,15 +46,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { email, tier, provider, providerOrderId, amount, currency } =
-      await req.json();
-
-    if (!email || !tier) {
+    const body = await req.json();
+    const parsed = createLicenseSchema.safeParse(body);
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: "Missing required fields" },
+        { error: "Invalid request body", details: parsed.error.format() },
         { status: 400 }
       );
     }
+
+    const { email, tier, provider, providerOrderId, amount, currency } = parsed.data;
 
     const plan = PLANS.find((p) => p.id === tier.toLowerCase());
     if (!plan) {
