@@ -1,11 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/admin-auth";
-
-export const dynamic = "force-dynamic";
-export const runtime = "nodejs";
-
-/* Feature flags stored as a special Activity record with type="feature_flag" */
+import { errorResponse } from "@/lib/api-utils";
 
 export async function GET(req: NextRequest) {
   try {
@@ -26,10 +22,8 @@ export async function GET(req: NextRequest) {
     }));
 
     return NextResponse.json({ features: parsed });
-  } catch (error: any) {
-    console.error("Admin features error:", error);
-    const status = error.message === "Unauthorized" ? 401 : error.message === "Forbidden" ? 403 : 500;
-    return NextResponse.json({ error: error.message }, { status });
+  } catch (error) {
+    return errorResponse(error);
   }
 }
 
@@ -60,10 +54,8 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json(flag);
-  } catch (error: any) {
-    console.error("Admin feature create error:", error);
-    const status = error.message === "Unauthorized" ? 401 : error.message === "Forbidden" ? 403 : 500;
-    return NextResponse.json({ error: error.message }, { status });
+  } catch (error) {
+    return errorResponse(error);
   }
 }
 
@@ -89,9 +81,7 @@ export async function PATCH(req: NextRequest) {
     });
 
     return NextResponse.json(updated);
-  } catch (error: any) {
-    console.error("Admin feature patch error:", error);
-    const status = error.message === "Unauthorized" ? 401 : error.message === "Forbidden" ? 403 : 500;
-    return NextResponse.json({ error: error.message }, { status });
+  } catch (error) {
+    return errorResponse(error);
   }
 }

@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/admin-auth";
-
-export const dynamic = "force-dynamic";
-export const runtime = "nodejs";
+import { errorResponse } from "@/lib/api-utils";
 
 function getDateRange(filter: string) {
   const now = new Date();
@@ -34,7 +32,6 @@ export async function GET(req: NextRequest) {
     const limit = parseInt(searchParams.get("limit") || "25");
     const { start } = getDateRange(filter);
 
-    // ── Summary stats ─────────────────────────────────────────────
     const [
       totalVisitors,
       totalPageViews,
@@ -51,7 +48,6 @@ export async function GET(req: NextRequest) {
       }),
     ]);
 
-    // ── Time series ───────────────────────────────────────────────
     const isToday = filter === "today";
     const timeSeriesRaw = await prisma.$queryRaw<
       Array<{ bucket: Date; count: bigint }>
@@ -77,7 +73,6 @@ export async function GET(req: NextRequest) {
       views: Number(row.count),
     }));
 
-    // ── Top pages ─────────────────────────────────────────────────
     const topPages = await prisma.pageView.groupBy({
       by: ["path"],
       where: { createdAt: { gte: start } },
@@ -86,7 +81,6 @@ export async function GET(req: NextRequest) {
       take: 10,
     });
 
-    // ── Top countries ─────────────────────────────────────────────
     const topCountries = await prisma.pageView.groupBy({
       by: ["country"],
       where: { createdAt: { gte: start }, country: { not: null } },
@@ -95,7 +89,6 @@ export async function GET(req: NextRequest) {
       take: 10,
     });
 
-    // ── Top sources ───────────────────────────────────────────────
     const topSources = await prisma.visitor.groupBy({
       by: ["source"],
       where: { lastSeen: { gte: start }, source: { not: null } },
@@ -104,7 +97,6 @@ export async function GET(req: NextRequest) {
       take: 10,
     });
 
-    // ── Device & browser breakdown ────────────────────────────────
     const [deviceBreakdown, browserBreakdown] = await Promise.all([
       prisma.visitor.groupBy({
         by: ["device"],
@@ -118,7 +110,6 @@ export async function GET(req: NextRequest) {
       }),
     ]);
 
-    // ── Recent visitors ───────────────────────────────────────────
     const skip = (page - 1) * limit;
     const [visitors, visitorTotal] = await Promise.all([
       prisma.visitor.findMany({
@@ -184,14 +175,7 @@ export async function GET(req: NextRequest) {
         pages: Math.ceil(visitorTotal / limit),
       },
     });
-  } catch (error: any) {
-    console.error("Admin visitors error:", error);
-    const status =
-      error.message === "Unauthorized"
-        ? 401
-        : error.message === "Forbidden"
-          ? 403
-          : 500;
-    return NextResponse.json({ error: error.message }, { status });
+  } catch (error) {
+    return errorResponse(error);
   }
 }

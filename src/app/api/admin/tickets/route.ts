@@ -1,11 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/admin-auth";
-
-export const dynamic = "force-dynamic";
-export const runtime = "nodejs";
-
-/* Mock ticket system using Activity model with type="support" */
+import { errorResponse } from "@/lib/api-utils";
 
 export async function GET(req: NextRequest) {
   try {
@@ -36,10 +32,8 @@ export async function GET(req: NextRequest) {
     ]);
 
     return NextResponse.json({ tickets, total, page, limit, pages: Math.ceil(total / limit) });
-  } catch (error: any) {
-    console.error("Admin tickets error:", error);
-    const status = error.message === "Unauthorized" ? 401 : error.message === "Forbidden" ? 403 : 500;
-    return NextResponse.json({ error: error.message }, { status });
+  } catch (error) {
+    return errorResponse(error);
   }
 }
 
@@ -70,10 +64,8 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json(ticket);
-  } catch (error: any) {
-    console.error("Admin ticket create error:", error);
-    const status = error.message === "Unauthorized" ? 401 : error.message === "Forbidden" ? 403 : 500;
-    return NextResponse.json({ error: error.message }, { status });
+  } catch (error) {
+    return errorResponse(error);
   }
 }
 
@@ -100,9 +92,7 @@ export async function PATCH(req: NextRequest) {
     });
 
     return NextResponse.json(updated);
-  } catch (error: any) {
-    console.error("Admin ticket patch error:", error);
-    const status = error.message === "Unauthorized" ? 401 : error.message === "Forbidden" ? 403 : 500;
-    return NextResponse.json({ error: error.message }, { status });
+  } catch (error) {
+    return errorResponse(error);
   }
 }

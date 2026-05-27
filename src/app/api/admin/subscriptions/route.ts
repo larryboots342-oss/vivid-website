@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/admin-auth";
-
-export const dynamic = "force-dynamic";
-export const runtime = "nodejs";
+import { errorResponse } from "@/lib/api-utils";
 
 export async function GET(req: NextRequest) {
   try {
@@ -40,9 +38,7 @@ export async function GET(req: NextRequest) {
     ]);
 
     return NextResponse.json({ licenses, total, page, limit, pages: Math.ceil(total / limit) });
-  } catch (error: any) {
-    console.error("Admin licenses error:", error);
-    const status = error.message === "Unauthorized" ? 401 : error.message === "Forbidden" ? 403 : 500;
-    return NextResponse.json({ error: error.message }, { status });
+  } catch (error) {
+    return errorResponse(error);
   }
 }
