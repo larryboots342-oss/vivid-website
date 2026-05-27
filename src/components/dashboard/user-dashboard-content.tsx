@@ -27,6 +27,7 @@ import {
   Crown,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getDaysRemaining } from "@/lib/license";
 import ReviewPrompt from "./review-prompt";
 import { Suspense } from "react";
 
@@ -63,12 +64,6 @@ const tierConfig: Record<string, { color: string; bg: string; label: string }> =
   enterprise: { color: "text-green-400", bg: "bg-green-500/10", label: "Enterprise" },
 };
 
-function getDaysUntilExpiry(expiresAt: string | null): number | null {
-  if (!expiresAt) return null;
-  const diff = new Date(expiresAt).getTime() - Date.now();
-  return Math.max(0, Math.ceil(diff / (24 * 60 * 60 * 1000)));
-}
-
 function formatRelativeTime(date: Date | string): string {
   const now = new Date();
   const diff = now.getTime() - new Date(date).getTime();
@@ -92,7 +87,7 @@ function LicenseKeyCard({ license }: { license: LicenseData }) {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const daysLeft = getDaysUntilExpiry(license.expiresAt);
+  const daysLeft = getDaysRemaining(license.expiresAt);
   const tierStyle = tierConfig[license.tier] || tierConfig.free;
 
   return (

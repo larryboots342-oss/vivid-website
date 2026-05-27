@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { isLicenseValid } from "@/lib/license";
+import { TIER_RANK } from "@/lib/tiers";
 
 interface AdminUser {
   id: string;
@@ -82,9 +83,8 @@ export default function AdminUsersPage() {
   const getHighestTier = (licenses: AdminUser["licenses"]) => {
     const active = licenses.filter((l) => l.isActive && isLicenseValid(l.expiresAt ? new Date(l.expiresAt) : null));
     if (active.length === 0) return null;
-    const tierRank: Record<string, number> = { pro: 1, elite: 2, enterprise: 3 };
     return active.reduce((highest, current) =>
-      (tierRank[current.tier] || 0) > (tierRank[highest.tier] || 0) ? current : highest
+      (TIER_RANK[current.tier] || 0) > (TIER_RANK[highest.tier] || 0) ? current : highest
     );
   };
 

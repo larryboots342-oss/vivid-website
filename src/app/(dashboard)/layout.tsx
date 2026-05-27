@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 import DashboardSidebar from "@/components/dashboard/sidebar";
 import DashboardHeader from "@/components/dashboard/header";
-import DashboardLayoutClient from "@/components/dashboard/layout-client";
 
 export default async function DashboardLayout({
   children,
@@ -21,7 +20,7 @@ export default async function DashboardLayout({
       <div className="lg:ml-72 min-h-screen">
         <DashboardHeader />
         <main id="main-content" className="p-6 lg:p-8 pt-20 lg:pt-6 max-w-7xl">
-          <DashboardLayoutClient>{children}</DashboardLayoutClient>
+          {children}
         </main>
       </div>
     </div>
