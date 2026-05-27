@@ -8,7 +8,6 @@ import { SkeletonGrid } from "@/components/ui/skeleton-grid";
 const FeaturesShowcase = dynamic(
   () => import("@/components/marketing/features-showcase"),
   {
-    ssr: false,
     loading: () => (
       <section className="py-32 px-6">
         <div className="max-w-7xl mx-auto">
@@ -27,7 +26,6 @@ const FeaturesShowcase = dynamic(
 const GameCardsSection = dynamic(
   () => import("@/components/marketing/game-cards-section"),
   {
-    ssr: false,
     loading: () => (
       <section className="py-32 px-6">
         <div className="max-w-7xl mx-auto">
@@ -42,7 +40,6 @@ const GameCardsSection = dynamic(
 const PricingSection = dynamic(
   () => import("@/components/marketing/pricing-section"),
   {
-    ssr: false,
     loading: () => (
       <section className="py-32 px-6">
         <div className="max-w-7xl mx-auto">
@@ -57,7 +54,6 @@ const PricingSection = dynamic(
 const FAQSection = dynamic(
   () => import("@/components/marketing/faq-section"),
   {
-    ssr: false,
     loading: () => (
       <section className="py-32 px-6">
         <div className="max-w-3xl mx-auto">
@@ -76,7 +72,6 @@ const FAQSection = dynamic(
 const CTASection = dynamic(
   () => import("@/components/marketing/cta-section"),
   {
-    ssr: false,
     loading: () => (
       <section className="py-32 px-6">
         <div className="max-w-4xl mx-auto">
@@ -91,7 +86,6 @@ const CTASection = dynamic(
 const SoftwareGuiHero = dynamic(
   () => import("@/components/marketing/software-gui-hero"),
   {
-    ssr: false,
     loading: () => (
       <section className="py-32 px-6">
         <div className="max-w-5xl mx-auto">
@@ -105,7 +99,6 @@ const SoftwareGuiHero = dynamic(
 const VideoPreviews = dynamic(
   () => import("@/components/marketing/video-previews"),
   {
-    ssr: false,
     loading: () => (
       <section className="py-32 px-6">
         <div className="max-w-7xl mx-auto">
@@ -123,7 +116,6 @@ const VideoPreviews = dynamic(
 const StatsSection = dynamic(
   () => import("@/components/marketing/stats-section"),
   {
-    ssr: false,
     loading: () => (
       <section className="py-32 px-6">
         <div className="max-w-7xl mx-auto">
@@ -138,7 +130,6 @@ const StatsSection = dynamic(
 const RealReviewsSection = dynamic(
   () => import("@/components/marketing/real-reviews"),
   {
-    ssr: false,
     loading: () => (
       <section className="py-32 px-6">
         <div className="max-w-7xl mx-auto">
