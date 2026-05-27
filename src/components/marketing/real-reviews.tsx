@@ -133,7 +133,7 @@ export default function RealReviewsSection() {
                 )}
                 <div className="flex items-center justify-between pt-4 border-t border-vivid-border/30">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-vivid-primary to-blue-500 flex items-center justify-center text-sm font-bold text-white">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-vivid-primary to-blue-500 flex items-center justify-center text-sm font-bold text-white" aria-hidden="true">
                       {review.avatar}
                     </div>
                     <div>

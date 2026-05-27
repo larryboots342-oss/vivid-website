@@ -80,9 +80,18 @@ export default function VideoPreviews() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.08 }}
+                role="button"
+                tabIndex={0}
+                aria-label={`Play video: ${video.title}`}
                 className="group relative rounded-2xl overflow-hidden border aspect-video cursor-pointer border-vivid-border/50"
                 style={{ background: "#0a0a0a" }}
                 onClick={() => setActiveVideo(video)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setActiveVideo(video);
+                  }
+                }}
               >
                 {/* Thumbnail or gradient fallback */}
                 <div className="absolute inset-0 bg-gradient-to-br from-vivid-primary/5 to-transparent" />
@@ -153,6 +162,7 @@ export default function VideoPreviews() {
               <button
                 onClick={() => setActiveVideo(null)}
                 className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/50 flex items-center justify-center text-white hover:bg-black/70 transition-colors"
+                aria-label="Close video modal"
               >
                 <X className="w-5 h-5" />
               </button>

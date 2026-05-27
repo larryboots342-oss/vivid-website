@@ -363,6 +363,7 @@ export default function FAQSection() {
               placeholder="Search questions..."
               className="w-full bg-transparent py-4 pl-12 pr-12 text-white placeholder:text-vivid-textDim outline-none text-[15px]"
               aria-label="Search FAQ"
+              aria-controls="faq-results"
             />
             <AnimatePresence>
               {searchQuery && (
@@ -438,7 +439,7 @@ export default function FAQSection() {
         </AnimatePresence>
 
         {/* Accordion List */}
-        <div className="space-y-3" role="presentation">
+        <div className="space-y-3" role="presentation" id="faq-results">
           <AnimatePresence mode="popLayout">
             {filteredFaqs.map((faq, index) => (
               <AccordionItem

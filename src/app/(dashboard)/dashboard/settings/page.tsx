@@ -26,6 +26,37 @@ const tabs = [
   { id: "preferences", label: "Preferences", icon: Monitor },
 ];
 
+function NotificationToggle({
+  title,
+  description,
+  defaultChecked,
+}: {
+  title: string;
+  description: string;
+  defaultChecked: boolean;
+}) {
+  const [checked, setChecked] = useState(defaultChecked);
+  return (
+    <div className="flex items-start justify-between gap-3">
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-medium text-white">{title}</p>
+        <p className="text-xs text-vivid-textMuted mt-0.5 leading-relaxed">{description}</p>
+      </div>
+      <label className="relative inline-flex items-center cursor-pointer shrink-0 mt-0.5">
+        <input
+          type="checkbox"
+          role="switch"
+          aria-checked={checked}
+          checked={checked}
+          onChange={(e) => setChecked(e.target.checked)}
+          className="sr-only peer"
+        />
+        <div className="w-10 h-5 sm:w-11 sm:h-6 bg-vivid-surfaceHover rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 sm:after:h-5 sm:after:w-5 after:transition-all peer-checked:bg-vivid-primary" />
+      </label>
+    </div>
+  );
+}
+
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("profile");
 
@@ -225,20 +256,11 @@ export default function SettingsPage() {
                   ].map((item, i) => (
                     <div key={item.title}>
                       {i > 0 && <Separator className="bg-vivid-border/40 mb-4" />}
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium text-white">{item.title}</p>
-                          <p className="text-xs text-vivid-textMuted mt-0.5 leading-relaxed">{item.description}</p>
-                        </div>
-                        <label className="relative inline-flex items-center cursor-pointer shrink-0 mt-0.5">
-                          <input
-                            type="checkbox"
-                            defaultChecked={item.defaultChecked}
-                            className="sr-only peer"
-                          />
-                          <div className="w-10 h-5 sm:w-11 sm:h-6 bg-vivid-surfaceHover rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 sm:after:h-5 sm:after:w-5 after:transition-all peer-checked:bg-vivid-primary" />
-                        </label>
-                      </div>
+                      <NotificationToggle
+                        title={item.title}
+                        description={item.description}
+                        defaultChecked={item.defaultChecked}
+                      />
                     </div>
                   ))}
 
@@ -315,7 +337,13 @@ export default function SettingsPage() {
                       </div>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer shrink-0">
-                      <input type="checkbox" defaultChecked className="sr-only peer" />
+                      <input
+                        type="checkbox"
+                        role="switch"
+                        aria-checked={true}
+                        defaultChecked
+                        className="sr-only peer"
+                      />
                       <div className="w-10 h-5 sm:w-11 sm:h-6 bg-vivid-surfaceHover rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 sm:after:h-5 sm:after:w-5 after:transition-all peer-checked:bg-vivid-primary" />
                     </label>
                   </div>
@@ -325,18 +353,22 @@ export default function SettingsPage() {
                   <div>
                     <p className="text-sm font-medium text-white mb-3">Dashboard Layout</p>
                     <div className="grid grid-cols-3 gap-2 sm:gap-3">
-                      {["Compact", "Comfortable", "Detailed"].map((layout) => (
-                        <button
-                          key={layout}
-                          className={`p-3 sm:p-4 rounded-xl border text-sm font-medium transition-all ${
-                            layout === "Comfortable"
-                              ? "border-vivid-primary bg-vivid-primary/10 text-vivid-primary"
-                              : "border-vivid-border text-vivid-textMuted hover:border-vivid-primary/30"
-                          }`}
-                        >
-                          {layout}
-                        </button>
-                      ))}
+                      {["Compact", "Comfortable", "Detailed"].map((layout) => {
+                        const isActive = layout === "Comfortable";
+                        return (
+                          <button
+                            key={layout}
+                            aria-pressed={isActive}
+                            className={`p-3 sm:p-4 rounded-xl border text-sm font-medium transition-all ${
+                              isActive
+                                ? "border-vivid-primary bg-vivid-primary/10 text-vivid-primary"
+                                : "border-vivid-border text-vivid-textMuted hover:border-vivid-primary/30"
+                            }`}
+                          >
+                            {layout}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 </CardContent>

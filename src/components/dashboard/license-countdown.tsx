@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, Infinity as InfinityIcon, AlertTriangle, Key } from "lucide-react";
@@ -60,6 +60,7 @@ function tierBg(tier: string): string {
 }
 
 export default function LicenseCountdown({ licenses }: LicenseCountdownProps) {
+  const shouldReduceMotion = useReducedMotion();
   const activeLicenses = licenses.filter((l) => l.isActive && !l.isLifetime && l.expiresAt);
   const lifetimeLicenses = licenses.filter((l) => l.isActive && l.isLifetime);
 
@@ -191,8 +192,8 @@ export default function LicenseCountdown({ licenses }: LicenseCountdownProps) {
                     borderColor: urgent ? "rgba(239,68,68,0.2)" : `${tc}20`,
                     backgroundColor: urgent ? "rgba(239,68,68,0.05)" : "rgba(0,0,0,0.2)",
                   }}
-                  animate={{ scale: unit.label === "Secs" ? [1, 1.02, 1] : 1 }}
-                  transition={{ duration: 1, repeat: Infinity }}
+                  animate={{ scale: shouldReduceMotion ? 1 : unit.label === "Secs" ? [1, 1.02, 1] : 1 }}
+                  transition={shouldReduceMotion ? undefined : { duration: 1, repeat: Infinity }}
                 >
                   <div
                     className="text-xl font-bold tabular-nums"

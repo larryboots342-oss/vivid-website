@@ -234,6 +234,7 @@ export default function Navbar() {
               transition={{ duration: 0.3 }}
               className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
               onClick={() => setMobileOpen(false)}
+              aria-hidden="true"
             />
 
             {/* Menu Panel */}
