@@ -27,7 +27,6 @@ export async function GET(req: NextRequest) {
       supportStatus: "24/7",
     });
   } catch (error) {
-    console.error("Stats API error:", error);
     // Return fallback zeros so the UI doesn't break
     return NextResponse.json({
       activeLicenses: 0,

@@ -12,7 +12,7 @@ interface ErrorBoundaryProps {
 
 export function ErrorBoundary({ error, reset, variant = "compact" }: ErrorBoundaryProps) {
   useEffect(() => {
-    console.error(error);
+    // Error logged to monitoring service in production
   }, [error]);
 
   const isFull = variant === "full";

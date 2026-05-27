@@ -24,7 +24,6 @@ export async function POST(req: NextRequest) {
     try {
       event = stripe.webhooks.constructEvent(payload, signature, webhookSecret);
     } catch (err: any) {
-      console.error("Webhook signature verification failed:", err.message);
       return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
     }
 
@@ -46,7 +45,6 @@ export async function POST(req: NextRequest) {
         });
 
         if (!user) {
-          console.error("User not found for license creation:", userId);
           return NextResponse.json(
             { error: "User not found" },
             { status: 500 }
@@ -76,7 +74,6 @@ export async function POST(req: NextRequest) {
         });
 
         if (!emailResult.success) {
-          console.error("Failed to send license email:", emailResult.error);
         }
 
         await prisma.activity.create({

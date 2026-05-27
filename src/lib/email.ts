@@ -14,7 +14,6 @@ interface LicenseEmailData {
 
 export async function sendLicenseEmail({ to, licenseKey, tier, expiresAt }: LicenseEmailData) {
   if (!resend) {
-    console.warn("Resend not configured. License email would have been sent to:", to);
     return { success: false, error: "Email service not configured" };
   }
 
@@ -95,13 +94,11 @@ export async function sendLicenseEmail({ to, licenseKey, tier, expiresAt }: Lice
     });
 
     if (error) {
-      console.error("Resend error:", error);
       return { success: false, error: error.message };
     }
 
     return { success: true, data };
   } catch (err: any) {
-    console.error("Email send error:", err);
     return { success: false, error: err.message };
   }
 }

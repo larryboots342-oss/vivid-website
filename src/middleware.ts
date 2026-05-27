@@ -50,7 +50,6 @@ export default clerkMiddleware(async (auth, req) => {
       try {
         authData = await auth();
       } catch (err) {
-        console.error("Middleware auth error:", err);
         authData = { userId: null };
       }
       if (authData.userId && isAuthRoute(req)) {
@@ -124,7 +123,6 @@ export default clerkMiddleware(async (auth, req) => {
 
     return response;
   } catch (error) {
-    console.error("Middleware error:", error);
     return new Response("Internal Server Error", { status: 500 });
   }
 });

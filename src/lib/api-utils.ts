@@ -52,7 +52,6 @@ export function errorResponse(error: unknown) {
   if (error instanceof ApiError) {
     return NextResponse.json({ error: error.message }, { status: error.status });
   }
-  console.error("API Error:", error);
   return NextResponse.json({ error: "Internal server error" }, { status: 500 });
 }
 
