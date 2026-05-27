@@ -6,8 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { sendLicenseEmail } from "@/lib/email";
 import { createUnifiedLicense } from "@/lib/unified-license";
 import { getCountryFromIp } from "@/lib/geo";
-
-export const dynamic = "force-dynamic";
+import { errorResponse } from "@/lib/api-utils";
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || "";
 
@@ -49,11 +48,9 @@ export async function POST(req: NextRequest) {
           );
         }
 
-        // Geolocation
         const buyerIp = session.metadata?.buyerIp || undefined;
         const country = buyerIp ? await getCountryFromIp(buyerIp) : null;
 
-        // Create unified license (Prisma + Supabase)
         const { licenseKey, expiresAt } = await createUnifiedLicense({
           userId,
           email: user.email,
@@ -66,7 +63,6 @@ export async function POST(req: NextRequest) {
           country: country || undefined,
         });
 
-        // Send license email
         const emailResult = await sendLicenseEmail({
           to: user.email,
           licenseKey,
@@ -78,7 +74,6 @@ export async function POST(req: NextRequest) {
           console.error("Failed to send license email:", emailResult.error);
         }
 
-        // Create activity record
         await prisma.activity.create({
           data: {
             userId,
@@ -111,11 +106,7 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ received: true });
-  } catch (error: any) {
-    console.error("Stripe webhook error:", error);
-    return NextResponse.json(
-      { error: error.message || "Internal server error" },
-      { status: 500 }
-    );
+  } catch (error) {
+    return errorResponse(error);
   }
 }

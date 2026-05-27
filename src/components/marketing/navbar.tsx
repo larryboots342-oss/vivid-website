@@ -29,12 +29,10 @@ export default function Navbar() {
   const { scrollY } = useScroll();
   const hamburgerRef = useRef<HTMLButtonElement>(null);
 
-  // Scroll-aware transparency
   useMotionValueEvent(scrollY, "change", (latest) => {
     setScrolled(latest > 20);
   });
 
-  // Active section highlighting via IntersectionObserver
   useEffect(() => {
     if (pathname !== "/") return;
 
@@ -63,7 +61,6 @@ export default function Navbar() {
     return () => observers.forEach((o) => o.disconnect());
   }, [pathname]);
 
-  // Smooth anchor scroll
   const handleAnchorClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
       if (href.startsWith("#")) {
@@ -81,7 +78,6 @@ export default function Navbar() {
     []
   );
 
-  // Lock body scroll when mobile menu open + restore focus on close
   useEffect(() => {
     if (mobileOpen) {
       document.body.style.overflow = "hidden";

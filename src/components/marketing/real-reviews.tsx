@@ -4,17 +4,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Star, Quote, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-interface Review {
-  id: string;
-  name: string;
-  avatar: string;
-  rating: number;
-  content: string;
-  tier: string;
-  game?: string;
-  createdAt: string;
-}
+import type { Review } from "@/types";
 
 function StarRating({ rating }: { rating: number }) {
   return (

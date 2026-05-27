@@ -28,25 +28,9 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getDaysRemaining } from "@/lib/license";
+import type { LicenseData, ActivityData } from "@/types";
 import ReviewPrompt from "./review-prompt";
 import { Suspense } from "react";
-
-interface LicenseData {
-  id: string;
-  key: string;
-  tier: string;
-  isActive: boolean;
-  isLifetime: boolean;
-  expiresAt: string | null;
-}
-
-interface ActivityData {
-  id: string;
-  type: string;
-  title: string;
-  description: string | null;
-  createdAt: string;
-}
 
 interface UserDashboardData {
   firstName: string;

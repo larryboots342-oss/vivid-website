@@ -26,12 +26,40 @@ export interface License {
   expiresAt: Date | null;
 }
 
+export interface LicenseData {
+  id: string;
+  key: string;
+  tier: string;
+  isActive: boolean;
+  isLifetime: boolean;
+  expiresAt: string | null;
+}
+
 export interface ActivityItem {
   id: string;
   type: string;
   title: string;
   description: string | null;
   createdAt: Date;
+}
+
+export interface ActivityData {
+  id: string;
+  type: string;
+  title: string;
+  description: string | null;
+  createdAt: string;
+}
+
+export interface Review {
+  id: string;
+  name: string;
+  avatar: string;
+  rating: number;
+  content: string;
+  tier: string;
+  game?: string;
+  createdAt: string;
 }
 
 export interface GameCard {
