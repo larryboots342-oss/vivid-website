@@ -17,6 +17,7 @@ interface BlurImageProps {
   placeholderColor?: string;
   placeholderSrc?: string;
   sizes?: string;
+  blurDataURL?: string;
   onLoad?: () => void;
 }
 
@@ -32,6 +33,7 @@ export default function BlurImage({
   placeholderColor = "#111111",
   placeholderSrc,
   sizes,
+  blurDataURL,
   onLoad,
 }: BlurImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -70,6 +72,7 @@ export default function BlurImage({
                   src={placeholderSrc}
                   alt=""
                   fill
+                  sizes="100vw"
                   className="object-cover"
                   aria-hidden="true"
                 />
@@ -97,6 +100,8 @@ export default function BlurImage({
         fill={fill}
         priority={priority}
         sizes={sizes}
+        placeholder={blurDataURL ? "blur" : undefined}
+        blurDataURL={blurDataURL}
         onLoad={handleLoad}
         className={cn(
           "transition-opacity duration-500",
