@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, Video, X, Loader2 } from "lucide-react";
+import { Play, Video, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SkeletonCard } from "@/components/ui/skeleton-card";
 
 interface VideoItem {
   id: string;
@@ -60,8 +61,10 @@ export default function VideoPreviews() {
 
         {/* Loading */}
         {loading && (
-          <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-8 h-8 text-vivid-primary animate-spin" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <SkeletonCard key={i} className="aspect-video" />
+            ))}
           </div>
         )}
 
@@ -82,10 +85,12 @@ export default function VideoPreviews() {
                 {/* Thumbnail or gradient fallback */}
                 <div className="absolute inset-0 bg-gradient-to-br from-vivid-primary/5 to-transparent" />
                 {video.thumbnailUrl && (
-                  <img
+                  <Image
                     src={video.thumbnailUrl}
                     alt={video.title}
-                    className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity"
+                    fill
+                    className="object-cover opacity-60 group-hover:opacity-80 transition-opacity"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
                 )}
 
