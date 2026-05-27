@@ -17,6 +17,7 @@ import {
   PoundSterling,
   AlertTriangle,
   RefreshCw,
+  BarChart3,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CURRENCY_SYMBOL } from "@/lib/constants";
@@ -264,7 +265,13 @@ export default function AdminOverviewPage() {
               ))}
             </div>
           ) : (
-            <p className="text-sm text-vivid-textDim">No transactions yet</p>
+            <div className="text-center py-12">
+              <div className="w-16 h-16 rounded-2xl bg-vivid-primary/10 border border-vivid-primary/20 flex items-center justify-center mx-auto mb-4">
+                <BarChart3 className="w-8 h-8 text-vivid-primary" />
+              </div>
+              <h3 className="text-white font-semibold mb-2">No transactions yet</h3>
+              <p className="text-vivid-textMuted text-sm">Transactions will appear here when customers make purchases.</p>
+            </div>
           )}
         </motion.div>
       </div>

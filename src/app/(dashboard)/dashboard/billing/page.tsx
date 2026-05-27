@@ -194,9 +194,9 @@ export default async function BillingPage() {
       )}
 
       {/* License History */}
-      {licenses.length > 0 && (
-        <div className="space-y-4">
-          <h2 className="text-lg font-semibold text-white">License History</h2>
+      <div className="space-y-4">
+        <h2 className="text-lg font-semibold text-white">License History</h2>
+        {licenses.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -244,8 +244,24 @@ export default async function BillingPage() {
               </tbody>
             </table>
           </div>
-        </div>
-      )}
+        ) : (
+          <Card className="border-vivid-border">
+            <CardContent className="py-12 text-center">
+              <Key className="w-12 h-12 text-vivid-textDim mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-white mb-2">No License History</h3>
+              <p className="text-vivid-textMuted text-sm max-w-md mx-auto mb-6">
+                You haven&apos;t purchased any licenses yet. Upgrade to get started.
+              </p>
+              <Button asChild>
+                <Link href="/pricing" className="inline-flex items-center gap-2">
+                  <ShoppingCart className="w-4 h-4" />
+                  Purchase License
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+      </div>
 
       {/* Download CTA */}
       <Card className="border-vivid-primary/20">

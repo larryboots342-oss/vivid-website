@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import useSWR from "swr";
 import { motion } from "framer-motion";
 import {
   Key,
@@ -57,29 +58,20 @@ function formatDate(date: string | null) {
 }
 
 export default function AdminLicensesPage() {
-  const [licenses, setLicenses] = useState<License[]>([]);
-  const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("");
   const [tierFilter, setTierFilter] = useState("");
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
 
-  const fetchLicenses = async () => {
-    setLoading(true);
-    const params = new URLSearchParams();
-    if (statusFilter) params.set("status", statusFilter);
-    if (tierFilter) params.set("tier", tierFilter);
-    params.set("page", String(page));
-    const res = await fetch(`/api/admin/subscriptions?${params}`);
-    const data = await res.json();
-    setLicenses(data.licenses || []);
-    setTotalPages(data.pages || 1);
-    setLoading(false);
-  };
+  const queryKey = `/api/admin/subscriptions?${new URLSearchParams({
+    ...(statusFilter && { status: statusFilter }),
+    ...(tierFilter && { tier: tierFilter }),
+    page: String(page),
+  }).toString()}`;
 
-  useEffect(() => {
-    fetchLicenses();
-  }, [page, statusFilter, tierFilter]);
+  const { data, isLoading } = useSWR<{ licenses: License[]; pages: number }>(queryKey);
+
+  const licenses = data?.licenses || [];
+  const totalPages = data?.pages || 1;
 
   const getLicenseStatus = (license: License) => {
     if (!license.isActive) return "inactive";
@@ -133,7 +125,7 @@ export default function AdminLicensesPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-vivid-border/30">
-              {loading ? (
+              {isLoading ? (
                 Array.from({ length: 5 }).map((_, i) => (
                   <tr key={i}>
                     <td className="px-4 py-4"><div className="h-10 rounded-lg bg-white/5 animate-pulse w-40" /></td>

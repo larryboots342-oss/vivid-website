@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Star, Quote } from "lucide-react";
+import { Star, Quote, MessageSquare } from "lucide-react";
+import Link from "next/link";
 import { SectionHeader } from "@/components/marketing/section-header";
 import { cn } from "@/lib/utils";
 import { SkeletonCard } from "@/components/ui/skeleton-card";
@@ -81,9 +82,34 @@ export default function RealReviewsSection() {
     );
   }
 
-  // Don't show section if no real reviews yet
   if (reviews.length === 0) {
-    return null;
+    return (
+      <section id="reviews" className="relative section-padding overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-vivid-primary/[0.03] rounded-full blur-[180px]" />
+        </div>
+        <div className="relative z-10 max-w-7xl mx-auto px-6">
+          <div className="mb-12">
+            <SectionHeader
+              badge={{ icon: Star, label: "Verified Reviews" }}
+              title={<>From Real <span className="gradient-text">Players</span></>}
+              subtitle="Only verified license holders can leave reviews."
+            />
+          </div>
+          <div className="text-center py-12">
+            <div className="w-16 h-16 rounded-2xl bg-vivid-primary/10 border border-vivid-primary/20 flex items-center justify-center mx-auto mb-4">
+              <Star className="w-8 h-8 text-vivid-primary" />
+            </div>
+            <h3 className="text-white font-semibold mb-2">No reviews yet</h3>
+            <p className="text-vivid-textMuted text-sm mb-6">Be the first to share your experience with VIVID.</p>
+            <Link href="/dashboard" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-vivid-primary text-vivid-bg font-semibold text-sm hover:bg-vivid-primaryDim transition-colors">
+              <MessageSquare className="w-4 h-4" />
+              Leave a Review
+            </Link>
+          </div>
+        </div>
+      </section>
+    );
   }
 
   return (
