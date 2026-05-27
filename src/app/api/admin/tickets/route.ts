@@ -52,12 +52,16 @@ export async function POST(req: NextRequest) {
       select: { id: true },
     });
 
+    if (!dbUser?.id) {
+      return NextResponse.json({ error: "Admin user not found" }, { status: 404 });
+    }
+
     const body = await req.json();
     const { title, description, priority = "medium" } = body;
 
     const ticket = await prisma.activity.create({
       data: {
-        userId: dbUser?.id || userId,
+        userId: dbUser?.id,
         type: "support",
         title,
         description,
