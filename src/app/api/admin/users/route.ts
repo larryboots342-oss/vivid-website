@@ -72,10 +72,10 @@ export async function PATCH(req: NextRequest) {
     await requireAdmin();
 
     const body = await req.json();
-    const { userId: targetUserId, role, name } = body;
+    const { clerkId, role, name } = body;
 
-    if (!targetUserId) {
-      return NextResponse.json({ error: "Missing userId" }, { status: 400 });
+    if (!clerkId) {
+      return NextResponse.json({ error: "Missing clerkId" }, { status: 400 });
     }
 
     const updateData: any = {};
@@ -83,9 +83,9 @@ export async function PATCH(req: NextRequest) {
     if (name !== undefined) updateData.name = name;
 
     const updated = await prisma.user.update({
-      where: { id: targetUserId },
+      where: { clerkId },
       data: updateData,
-      select: { id: true, email: true, name: true, role: true },
+      select: { id: true, clerkId: true, email: true, name: true, role: true },
     });
 
     return NextResponse.json(updated);
