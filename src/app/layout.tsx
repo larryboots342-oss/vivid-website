@@ -58,9 +58,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_APP_URL || "https://vivid.gg"
   ),
-  alternates: {
-    canonical: "/",
-  },
+  alternates: {},
   openGraph: {
     title: "VIVID — AI-Powered Gaming Assistant",
     description:
