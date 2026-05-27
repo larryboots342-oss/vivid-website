@@ -42,8 +42,6 @@ export async function POST(req: NextRequest) {
         first_name,
         last_name,
         image_url,
-        public_metadata,
-        unsafe_metadata,
       } = evt.data;
 
       const primaryEmail = email_addresses?.find((e: any) => e.id === evt.data.primary_email_address_id);
@@ -52,7 +50,6 @@ export async function POST(req: NextRequest) {
       const emailVerified = primaryEmail?.verification?.status === "verified"
         ? new Date()
         : null;
-      const role = public_metadata?.role || unsafe_metadata?.role || "user";
 
       if (email) {
         await prisma.user.upsert({
@@ -62,14 +59,13 @@ export async function POST(req: NextRequest) {
             email,
             name,
             image: image_url,
-            role,
+            role: "user",
             emailVerified,
           },
           update: {
             email,
             name,
             image: image_url,
-            role,
             emailVerified,
           },
         });
@@ -83,7 +79,6 @@ export async function POST(req: NextRequest) {
         first_name,
         last_name,
         image_url,
-        public_metadata,
       } = evt.data;
 
       const primaryEmail = email_addresses?.find((e: any) => e.id === evt.data.primary_email_address_id);
@@ -92,7 +87,6 @@ export async function POST(req: NextRequest) {
       const emailVerified = primaryEmail?.verification?.status === "verified"
         ? new Date()
         : undefined;
-      const role = public_metadata?.role;
 
       if (email) {
         const updateData: any = {
@@ -101,7 +95,6 @@ export async function POST(req: NextRequest) {
           image: image_url,
         };
         if (emailVerified !== undefined) updateData.emailVerified = emailVerified;
-        if (role !== undefined) updateData.role = role;
 
         await prisma.user.upsert({
           where: { clerkId: id },
@@ -110,7 +103,7 @@ export async function POST(req: NextRequest) {
             email,
             name,
             image: image_url,
-            role: role || "user",
+            role: "user",
             emailVerified,
           },
           update: updateData,

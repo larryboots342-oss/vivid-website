@@ -2,6 +2,7 @@
 
 import { useAuth, useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
+import { OWNER_EMAIL } from "@/lib/owner-email";
 
 interface AuthState {
   isLoaded: boolean;
@@ -12,9 +13,15 @@ interface AuthState {
   isAdmin: boolean;
 }
 
+function checkIsOwner(user: ReturnType<typeof useUser>["user"]): boolean {
+  if (!user) return false;
+  const email = user.primaryEmailAddress?.emailAddress;
+  return !!email && email.toLowerCase() === OWNER_EMAIL.toLowerCase();
+}
+
 /**
- * Enhanced auth state hook with role detection.
- * Use this in client components instead of raw useAuth for consistent state.
+ * Enhanced auth state hook with owner detection.
+ * Admin access is strictly restricted to the owner email.
  */
 export function useAuthState(): AuthState {
   const { isLoaded, isSignedIn, userId, orgRole } = useAuth();
@@ -22,14 +29,7 @@ export function useAuthState(): AuthState {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    if (!user) {
-      setIsAdmin(false);
-      return;
-    }
-    const role =
-      (user.publicMetadata?.role as string) ||
-      (user.unsafeMetadata?.role as string);
-    setIsAdmin(role === "admin");
+    setIsAdmin(checkIsOwner(user));
   }, [user]);
 
   return {
@@ -43,19 +43,16 @@ export function useAuthState(): AuthState {
 }
 
 /**
- * Hook to check if the current user has a specific role.
+ * Hook to check if the current user is the owner.
  */
 export function useHasRole(role: "admin" | "user"): boolean {
   const { user } = useUser();
   if (!user) return false;
 
-  const userRole =
-    (user.publicMetadata?.role as string) ||
-    (user.unsafeMetadata?.role as string) ||
-    "user";
+  const isOwner = checkIsOwner(user);
 
   if (role === "admin") {
-    return userRole === "admin";
+    return isOwner;
   }
 
   return true; // All authenticated users are at least "user"

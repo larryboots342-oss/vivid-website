@@ -64,7 +64,6 @@ export async function GET(req: NextRequest) {
 
 const patchSchema = z.object({
   clerkId: z.string().min(1),
-  role: z.enum(["user", "admin"]).optional(),
   name: z.string().min(1).max(100).optional(),
 });
 
@@ -77,10 +76,9 @@ export async function PATCH(req: NextRequest) {
     if (!parsed.success) {
       return NextResponse.json({ error: "Invalid request body", details: parsed.error.format() }, { status: 400 });
     }
-    const { clerkId, role, name } = parsed.data;
+    const { clerkId, name } = parsed.data;
 
     const updateData: any = {};
-    if (role !== undefined) updateData.role = role;
     if (name !== undefined) updateData.name = name;
 
     const updated = await prisma.user.update({

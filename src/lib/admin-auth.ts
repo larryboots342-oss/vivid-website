@@ -1,24 +1,12 @@
 import { auth } from "@clerk/nextjs/server";
-import { prisma } from "@/lib/prisma";
 import { isOwner } from "@/lib/owner";
 
-export async function requireAdmin(): Promise<{ userId: string; isOwner: boolean }> {
+export async function requireAdmin(): Promise<{ userId: string; isOwner: true }> {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
 
   const owner = await isOwner(userId);
-  if (owner) {
-    return { userId, isOwner: true };
-  }
+  if (!owner) throw new Error("Forbidden");
 
-  const dbUser = await prisma.user.findUnique({
-    where: { clerkId: userId },
-    select: { role: true },
-  });
-
-  if (dbUser?.role !== "admin") {
-    throw new Error("Forbidden");
-  }
-
-  return { userId, isOwner: false };
+  return { userId, isOwner: true };
 }
