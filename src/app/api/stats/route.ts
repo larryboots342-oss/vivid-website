@@ -1,9 +1,15 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { errorResponse } from "@/lib/api-utils";
+import { errorResponse, getClientIp, withRateLimit } from "@/lib/api-utils";
+import { rateLimit } from "@/lib/rate-limit";
 
-export async function GET() {
+const limiter = rateLimit({ interval: 60 * 1000 });
+
+export async function GET(req: NextRequest) {
   try {
+    const ip = getClientIp(req);
+    withRateLimit(limiter, ip, 30);
+
     const [licenseCount, reviewCount, avgRating] = await Promise.all([
       prisma.license.count({
         where: { isActive: true },
